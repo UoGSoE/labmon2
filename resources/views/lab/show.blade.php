@@ -2,8 +2,22 @@
 
 @section('content')
 
-<div class=" border-b border-blue-300 mb-8 flex justify-between items-center">
-    <h1 class="text-3xl">Lab {{ $lab->name }}</h1>
+<div class=" border-b border-blue-300 mb-8 flex justify-between items-center" x-data='{lab: @json($lab), editing: false}'>
+    <h1 class="text-3xl flex items-center" x-show="!editing">
+        <span class="mr-2">
+            Lab {{ $lab->name }}
+        </span>
+        <a @click="editing = true" class="text-blue-500 hover:text-blue-900">
+            <svg class="fill-current w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z" /></svg>
+        </a>
+    </h1>
+    <span x-show="editing" class="flex">
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" x-model="lab.name">
+        <button @click="submit(lab)" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+            Update
+        </button>
+    </span>
     <a href="{{ route('lab.members.edit', $lab->id) }}" class="text-blue-500 hover:text-blue-900">
         Edit Members
     </a>
@@ -27,5 +41,9 @@
     </div>
     @endforeach
 </div>
-
+<script>
+    function submit(lab) {
+        console.log(lab);
+    }
+</script>
 @endsection
