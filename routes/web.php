@@ -14,3 +14,10 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('lab/{lab}', 'LabController@show')->name('lab.show');
+Route::get('lab/{lab}/members', 'LabMemberController@edit')->name('lab.members.edit');
+Route::post('lab/{lab}/members', 'LabMemberController@update')->name('lab.members.update');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
