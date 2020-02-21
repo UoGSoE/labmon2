@@ -20,3 +20,5 @@ Route::post('api/lab', 'Api\LabController@store')->name('api.lab.store');
 Route::delete('api/lab/{name}', 'Api\LabController@destroy')->name('api.lab.destroy');
 
 Route::post('api/labmachines/{name}', 'Api\LabMachineController@update')->name('api.lab.machines.update');
+
+Route::get('api/lastseen/{ip}', 'Api\LastSeenController@show')->name('api.lastseen');

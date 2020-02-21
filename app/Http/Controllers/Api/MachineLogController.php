@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\LabMachine;
+use App\MachineLog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
@@ -13,13 +15,14 @@ class MachineLogController extends Controller
         if (!$ip) {
             $ip = request()->ip();
         }
-        $now = now()->timestamp;
         $userAgent = request()->userAgent();
 
-        Redis::sadd('labmachines', $ip);
-        Redis::lpush('machinelog', "{$ip}:{$now}:hello:{$userAgent}");
-        Redis::ltrim('machinelog', 0, config('labmon.max_machine_logs'));
-        Redis::set("lastseen:{$ip}", $now);
+        LabMachine::firstOrCreate(['ip' => $ip]);
+        MachineLog::create([
+            'ip' => $ip,
+            'user_agent' => $userAgent,
+            'logged_in' => true,
+        ]);
     }
 
     public function destroy($ip = null)
@@ -27,11 +30,14 @@ class MachineLogController extends Controller
         if (!$ip) {
             $ip = request()->ip();
         }
-        $now = now()->timestamp;
         $userAgent = request()->userAgent();
 
-        Redis::srem('labmachines', $ip);
-        Redis::lpush('machinelog', "{$ip}:{$now}:goodbye:{$userAgent}");
-        Redis::ltrim('machinelog', 0, config('labmon.max_machine_logs'));
+        LabMachine::where('ip', '=', $ip)->delete();
+
+        MachineLog::create([
+            'ip' => $ip,
+            'user_agent' => $userAgent,
+            'logged_in' => false,
+        ]);
     }
 }

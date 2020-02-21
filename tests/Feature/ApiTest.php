@@ -2,36 +2,33 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Redis;
+use App\LabMachine;
+use App\MachineLog;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        config(['database.redis.default.database' => 1]);
-        Redis::del('labmachines');
-        Redis::del('machinelog');
-    }
-
     /** @test */
     public function we_can_record_a_machine_being_logged_in_or_out()
     {
+        $this->withoutExceptionHandling();
         $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
 
         $response->assertOk();
-        $this->assertTrue(collect(Redis::smembers('labmachines'))->contains('1.2.3.4'));
+        $this->assertEquals('1.2.3.4', MachineLog::first()->ip);
+        $this->assertTrue(MachineLog::first()->logged_in);
+        $this->assertDatabaseHas('lab_machines', ['ip' => '1.2.3.4']);
 
         $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
 
         $response->assertOk();
-        $this->assertFalse(collect(Redis::smembers('labmachines'))->contains('1.2.3.4'));
+        $this->assertEquals('1.2.3.4', MachineLog::all()->last()->ip);
+        $this->assertFalse(MachineLog::all()->last()->logged_in);
+        $this->assertDatabaseMissing('lab_machines', ['ip' => '1.2.3.4']);
     }
 
     /** @test */
@@ -41,12 +38,16 @@ class ApiTest extends TestCase
         $response = $this->get(route('api.hello'));
 
         $response->assertOk();
-        $this->assertTrue(collect(Redis::smembers('labmachines'))->contains('127.0.0.1'));
+        $this->assertEquals('127.0.0.1', MachineLog::first()->ip);
+        $this->assertTrue(MachineLog::first()->logged_in);
+        $this->assertDatabaseHas('lab_machines', ['ip' => '127.0.0.1']);
 
         $response = $this->get(route('api.goodbye'));
 
         $response->assertOk();
-        $this->assertFalse(collect(Redis::smembers('labmachines'))->contains('127.0.0.1'));
+        $this->assertEquals('127.0.0.1', MachineLog::all()->last()->ip);
+        $this->assertFalse(MachineLog::all()->last()->logged_in);
+        $this->assertDatabaseMissing('lab_machines', ['ip' => '127.0.0.1']);
     }
 
     /** @test */
@@ -57,39 +58,46 @@ class ApiTest extends TestCase
         $response = $this->get(route('api.hello'));
 
         $response->assertOk();
-        $now = now()->timestamp;
-        $userAgent = 'Symfony';
-        $this->assertEquals("127.0.0.1:{$now}:hello:{$userAgent}", Redis::lindex('machinelog', 0));
+        tap(MachineLog::first(), function ($log) {
+            $this->assertEquals('Symfony', $log->user_agent);
+            $this->assertEquals(now()->format('Y-m-d H:i'), $log->created_at->format('Y-m-d H:i'));
+            $this->assertTrue($log->logged_in);
+        });
 
         $response = $this->get(route('api.goodbye'));
 
         $response->assertOk();
-        $now = now()->timestamp;
-        $userAgent = 'Symfony';
-        $this->assertEquals("127.0.0.1:{$now}:goodbye:{$userAgent}", Redis::lindex('machinelog', 0));
+        tap(MachineLog::all()->last(), function ($log) {
+            $this->assertEquals('Symfony', $log->user_agent);
+            $this->assertEquals(now()->format('Y-m-d H:i'), $log->created_at->format('Y-m-d H:i'));
+            $this->assertFalse($log->logged_in);
+        });
     }
 
     /** @test */
-    public function we_limit_the_amount_of_data_in_the_machinelog()
+    public function the_machine_log_can_be_automatically_trimmed_by_a_scheduled_task()
     {
-        config(['labmon.max_machine_logs' => 3]);
+        config(['labmon.machine_log_days' => 3]);
+        $currentLog = factory(MachineLog::class)->create();
+        $oldLog = factory(MachineLog::class)->create(['created_at' => now()->subDays(4)]);
+        $this->assertEquals(2, MachineLog::count());
 
-        $response = $this->get(route('api.hello'));
-        $response = $this->get(route('api.goodbye'));
-        $response = $this->get(route('api.hello'));
-        $response = $this->get(route('api.goodbye'));
-        $response = $this->get(route('api.hello'));
-        $response = $this->get(route('api.goodbye'));
+        $this->artisan('labmon:trimlogs');
 
-        // we count 4 as the limit is zero-based - so '3' means 0-3
-        $this->assertCount(4, Redis::lrange('machinelog', 0, -1));
+        $this->assertEquals(1, MachineLog::count());
+        $this->assertTrue(MachineLog::first()->is($currentLog));
     }
 
     /** @test */
-    public function we_record_the_last_seen_timestamp_for_each_machine()
+    public function we_can_get_the_last_time_an_ip_was_seen()
     {
         $response = $this->get(route('api.hello'));
 
-        $this->assertEquals(now()->timestamp, Redis::get('lastseen:127.0.0.1'));
+        $response = $this->get(route('api.lastseen', ['ip' => '127.0.0.1']));
+
+        $response->assertOk();
+        $response->assertJson([
+            'data' => MachineLog::first()->toArray(),
+        ]);
     }
 }
