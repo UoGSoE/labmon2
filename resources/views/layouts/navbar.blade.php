@@ -12,8 +12,11 @@
       <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4">
         Machines
       </a>
-      <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white">
+      <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4">
         Stats
+      </a>
+      <a href="{{ route('options.edit') }}" class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white">
+        Options
       </a>
     </div>
     <div>

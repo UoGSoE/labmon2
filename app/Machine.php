@@ -17,4 +17,11 @@ class Machine extends Model
     {
         return $query->where('logged_in', '=', true);
     }
+
+    public function lookupDns()
+    {
+        $this->update([
+            'name' => gethostbyaddr($this->ip) ?? 'N/A',
+        ]);
+    }
 }

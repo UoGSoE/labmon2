@@ -18,6 +18,8 @@ Route::get('lab/{lab}', 'LabController@show')->name('lab.show');
 Route::get('lab/{lab}/members', 'LabMemberController@edit')->name('lab.members.edit');
 Route::post('lab/{lab}/members', 'LabMemberController@update')->name('lab.members.update');
 
+Route::get('options', 'OptionsController@edit')->name('options.edit');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

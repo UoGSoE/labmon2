@@ -16,6 +16,7 @@ class CreateMachinesTable extends Migration
         Schema::create('machines', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('ip');
+            $table->string('name')->nullable();
             $table->boolean('logged_in')->default(false);
             $table->bigInteger('lab_id')->nullable();
             $table->foreign('lab_id')->references('id')->on('labs')->onDelete('set null');

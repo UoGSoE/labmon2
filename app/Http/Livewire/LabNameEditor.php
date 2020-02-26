@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Http\Livewire;
+
+use App\Lab;
+use Livewire\Component;
+
+class LabNameEditor extends Component
+{
+    public $lab;
+    public $labName;
+    public $editing = false;
+
+    public function mount($lab)
+    {
+        $this->lab = $lab;
+        $this->labName = $lab->name;
+    }
+
+    public function render()
+    {
+        return view('livewire.lab-name-editor');
+    }
+
+    public function updateLabName()
+    {
+        Lab::findOrFail($this->lab->id)->update(['name' => $this->labName]);
+        $this->editing = false;
+    }
+}
