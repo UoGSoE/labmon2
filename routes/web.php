@@ -11,18 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('lab/{lab}', 'LabController@show')->name('lab.show');
-Route::get('lab/{lab}/members', 'LabMemberController@edit')->name('lab.members.edit');
-Route::post('lab/{lab}/members', 'LabMemberController@update')->name('lab.members.update');
-
-Route::get('machine', 'MachineController@index')->name('machine.index');
-
-Route::get('options', 'OptionsController@edit')->name('options.edit');
-Route::post('options', 'OptionsController@update')->name('options.update');
-
 Auth::routes();
+Route::group(['middleware' => ['auth', 'allowed']], function () {
+    Route::get('/', 'LabController@index')->name('lab.index');
+    Route::get('lab/{lab}', 'LabController@show')->name('lab.show');
+    Route::get('lab/{lab}/members', 'LabMemberController@edit')->name('lab.members.edit');
+    Route::post('lab/{lab}/members', 'LabMemberController@update')->name('lab.members.update');
 
-Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('machine', 'MachineController@index')->name('machine.index');
+
+    Route::get('options', 'OptionsController@edit')->name('options.edit');
+    Route::post('options', 'OptionsController@update')->name('options.update');
+
+    Route::redirect('/home', '/')->name('home');
+});

@@ -313,4 +313,10 @@ class ApiTest extends TestCase
         $response->assertOk();
         $response->assertJsonCount(2, 'data');
     }
+
+    /** @test */
+    public function we_can_get_the_list_of_labs_available_for_the_lab_usage_stats()
+    {
+        $this->fail('TODO');
+    }
 }

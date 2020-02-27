@@ -23,10 +23,14 @@
 
 <body>
     <div id="app">
+        @if (Auth::check())
         @include('layouts.navbar')
         <main class="container mx-auto px-4">
             @yield('content')
         </main>
+        @else
+            @yield('content')
+        @endif
         <div class="h-16 mt-8 mb-8"></div>
     </div>
     @livewireScripts
