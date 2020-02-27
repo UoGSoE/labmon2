@@ -4,12 +4,14 @@ namespace App\Http\Livewire;
 
 use App\Lab;
 use Livewire\Component;
+use Illuminate\Support\Facades\Log;
 
 class LabNameEditor extends Component
 {
     public $lab;
     public $labName;
     public $editing = false;
+    public $deleteButtonText = 'Delete';
 
     public function mount($lab)
     {
@@ -26,5 +28,17 @@ class LabNameEditor extends Component
     {
         Lab::findOrFail($this->lab->id)->update(['name' => $this->labName]);
         $this->editing = false;
+    }
+
+    public function deleteLab()
+    {
+        if ($this->deleteButtonText === 'Delete') {
+            $this->deleteButtonText = 'Confirm';
+            return;
+        }
+
+        Lab::findOrFail($this->lab->id)->delete();
+
+        return redirect('/');
     }
 }

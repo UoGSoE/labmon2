@@ -1,8 +1,6 @@
 <div>
     @if (!$editing)
-    <h1
-      class="text-3xl flex items-center pb-1"
-    >
+    <h1 class="text-3xl flex items-center pb-1">
         <span class="mr-2">
             Lab {{ $labName }}
         </span>
@@ -12,12 +10,13 @@
         </a>
     </h1>
     @else
-    <span
-      class="flex pb-2"
-    >
-        <input wire:model.lazy="labName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" x-model="lab.name">
-        <button wire:click="updateLabName" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+    <span class="flex pb-2">
+        <input wire:model="labName" wire:keydown.enter="updateLabName" class=" shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" x-model="lab.name">
+        <button wire:click="updateLabName" class="mr-8 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
             Update
+        </button>
+        <button wire:click="deleteLab" class="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
+            {{ $deleteButtonText }}
         </button>
     </span>
     @endif

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Machine;
 use App\LabMachine;
 use App\MachineLog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
 
-class MachineLogController extends Controller
+class MachineController extends Controller
 {
     public function store($ip = null)
     {
@@ -17,9 +18,7 @@ class MachineLogController extends Controller
         }
         $userAgent = request()->userAgent();
 
-        LabMachine::firstOrCreate(['ip' => $ip]);
-        MachineLog::create([
-            'ip' => $ip,
+        Machine::firstOrCreate(['ip' => $ip], [
             'user_agent' => $userAgent,
             'logged_in' => true,
         ]);
@@ -30,14 +29,10 @@ class MachineLogController extends Controller
         if (!$ip) {
             $ip = request()->ip();
         }
-        $userAgent = request()->userAgent();
 
-        LabMachine::where('ip', '=', $ip)->delete();
-
-        MachineLog::create([
-            'ip' => $ip,
-            'user_agent' => $userAgent,
-            'logged_in' => false,
-        ]);
+        $machine = Machine::where('ip', '=', $ip)->first();
+        if ($machine) {
+            $machine->update(['logged_in' => false]);
+        }
     }
 }

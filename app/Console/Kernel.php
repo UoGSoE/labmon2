@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('labmon:refreshdns')->dailyAt('03:00');
+        $schedule->command('labmon:recordstats')->everyTenMinutes();
     }
 
     /**

@@ -27,6 +27,7 @@
         <main class="container mx-auto px-4">
             @yield('content')
         </main>
+        <div class="h-16 mt-8 mb-8"></div>
     </div>
     @livewireScripts
     @stack('scripts')

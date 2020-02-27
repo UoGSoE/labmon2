@@ -9,12 +9,19 @@ class LabList extends Component
 {
     public $labs;
 
+    protected $listeners = ['labAdded' => 'refreshLabList'];
+
     public function render()
     {
         $this->labs = Lab::orderBy('name')->get();
         return view('livewire.lab-list', [
             'labs' => $this->labs,
         ]);
+    }
+
+    public function refreshLabList()
+    {
+        $this->labs = Lab::orderBy('name')->get();
     }
 
     public function toggleGraphable($id)

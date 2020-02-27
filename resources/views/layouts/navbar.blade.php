@@ -9,7 +9,7 @@
       <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4">
         Labs
       </a>
-      <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4">
+      <a href="{{ route('machine.index') }}" class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4">
         Machines
       </a>
       <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4">

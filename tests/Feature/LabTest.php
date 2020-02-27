@@ -2,8 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Lab;
+use App\Machine;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Redis;
+use Livewire\Livewire;
+use App\Http\Livewire\NewLabEditor;
+use App\Http\Livewire\LabNameEditor;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -11,83 +15,113 @@ class LabTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        config(['database.redis.default.database' => 1]);
-        Redis::del('labmachines');
-        Redis::del('machinelog');
-    }
-
     /** @test */
     public function we_can_create_a_new_lab()
     {
-        $response = $this->postJson(route('api.lab.store', [
-            'name' => 'My Amazing Lab',
-        ]));
-
-        $response->assertOk();
-        $this->assertCount(1, Redis::smembers('labs'));
-        $this->assertEquals('My Amazing Lab', Redis::smembers('labs')[0]);
+        Livewire::test(NewLabEditor::class)
+            ->assertSee('Add new lab')
+            ->set('editing', true)
+            ->assertDontSee('Add new lab')
+            ->assertSee('Save')
+            ->set('labName', 'LABLAB')
+            ->call('saveLab')
+            ->assertSet('labName', '')
+            ->assertSet('editing', false)
+            ->assertEmitted('labAdded');
+        $this->assertEquals('LABLAB', Lab::first()->name);
     }
 
     /** @test */
     public function we_can_delete_an_existing_lab()
     {
-        $this->createLab('My Amazing Lab');
+        $lab = $this->createLab('My Amazing Lab');
 
-        $response = $this->deleteJson(route('api.lab.destroy', [
-            'name' => 'My Amazing Lab',
-        ]));
-
-        $response->assertOk();
-        $this->assertCount(0, Redis::smembers('labs'));
+        Livewire::test(LabNameEditor::class, $lab)
+            ->assertSee($lab->name)
+            ->set('editing', true)
+            ->assertSee('Delete')
+            ->call('deleteLab')
+            ->assertDontSee('Delete')
+            ->assertSee('Confirm')
+            ->call('deleteLab');
+        $this->assertCount(0, Lab::all());
     }
 
     /** @test */
     public function we_can_add_machine_ips_to_a_lab()
     {
-        $this->createLab('blah');
+        $lab = $this->createLab('blah');
 
-        $response = $this->postJson(route('api.lab.machines.update', 'blah'), [
-            'ips' => [
-                ['ip' => '127.0.0.1'],
-                ['ip' => '1.2.3.4'],
-            ]
+        $response = $this->post(route('lab.members.update', $lab->id), [
+            'ips' => "127.0.0.1\r\n1.2.3.4\r\n"
         ]);
 
-        $response->assertOk();
-        $this->assertCount(2, Redis::smembers("lab:blah"));
-        $this->assertTrue(collect(Redis::smembers("lab:blah"))->contains("127.0.0.1"));
-        $this->assertTrue(collect(Redis::smembers("lab:blah"))->contains("1.2.3.4"));
+        $response->assertRedirect(route('lab.show', $lab->id));
+        tap($lab->fresh(), function ($lab) {
+            $this->assertCount(2, $lab->members);
+            $this->assertTrue($lab->members->contains('ip', '1.2.3.4'));
+            $this->assertTrue($lab->members->contains('ip', '127.0.0.1'));
+        });
     }
 
     /** @test */
-    public function sending_an_empty_list_of_ips_removes_the_lab_entry_itself()
+    public function sending_a_list_of_labmember_ips_removes_any_not_on_the_list()
     {
         $this->withoutExceptionHandling();
-        $this->createLab('blah');
-
-        $response = $this->postJson(route('api.lab.machines.update', 'blah'), [
-            'ips' => [
-                ['ip' => '127.0.0.1'],
-                ['ip' => '1.2.3.4'],
-            ]
+        $lab = $this->createLab('blah');
+        $machine1 = factory(Machine::class)->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
+        $machine2 = factory(Machine::class)->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
+        $response = $this->post(route('lab.members.update', $lab->id), [
+            'ips' => "127.0.0.1\r\n1.0.3.4\r\n"
         ]);
 
-        $this->assertTrue((bool) Redis::exists("lab:blah"));
+        $response->assertRedirect(route('lab.show', $lab->id));
+        tap($lab->fresh(), function ($lab) {
+            $this->assertCount(2, $lab->members);
+            $this->assertTrue($lab->members->contains('ip', '1.0.3.4'));
+            $this->assertTrue($lab->members->contains('ip', '127.0.0.1'));
+        });
+    }
 
-        $response = $this->postJson(route('api.lab.machines.update', 'blah'), [
-            'ips' => [],
+    /** @test */
+    public function blank_lines_in_the_list_of_ips_are_ignored()
+    {
+        $this->withoutExceptionHandling();
+        $lab = $this->createLab('blah');
+        $machine1 = factory(Machine::class)->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
+        $machine2 = factory(Machine::class)->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
+        $response = $this->post(route('lab.members.update', $lab->id), [
+            'ips' => "127.0.0.1\r\n\r\n\r\n1.0.3.4\r\n\r\n\r\n"
         ]);
 
-        $response->assertOk();
-        $this->assertFalse((bool) Redis::exists("lab:blah"));
+        $response->assertRedirect(route('lab.show', $lab->id));
+        tap($lab->fresh(), function ($lab) {
+            $this->assertCount(2, $lab->members);
+            $this->assertTrue($lab->members->contains('ip', '1.0.3.4'));
+            $this->assertTrue($lab->members->contains('ip', '127.0.0.1'));
+        });
+    }
+
+    /** @test */
+    public function invalid_ips_are_ignored()
+    {
+        $this->withoutExceptionHandling();
+        $lab = $this->createLab('blah');
+        $machine1 = factory(Machine::class)->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
+        $machine2 = factory(Machine::class)->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
+        $response = $this->post(route('lab.members.update', $lab->id), [
+            'ips' => "fred\r\n\r\n\r\n1.0.3.4\r\n\r\n\r\n"
+        ]);
+
+        $response->assertRedirect(route('lab.show', $lab->id));
+        tap($lab->fresh(), function ($lab) {
+            $this->assertCount(1, $lab->members);
+            $this->assertTrue($lab->members->contains('ip', '1.0.3.4'));
+        });
     }
 
     protected function createLab($name = 'whatevs')
     {
-        Redis::sadd('labs', $name);
+        return factory(Lab::class)->create(['name' => $name]);
     }
 }

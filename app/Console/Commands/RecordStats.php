@@ -2,25 +2,25 @@
 
 namespace App\Console\Commands;
 
-use App\Machine;
-use App\MachineLog;
+use App\Lab;
+use App\LabStat;
 use Illuminate\Console\Command;
 
-class TrimLogs extends Command
+class RecordStats extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'labmon:trimlogs';
+    protected $signature = 'labmon:recordstats';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Trim all the logs';
+    protected $description = 'Record the busyness stats for every lab';
 
     /**
      * Create a new command instance.
@@ -39,10 +39,11 @@ class TrimLogs extends Command
      */
     public function handle()
     {
-        Machine::where(
-            'updated_at',
+        Lab::all()->each->recordStats();
+        LabStat::where(
+            'created_at',
             '<',
-            now()->subDays(config('labmon.machine_log_days', 6 * 30))
+            now()->subDays(config('labmon.truncate_stats_days', 180))
         )->delete();
     }
 }

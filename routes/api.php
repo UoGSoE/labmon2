@@ -13,11 +13,17 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('api/hello/{ip?}', 'Api\MachineLogController@store')->name('api.hello');
-Route::get('api/goodbye/{ip?}', 'Api\MachineLogController@destroy')->name('api.goodbye');
+Route::get('api/hello/{ip?}', 'Api\MachineController@store')->name('api.hello');
+Route::get('api/goodbye/{ip?}', 'Api\MachineController@destroy')->name('api.goodbye');
 
 Route::post('api/lab', 'Api\LabController@store')->name('api.lab.store');
 Route::delete('api/lab/{name}', 'Api\LabController@destroy')->name('api.lab.destroy');
+
+Route::get('api/labstats/busy/{name}', 'Api\LabBusyController@show')->name('api.lab.busy');
+Route::get('api/labstats/dates', 'Api\LabStatDateController@index')->name('api.labstats.dates');
+
+Route::get('api/rdp/available/{name}', 'Api\RdpLabController@show')->name('api.lab.rdp_machines');
+Route::get('api/rdp/labsavailable', 'Api\RdpLabController@index')->name('api.lab.rdp_labs');
 
 Route::post('api/labmachines/{name}', 'Api\LabMachineController@update')->name('api.lab.machines.update');
 

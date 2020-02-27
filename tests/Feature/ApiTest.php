@@ -2,9 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Lab;
+use App\LabStat;
+use App\Machine;
 use App\LabMachine;
 use App\MachineLog;
 use Tests\TestCase;
+use Spatie\TestTime\TestTime;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -19,16 +23,14 @@ class ApiTest extends TestCase
         $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
 
         $response->assertOk();
-        $this->assertEquals('1.2.3.4', MachineLog::first()->ip);
-        $this->assertTrue(MachineLog::first()->logged_in);
-        $this->assertDatabaseHas('lab_machines', ['ip' => '1.2.3.4']);
+        $this->assertEquals('1.2.3.4', Machine::first()->ip);
+        $this->assertTrue(Machine::first()->logged_in);
 
         $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
 
         $response->assertOk();
-        $this->assertEquals('1.2.3.4', MachineLog::all()->last()->ip);
-        $this->assertFalse(MachineLog::all()->last()->logged_in);
-        $this->assertDatabaseMissing('lab_machines', ['ip' => '1.2.3.4']);
+        $this->assertEquals('1.2.3.4', Machine::first()->ip);
+        $this->assertFalse(Machine::first()->logged_in);
     }
 
     /** @test */
@@ -38,16 +40,14 @@ class ApiTest extends TestCase
         $response = $this->get(route('api.hello'));
 
         $response->assertOk();
-        $this->assertEquals('127.0.0.1', MachineLog::first()->ip);
-        $this->assertTrue(MachineLog::first()->logged_in);
-        $this->assertDatabaseHas('lab_machines', ['ip' => '127.0.0.1']);
+        $this->assertEquals('127.0.0.1', Machine::first()->ip);
+        $this->assertTrue(Machine::first()->logged_in);
 
         $response = $this->get(route('api.goodbye'));
 
         $response->assertOk();
-        $this->assertEquals('127.0.0.1', MachineLog::all()->last()->ip);
-        $this->assertFalse(MachineLog::all()->last()->logged_in);
-        $this->assertDatabaseMissing('lab_machines', ['ip' => '127.0.0.1']);
+        $this->assertEquals('127.0.0.1', Machine::first()->ip);
+        $this->assertFalse(Machine::first()->logged_in);
     }
 
     /** @test */
@@ -58,46 +58,259 @@ class ApiTest extends TestCase
         $response = $this->get(route('api.hello'));
 
         $response->assertOk();
-        tap(MachineLog::first(), function ($log) {
-            $this->assertEquals('Symfony', $log->user_agent);
-            $this->assertEquals(now()->format('Y-m-d H:i'), $log->created_at->format('Y-m-d H:i'));
-            $this->assertTrue($log->logged_in);
-        });
-
-        $response = $this->get(route('api.goodbye'));
-
-        $response->assertOk();
-        tap(MachineLog::all()->last(), function ($log) {
-            $this->assertEquals('Symfony', $log->user_agent);
-            $this->assertEquals(now()->format('Y-m-d H:i'), $log->created_at->format('Y-m-d H:i'));
-            $this->assertFalse($log->logged_in);
+        tap(Machine::first(), function ($machine) {
+            $this->assertEquals('Symfony', $machine->user_agent);
+            $this->assertEquals(now()->format('Y-m-d H:i'), $machine->created_at->format('Y-m-d H:i'));
+            $this->assertTrue($machine->logged_in);
         });
     }
 
     /** @test */
-    public function the_machine_log_can_be_automatically_trimmed_by_a_scheduled_task()
+    public function the_machines_log_can_be_automatically_trimmed_by_a_scheduled_task()
     {
         config(['labmon.machine_log_days' => 3]);
-        $currentLog = factory(MachineLog::class)->create();
-        $oldLog = factory(MachineLog::class)->create(['created_at' => now()->subDays(4)]);
-        $this->assertEquals(2, MachineLog::count());
+        $currentLog = factory(Machine::class)->create();
+        $oldLog = factory(Machine::class)->create(['updated_at' => now()->subDays(4)]);
+        $this->assertEquals(2, Machine::count());
 
         $this->artisan('labmon:trimlogs');
 
-        $this->assertEquals(1, MachineLog::count());
-        $this->assertTrue(MachineLog::first()->is($currentLog));
+        $this->assertEquals(1, Machine::count());
+        $this->assertTrue(Machine::first()->is($currentLog));
     }
 
     /** @test */
     public function we_can_get_the_last_time_an_ip_was_seen()
     {
         $response = $this->get(route('api.hello'));
+        $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
 
-        $response = $this->get(route('api.lastseen', ['ip' => '127.0.0.1']));
+        $response = $this->get(route('api.lastseen', ['ip' => '1.2.3.4']));
 
         $response->assertOk();
         $response->assertJson([
-            'data' => MachineLog::first()->toArray(),
+            'data' => Machine::where('ip', '=', '1.2.3.4')->first()->toArray(),
         ]);
+    }
+
+    /** @test */
+    public function we_can_get_the_busyness_of_a_lab()
+    {
+        $this->withoutExceptionHandling();
+        $lab = factory(Lab::class)->create();
+        $machine1 = factory(Machine::class)->create(['lab_id' => $lab->id, 'logged_in' => true]);
+        $machine2 = factory(Machine::class)->create(['lab_id' => $lab->id, 'logged_in' => false]);
+        $machine3 = factory(Machine::class)->create(['lab_id' => $lab->id, 'logged_in' => true]);
+        $machine4 = factory(Machine::class)->create(['lab_id' => null, 'logged_in' => true]);
+
+        $response = $this->getJson(route('api.lab.busy', $lab->name));
+
+        $response->assertOk();
+        $response->assertJson([
+            'data' => [
+                'machines_total' => 3,
+                'logged_in_total' => 2,
+                'logged_in_percent' => '66.67',
+            ],
+        ]);
+    }
+
+    /** @test */
+    public function we_can_get_the_stats_for_all_labs_between_given_dates()
+    {
+        $stat1 = factory(LabStat::class)->create(['created_at' => now()->subDays(200)]);
+        $stat2 = factory(LabStat::class)->create(['created_at' => now()->subDays(100)]);
+        $stat3 = factory(LabStat::class)->create(['created_at' => now()->subDays(1)]);
+
+        $response = $this->getJson(
+            route(
+                'api.labstats.dates',
+                [
+                    'from' => now()->subDays(101)->format('Y-m-d'),
+                    'until' => now()->format('Y-m-d')
+                ]
+            )
+        );
+
+        $response->assertOk();
+        $response->assertJson([
+            'data' => [
+                [
+                    'id' => $stat2->id,
+                    'machine_total' => $stat2->machine_total,
+                    'logged_in_total' => $stat2->logged_in_total,
+                ],
+                [
+                    'id' => $stat3->id,
+                    'machine_total' => $stat3->machine_total,
+                    'logged_in_total' => $stat3->logged_in_total,
+                ]
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function we_can_get_a_list_of_machines_availabe_for_remote_desktop_on_an_always_on_lab()
+    {
+        $this->withoutExceptionHandling();
+        $lab = factory(Lab::class)->create(['always_remote_access' => true]);
+        $inUseMachines = factory(Machine::class, 5)->create(['lab_id' => $lab->id, 'logged_in' => true]);
+        $notInUseMachines = factory(Machine::class, 3)->create(['lab_id' => $lab->id, 'logged_in' => false]);
+
+        $response = $this->getJson(route('api.lab.rdp_machines', $lab->name));
+
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+        // machines are returned in random order, so we just check for one of them
+        $response->assertJson([
+            'data' =>[
+                [
+                    'id' => $notInUseMachines[0]->id,
+                ]
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function a_lab_that_is_not_available_at_all_for_rdp_returns_no_results()
+    {
+        $this->withoutExceptionHandling();
+        $lab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => false]);
+        $machines = factory(Machine::class, 10)->create(['lab_id' => $lab->id]);
+
+        $response = $this->getJson(route('api.lab.rdp_machines', $lab->name));
+
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+    }
+
+    /** @test */
+    public function a_lab_that_is_limited_available_for_rdp_returns_results_if_the_time_is_right()
+    {
+        $this->withoutExceptionHandling();
+        $lab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => true]);
+        $inUseMachines = factory(Machine::class, 5)->create(['lab_id' => $lab->id, 'logged_in' => true]);
+        $notInUseMachines = factory(Machine::class, 3)->create(['lab_id' => $lab->id, 'logged_in' => false]);
+        option(['remote-start-hour' => 18]);
+        option(['remote-end-hour' => 8]);
+
+        option(['remote-start-summer' => '01/Jun']);
+        option(['remote-end-summer' => '31/Aug']);
+
+        TestTime::freeze('Y-m-d H:i', '2019-06-12 20:00');
+
+        $response = $this->getJson(route('api.lab.rdp_machines', $lab->name));
+
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+
+        option(['remote-start-xmas' => '01/Dec']);
+        option(['remote-end-xmas' => '31/Dec']);
+
+        TestTime::freeze('Y-m-d H:i', '2019-12-20 20:00');
+
+        $response = $this->getJson(route('api.lab.rdp_machines', $lab->name));
+
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+
+        option(['remote-start-easter' => '01/Apr']);
+        option(['remote-end-easter' => '31/Apr']);
+
+        TestTime::freeze('Y-m-d H:i', '2019-04-20 20:00');
+
+        $response = $this->getJson(route('api.lab.rdp_machines', $lab->name));
+
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+    }
+
+    /** @test */
+    public function a_lab_that_is_limited_available_for_rdp_doesnt_returns_correct_results_based_on_the_date_and_time()
+    {
+        $this->withoutExceptionHandling();
+        $lab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => true]);
+        $inUseMachines = factory(Machine::class, 5)->create(['lab_id' => $lab->id, 'logged_in' => true]);
+        $notInUseMachines = factory(Machine::class, 3)->create(['lab_id' => $lab->id, 'logged_in' => false]);
+        option(['remote-start-hour' => 18]);
+        option(['remote-end-hour' => 8]);
+        option(['remote-start-summer' => '01/Jun']);
+        option(['remote-end-summer' => '31/Aug']);
+        option(['remote-start-xmas' => '01/Dec']);
+        option(['remote-end-xmas' => '31/Dec']);
+        option(['remote-start-easter' => '01/Apr']);
+        option(['remote-end-easter' => '31/Apr']);
+
+        // during the day, outside of holiday - no rdp available
+        TestTime::freeze('Y-m-d H:i', '2019-05-12 14:00');
+
+        $response = $this->getJson(route('api.lab.rdp_machines', $lab->name));
+
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // out-of-hours time, outside of holiday - rdp available
+        TestTime::freeze('Y-m-d H:i', '2019-02-12 20:00');
+
+        $response = $this->getJson(route('api.lab.rdp_machines', $lab->name));
+
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+
+        // during the day, during a holiday - rdp available
+        TestTime::freeze('Y-m-d H:i', '2019-20-12 14:00');
+
+        $response = $this->getJson(route('api.lab.rdp_machines', $lab->name));
+
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+    }
+
+    /** @test */
+    public function we_can_get_a_list_of_labs_available_for_rdp()
+    {
+        $this->withoutExceptionHandling();
+        $limitedLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => true]);
+        $unlimitedLab = factory(Lab::class)->create(['always_remote_access' => true, 'limited_remote_access' => false]);
+        $offLimitsLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => false]);
+        option(['remote-start-hour' => 18]);
+        option(['remote-end-hour' => 8]);
+        option(['remote-start-summer' => '01/Jun']);
+        option(['remote-end-summer' => '31/Aug']);
+        option(['remote-start-xmas' => '01/Dec']);
+        option(['remote-end-xmas' => '31/Dec']);
+        option(['remote-start-easter' => '01/Apr']);
+        option(['remote-end-easter' => '31/Apr']);
+
+        // during the day, outside of holiday - only unlimited lab available
+        TestTime::freeze('Y-m-d H:i', '2019-05-12 14:00');
+
+        $response = $this->getJson(route('api.lab.rdp_labs'));
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJson([
+            'data' => [
+                [
+                    'id' => $unlimitedLab->id,
+                ]
+            ]
+        ]);
+
+        // evening, outside of holiday - unlimited and limited available
+        TestTime::freeze('Y-m-d H:i', '2019-05-12 20:00');
+
+        $response = $this->getJson(route('api.lab.rdp_labs'));
+
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        // daytime, during a holiday - unlimited and limited available
+        TestTime::freeze('Y-m-d H:i', '2019-12-12 14:00');
+
+        $response = $this->getJson(route('api.lab.rdp_labs'));
+
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
     }
 }
