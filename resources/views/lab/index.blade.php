@@ -8,4 +8,5 @@
 </div>
 @livewire('lab-list')
 
+
 @endsection
