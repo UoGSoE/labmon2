@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 
 class OptionsController extends Controller
 {
     public function edit()
     {
-        return view('options');
+        return view('options', [
+            'allowedUsers' => User::allowedAccess()->get()
+        ]);
     }
 
     public function update(Request $request)
@@ -38,6 +41,18 @@ class OptionsController extends Controller
             option(['remote-start-easter' => $parts[0]]);
             option(['remote-end-easter' => $parts[2]]);
         }
+
+        User::where('username', '!=', $request->user()->username)
+            ->update(['is_allowed' => false]);
+
+        collect(explode("\r\n", $request->allowed_guids))
+            ->filter()
+            ->each(function ($guid) {
+                $user = User::where('username', '=', $guid)->first();
+                if ($user) {
+                    $user->grantAccess();
+                }
+            });
 
         return redirect('/');
     }

@@ -10,14 +10,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -35,5 +28,21 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_allowed' => 'boolean',
     ];
+
+    public function scopeallowedAccess($query)
+    {
+        return $query->where('is_allowed', '=', true);
+    }
+
+    public function isAllowedAccess()
+    {
+        return $this->is_allowed;
+    }
+
+    public function grantAccess()
+    {
+        $this->update(['is_allowed' => true]);
+    }
 }

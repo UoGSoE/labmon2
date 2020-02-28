@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -19,5 +20,10 @@ abstract class TestCase extends BaseTestCase
         $this->assertTrue(collect($schedular->events())->contains(function ($task) use ($command) {
             return preg_match("/{$command}$/", $task->command) === 1;
         }), "Command {$command} is not registered with the schedular");
+    }
+
+    protected function createUser($overrides = ['is_allowed' => true])
+    {
+        return factory(User::class)->create($overrides);
     }
 }

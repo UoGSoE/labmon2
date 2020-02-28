@@ -7,6 +7,7 @@ use App\LabMachine;
 use App\MachineLog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\LookupDns;
 use Illuminate\Support\Facades\Redis;
 
 class MachineController extends Controller
@@ -18,10 +19,14 @@ class MachineController extends Controller
         }
         $userAgent = request()->userAgent();
 
-        Machine::firstOrCreate(['ip' => $ip], [
+        $machine = Machine::firstOrCreate(['ip' => $ip], [
             'user_agent' => $userAgent,
             'logged_in' => true,
         ]);
+
+        if (! $machine->name) {
+            LookupDns::dispatch($machine);
+        }
     }
 
     public function destroy($ip = null)

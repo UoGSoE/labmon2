@@ -22,6 +22,8 @@ Route::delete('api/lab/{name}', 'Api\LabController@destroy')->name('api.lab.dest
 Route::get('api/labstats/busy/{name}', 'Api\LabBusyController@show')->name('api.lab.busy');
 Route::get('api/labstats/dates', 'Api\LabStatDateController@index')->name('api.labstats.dates');
 
+Route::get('api/labs/graphable', 'Api\GraphableLabController@index')->name('api.lab.graphable');
+
 Route::get('api/rdp/available/{name}', 'Api\RdpLabController@show')->name('api.lab.rdp_machines');
 Route::get('api/rdp/labsavailable', 'Api\RdpLabController@index')->name('api.lab.rdp_labs');
 

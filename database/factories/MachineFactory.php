@@ -9,5 +9,6 @@ $factory->define(Machine::class, function (Faker $faker) {
     return [
         'ip' => $faker->ipv4,
         'logged_in' => $faker->boolean(),
+        'name' => $faker->domainWord . '.' . $faker->domainName,
     ];
 });

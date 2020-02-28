@@ -18,6 +18,7 @@ class LabTest extends TestCase
     /** @test */
     public function we_can_create_a_new_lab()
     {
+        $this->actingAs($this->createUser());
         Livewire::test(NewLabEditor::class)
             ->assertSee('Add new lab')
             ->set('editing', true)
@@ -34,9 +35,11 @@ class LabTest extends TestCase
     /** @test */
     public function we_can_delete_an_existing_lab()
     {
+        $this->markTestSkipped('See https://github.com/livewire/livewire/issues/649');
+        $this->actingAs($this->createUser());
         $lab = $this->createLab('My Amazing Lab');
 
-        Livewire::test(LabNameEditor::class, $lab)
+        Livewire::test(LabNameEditor::class, ['lab' => $lab])
             ->assertSee($lab->name)
             ->set('editing', true)
             ->assertSee('Delete')
@@ -50,6 +53,7 @@ class LabTest extends TestCase
     /** @test */
     public function we_can_add_machine_ips_to_a_lab()
     {
+        $this->actingAs($this->createUser());
         $lab = $this->createLab('blah');
 
         $response = $this->post(route('lab.members.update', $lab->id), [
@@ -68,6 +72,7 @@ class LabTest extends TestCase
     public function sending_a_list_of_labmember_ips_removes_any_not_on_the_list()
     {
         $this->withoutExceptionHandling();
+        $this->actingAs($this->createUser());
         $lab = $this->createLab('blah');
         $machine1 = factory(Machine::class)->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
         $machine2 = factory(Machine::class)->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
@@ -87,6 +92,7 @@ class LabTest extends TestCase
     public function blank_lines_in_the_list_of_ips_are_ignored()
     {
         $this->withoutExceptionHandling();
+        $this->actingAs($this->createUser());
         $lab = $this->createLab('blah');
         $machine1 = factory(Machine::class)->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
         $machine2 = factory(Machine::class)->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
@@ -106,6 +112,7 @@ class LabTest extends TestCase
     public function invalid_ips_are_ignored()
     {
         $this->withoutExceptionHandling();
+        $this->actingAs($this->createUser());
         $lab = $this->createLab('blah');
         $machine1 = factory(Machine::class)->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
         $machine2 = factory(Machine::class)->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);

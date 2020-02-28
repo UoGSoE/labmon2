@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\LookupDns;
 use App\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -39,5 +40,18 @@ class DnsLookupTest extends TestCase
     public function the_artisan_command_is_registered_with_the_schedular()
     {
         $this->assertCommandIsScheduled('labmon:refreshdns');
+    }
+
+    /** @test */
+    public function the_lookup_dns_job_can_lookup_the_dns_for_a_machine()
+    {
+        $machine = factory(Machine::class)->create([
+            'ip' => '1.1.1.1',
+            'name' => null,
+        ]);
+
+        LookupDns::dispatch($machine);
+
+        $this->assertEquals('one.one.one.one', $machine->fresh()->name);
     }
 }

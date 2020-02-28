@@ -24,6 +24,11 @@ class Lab extends Model
         return $this->hasMany(LabStat::class);
     }
 
+    public function scopeGraphable($query)
+    {
+        return $query->where('is_on_graphs', '=', true);
+    }
+
     public function scopeAlwaysRemote($query)
     {
         return $query->where('always_remote_access', '=', true);

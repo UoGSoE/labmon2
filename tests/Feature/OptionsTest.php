@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -13,7 +14,8 @@ class OptionsTest extends TestCase
     /** @test */
     public function we_can_see_the_options_page()
     {
-        $response = $this->get(route('options.edit'));
+        $user = $this->createUser();
+        $response = $this->actingAs($user)->get(route('options.edit'));
 
         $response->assertOk();
         $response->assertSee('Options');
@@ -22,13 +24,24 @@ class OptionsTest extends TestCase
     /** @test */
     public function we_can_update_all_of_the_options()
     {
-        // $this->withoutExceptionHandling();
-        $response = $this->post(route('options.update'), [
+        $this->withoutExceptionHandling();
+        $user1 = factory(User::class)->create();
+        $user2 = factory(User::class)->create(['is_allowed' => true]);
+        $user3 = factory(User::class)->create();
+        $user4 = factory(User::class)->create(['is_allowed' => true]);
+
+        $this->assertFalse($user1->fresh()->isAllowedAccess());
+        $this->assertTrue($user2->fresh()->isAllowedAccess());
+        $this->assertFalse($user3->fresh()->isAllowedAccess());
+        $this->assertTrue($user4->fresh()->isAllowedAccess());
+
+        $response = $this->actingAs($user2)->post(route('options.update'), [
             'remote-start-hour' => 20,
             'remote-end-hour' => 10,
             'remote-summer' => '04/Feb - 11/Mar',
             'remote-xmas' => '04/Dec - 31/Dec',
             'remote-easter' => '04/Apr - 10/Apr',
+            'allowed_guids' => "{$user1->username}\r\n{$user3->username}\r\n",
         ]);
 
         $response->assertRedirect('/');
@@ -41,5 +54,12 @@ class OptionsTest extends TestCase
         $this->assertEquals('31/Dec', option('remote-end-xmas'));
         $this->assertEquals('04/Apr', option('remote-start-easter'));
         $this->assertEquals('10/Apr', option('remote-end-easter'));
+        $this->assertTrue($user1->fresh()->isAllowedAccess());
+        // note: users can't remove themselves from the permission list
+        // so user2 is still allowed access even though they weren't in
+        // the supplied allowed_guids
+        $this->assertTrue($user2->fresh()->isAllowedAccess());
+        $this->assertTrue($user3->fresh()->isAllowedAccess());
+        $this->assertFalse($user4->fresh()->isAllowedAccess());
     }
 }
