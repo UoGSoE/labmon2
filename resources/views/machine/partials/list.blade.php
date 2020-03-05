@@ -1,4 +1,4 @@
-<div x-data="{ modalMachine: null }" @updatemachine="modalMachine = $event.detail.machine">
+<div x-cloak x-data="{ modalMachine: null }" @updatemachine="modalMachine = $event.detail.machine">
     <div class="grid grid-cols-3 gap-4">
         @foreach ($machines as $machine)
         <div class="flex p-4 border @if ($machine->logged_in) border-green-500 shadow shadow-lg @else text-gray-600 shadow-inner @endif">
@@ -27,10 +27,9 @@
         </div>
         @endforeach
     </div>
-    <div x-show="modalMachine" class="fixed w-full h-full top-0 left-0 flex items-center justify-center">
-        <div class="absolute w-full h-full bg-gray-900 opacity-50"></div>
+    <div x-show.transition="modalMachine" class="fixed w-full h-full top-0 left-0 flex items-center justify-center">
 
-        <div class="bg-white w-auto mx-auto rounded shadow-lg z-50 overflow-y-auto">
+        <div class="bg-gray-100 w-auto mx-auto rounded border-4 shadow-xl z-50 overflow-y-auto">
 
             <!-- Add margin if you want to see some of the overlay behind the modal-->
             <div class="py-4 text-left px-6">
@@ -40,13 +39,16 @@
                 </div>
 
                 <!--Body-->
-                <pre class="shadow border w-full"><code class="language-json" x-text="modalMachine ? JSON.stringify(modalMachine) : ''"></code></pre>
+                <pre class="shadow border bg-white p-4 w-full"><code
+                      class="language-json"
+                      x-html="modalMachine ? Prism.highlight(JSON.stringify(modalMachine, null, 2), Prism.languages.javascript, 'javascript') : ''"
+                    >
+                </code></pre>
 
                 <!--Footer-->
                 <div class="flex justify-end pt-2">
                     <button @click="modalMachine = null" class="modal-close px-4 bg-blue-500 p-3 rounded-lg text-white hover:bg-blue-400">Close</button>
                 </div>
-
             </div>
         </div>
     </div>

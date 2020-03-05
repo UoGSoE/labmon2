@@ -15,7 +15,7 @@ class DnsLookupTest extends TestCase
     /** @test */
     public function a_machine_can_lookup_the_dns_name_for_its_ip_address()
     {
-        $machine = factory(Machine::class)->create(['ip' => '1.1.1.1']);
+        $machine = factory(Machine::class)->create(['ip' => '1.1.1.1', 'name' => null]);
 
         $this->assertNull($machine->name);
 

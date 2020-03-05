@@ -13965,6 +13965,9 @@ video {
   transition-duration: 1000ms;
 }
 
+[x-cloak] { display: none;
+}
+
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */

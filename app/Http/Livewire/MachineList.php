@@ -9,6 +9,8 @@ class MachineList extends Component
 {
     public $filter = '';
 
+    public $includeMeta = false;
+
     public function render()
     {
         return view('livewire.machine-list', ['machines' => $this->getMachines()]);
@@ -19,10 +21,13 @@ class MachineList extends Component
         if (!$this->filter) {
             return Machine::orderBy('ip')->get();
         }
-        return Machine::where('ip', 'like', "%{$this->filter}%")
-                ->orWhere('name', 'like', "%{$this->filter}%")
-                ->orderBy('ip')
-                ->get();
+        $query = Machine::where('ip', 'like', "%{$this->filter}%")
+                ->orWhere('name', 'like', "%{$this->filter}%");
+        if ($this->includeMeta) {
+            $query = $query->orWhere('meta', 'like', "%{$this->filter}%");
+        }
+
+        return $query->orderBy('ip')->get();
 
     }
 }

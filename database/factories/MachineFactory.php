@@ -10,5 +10,10 @@ $factory->define(Machine::class, function (Faker $faker) {
         'ip' => $faker->ipv4,
         'logged_in' => $faker->boolean(),
         'name' => $faker->domainWord . '.' . $faker->domainName,
+        'meta' => [
+            'mac' => $faker->macAddress,
+            'cpu' => $faker->macProcessor,
+            'model' => $faker->randomElement(['Dell 1234', 'HP 456', 'BBC Micro Model B']),
+        ],
     ];
 });

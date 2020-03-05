@@ -10,6 +10,7 @@ class Machine extends Model
 
     protected $casts = [
         'logged_in' => 'boolean',
+        'meta' => 'array',
     ];
 
     public function lab()

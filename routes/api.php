@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 Route::get('api/hello/{ip?}', 'Api\MachineController@store')->name('api.hello');
 Route::get('api/goodbye/{ip?}', 'Api\MachineController@destroy')->name('api.goodbye');
 
+Route::post('api/bzzz/{ip?}', 'Api\MachineController@update')->name('api.machine.update');
+
 Route::post('api/lab', 'Api\LabController@store')->name('api.lab.store');
 Route::delete('api/lab/{name}', 'Api\LabController@destroy')->name('api.lab.destroy');
 

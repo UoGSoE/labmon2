@@ -60,6 +60,38 @@ class ApiTest extends TestCase
     }
 
     /** @test */
+    public function we_can_record_extra_json_data_about_a_machine()
+    {
+        $this->withoutExceptionHandling();
+        $response = $this->postJson(route('api.machine.update', ['ip' => '1.2.3.4']), [
+            'meta' => [
+                'spec' => [
+                    'model' => 'blah',
+                    'ram' => 'loads',
+                ],
+                'users' => [
+                    'fred', 'ginger'
+                ],
+            ]
+        ]);
+
+        $response->assertOk();
+        tap(Machine::first(), function ($machine) {
+            $this->assertEquals('1.2.3.4', $machine->ip);
+            $this->assertTrue($machine->logged_in);
+            $this->assertEquals([
+                'spec' => [
+                    'model' => 'blah',
+                    'ram' => 'loads',
+                ],
+                'users' => [
+                    'fred', 'ginger'
+                ]
+                ], $machine->meta);
+        });
+    }
+
+    /** @test */
     public function if_an_ip_isnt_supplied_we_make_a_best_guess_at_the_ip()
     {
         $this->withoutExceptionHandling();

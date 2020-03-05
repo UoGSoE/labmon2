@@ -10,7 +10,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/l', function () {
+    Auth::logout();
+    return 'hello';
+});
 Auth::routes();
 Route::group(['middleware' => ['auth', 'allowed']], function () {
     Route::get('/', 'LabController@index')->name('lab.index');

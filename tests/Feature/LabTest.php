@@ -35,7 +35,6 @@ class LabTest extends TestCase
     /** @test */
     public function we_can_delete_an_existing_lab()
     {
-        $this->markTestSkipped('See https://github.com/livewire/livewire/issues/649');
         $this->actingAs($this->createUser());
         $lab = $this->createLab('My Amazing Lab');
 

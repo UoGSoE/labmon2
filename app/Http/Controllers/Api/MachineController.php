@@ -29,6 +29,25 @@ class MachineController extends Controller
         }
     }
 
+    public function update($ip = null)
+    {
+        if (!$ip) {
+            $ip = request()->ip();
+        }
+        $userAgent = request()->userAgent();
+
+        $machine = Machine::firstOrCreate(['ip' => $ip], [
+            'user_agent' => $userAgent,
+            'logged_in' => true,
+            'meta' => request()->meta ?? null,
+        ]);
+
+        if (!$machine->name) {
+            LookupDns::dispatch($machine);
+        }
+        # code...
+    }
+
     public function destroy($ip = null)
     {
         if (!$ip) {
