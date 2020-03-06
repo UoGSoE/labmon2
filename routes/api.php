@@ -13,22 +13,24 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('api/hello/{ip?}', 'Api\MachineController@store')->name('api.hello');
-Route::get('api/goodbye/{ip?}', 'Api\MachineController@destroy')->name('api.goodbye');
+Route::get('hello/{ip?}', 'Api\MachineController@store')->name('api.hello');
+Route::get('goodbye/{ip?}', 'Api\MachineController@destroy')->name('api.goodbye');
 
-Route::post('api/bzzz/{ip?}', 'Api\MachineController@update')->name('api.machine.update');
+Route::post('bzzz/{ip?}', 'Api\MachineController@update')->name('api.machine.update');
 
-Route::post('api/lab', 'Api\LabController@store')->name('api.lab.store');
-Route::delete('api/lab/{name}', 'Api\LabController@destroy')->name('api.lab.destroy');
+Route::post('lab', 'Api\LabController@store')->name('api.lab.store');
+Route::delete('lab/{name}', 'Api\LabController@destroy')->name('api.lab.destroy');
 
-Route::get('api/labstats/busy/{name}', 'Api\LabBusyController@show')->name('api.lab.busy');
-Route::get('api/labstats/dates', 'Api\LabStatDateController@index')->name('api.labstats.dates');
+Route::get('labstats/busy/{name}', 'Api\LabBusyController@show')->name('api.lab.busy');
+Route::get('labstats/dates', 'Api\LabStatDateController@index')->name('api.labstats.dates');
 
-Route::get('api/labs/graphable', 'Api\GraphableLabController@index')->name('api.lab.graphable');
+Route::get('labs/graphable', 'Api\GraphableLabController@index')->name('api.lab.graphable');
 
-Route::get('api/rdp/available/{name}', 'Api\RdpLabController@show')->name('api.lab.rdp_machines');
-Route::get('api/rdp/labsavailable', 'Api\RdpLabController@index')->name('api.lab.rdp_labs');
+Route::get('labs/graphstats', 'Api\LabGraphStatsController@index')->name('api.lab.graph_stats');
 
-Route::post('api/labmachines/{name}', 'Api\LabMachineController@update')->name('api.lab.machines.update');
+Route::get('rdp/available/{name}', 'Api\RdpLabController@show')->name('api.lab.rdp_machines');
+Route::get('rdp/labsavailable', 'Api\RdpLabController@index')->name('api.lab.rdp_labs');
 
-Route::get('api/lastseen/{ip}', 'Api\LastSeenController@show')->name('api.lastseen');
+Route::post('labmachines/{name}', 'Api\LabMachineController@update')->name('api.lab.machines.update');
+
+Route::get('lastseen/{ip}', 'Api\LastSeenController@show')->name('api.lastseen');

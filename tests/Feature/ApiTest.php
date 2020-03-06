@@ -397,4 +397,42 @@ class ApiTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function we_can_get_all_the_stats_for_the_lab_usage_stats_in_one_api_call()
+    {
+        $this->withoutExceptionHandling();
+        $lab1 = factory(Lab::class)->create(['is_on_graphs' => true, 'name' => 'ABC1']);
+        $lab2 = factory(Lab::class)->create(['is_on_graphs' => false, 'name' => 'DEF1']);
+        $lab3 = factory(Lab::class)->create(['is_on_graphs' => true, 'name' => 'GHK1']);
+        $inUseMachines = factory(Machine::class, 5)->create(['lab_id' => $lab1->id, 'logged_in' => true]);
+        $notInUseMachines = factory(Machine::class, 3)->create(['lab_id' => $lab1->id, 'logged_in' => false]);
+        $inUseMachines = factory(Machine::class, 3)->create(['lab_id' => $lab3->id, 'logged_in' => true]);
+        $notInUseMachines = factory(Machine::class, 5)->create(['lab_id' => $lab3->id, 'logged_in' => false]);
+
+        $response = $this->getJson(route('api.lab.graph_stats'));
+
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+        $response->assertJson([
+            'data' => [
+                [
+                    'id' => $lab1->id,
+                    'name' => $lab1->name,
+                    'stats' => [
+                        'machine_total' => $lab1->members()->count(),
+                        'logged_in_total' => $lab1->members()->online()->count(),
+                    ],
+                ],
+                [
+                    'id' => $lab3->id,
+                    'name' => $lab3->name,
+                    'stats' => [
+                        'machine_total' => $lab3->members()->count(),
+                        'logged_in_total' => $lab3->members()->online()->count(),
+                    ],
+                ]
+            ]
+        ]);
+    }
 }
