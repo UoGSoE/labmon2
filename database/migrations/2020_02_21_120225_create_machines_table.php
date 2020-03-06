@@ -20,7 +20,7 @@ class CreateMachinesTable extends Migration
             $table->string('user_agent')->nullable();
             $table->boolean('logged_in')->default(false);
             $table->json('meta')->nullable();
-            $table->bigInteger('lab_id')->nullable();
+            $table->unsignedBigInteger('lab_id')->nullable();
             $table->foreign('lab_id')->references('id')->on('labs')->onDelete('set null');
             $table->timestamps();
         });
