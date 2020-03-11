@@ -10,7 +10,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Auth::routes();
+Route::get('unauthorised', 'UnauthorisedController@show')->name('unauthorised');
+
 Route::group(['middleware' => ['auth', 'allowed']], function () {
     Route::get('/', 'LabController@index')->name('lab.index');
     Route::get('lab/{lab}', 'LabController@show')->name('lab.show');

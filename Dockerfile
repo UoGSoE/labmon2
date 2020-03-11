@@ -24,7 +24,6 @@ RUN mkdir -p /home/node/public/css /home/node/public/js /home/node/resources
 COPY --chown=node:node package*.json webpack.mix.js .babelrc* /home/node/
 COPY --chown=node:node resources/js* /home/node/resources/js
 COPY --chown=node:node resources/sass* /home/node/resources/sass
-COPY --chown=node:node resources/scss* /home/node/resources/scss
 COPY --chown=node:node resources/css* /home/node/resources/css
 
 RUN npm install && \
@@ -128,4 +127,3 @@ RUN curl -o /usr/local/bin/security-checker https://get.sensiolabs.org/security-
     curl -OL -o /usr/local/bin/phpcs https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && \
     php /var/www/html/artisan view:clear && \
     php /var/www/html/artisan cache:clear
-
