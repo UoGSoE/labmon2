@@ -38,14 +38,18 @@ class MachineController extends Controller
 
         $machine = Machine::firstOrCreate(['ip' => $ip], [
             'user_agent' => $userAgent,
-            'logged_in' => true,
+        ]);
+        $machine->update([
             'meta' => request()->meta ?? null,
         ]);
 
         if (!$machine->name) {
             LookupDns::dispatch($machine);
         }
-        # code...
+
+        return response()->json([
+            'data' => $machine->toArray(),
+        ]);
     }
 
     public function destroy($ip = null)

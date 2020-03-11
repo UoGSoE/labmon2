@@ -78,7 +78,7 @@ class ApiTest extends TestCase
         $response->assertOk();
         tap(Machine::first(), function ($machine) {
             $this->assertEquals('1.2.3.4', $machine->ip);
-            $this->assertTrue($machine->logged_in);
+            $this->assertFalse($machine->logged_in);
             $this->assertEquals([
                 'spec' => [
                     'model' => 'blah',
