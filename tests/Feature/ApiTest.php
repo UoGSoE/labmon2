@@ -373,6 +373,35 @@ class ApiTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
+        /** @test */
+    public function we_can_get_a_list_of_all_machines_available_for_rdp()
+    {
+        $this->withoutExceptionHandling();
+        $limitedLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => true]);
+        $unlimitedLab = factory(Lab::class)->create(['always_remote_access' => true, 'limited_remote_access' => false]);
+        $offLimitsLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => false]);
+        factory(Machine::class, 3)->create(['lab_id' => $limitedLab->id]);
+        factory(Machine::class, 4)->create(['lab_id' => $unlimitedLab->id]);
+        factory(Machine::class, 2)->create(['lab_id' => $offLimitsLab->id]);
+        option(['remote-start-hour' => 18]);
+        option(['remote-end-hour' => 8]);
+        option(['remote-start-summer' => '01/Jun']);
+        option(['remote-end-summer' => '31/Aug']);
+        option(['remote-start-xmas' => '01/Dec']);
+        option(['remote-end-xmas' => '31/Dec']);
+        option(['remote-start-easter' => '01/Apr']);
+        option(['remote-end-easter' => '31/Apr']);
+
+        // evening, outside of holiday - unlimited and limited available
+        TestTime::freeze('Y-m-d H:i', '2019-05-12 20:00');
+
+        $response = $this->getJson(route('api.machines.rdp'));
+
+        $response->assertOk();
+        $response->assertJsonCount(7, 'data');
+    }
+
+
     /** @test */
     public function we_can_get_the_list_of_labs_available_for_the_lab_usage_stats()
     {
