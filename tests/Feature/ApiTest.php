@@ -380,9 +380,9 @@ class ApiTest extends TestCase
         $limitedLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => true]);
         $unlimitedLab = factory(Lab::class)->create(['always_remote_access' => true, 'limited_remote_access' => false]);
         $offLimitsLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => false]);
-        factory(Machine::class, 3)->create(['lab_id' => $limitedLab->id]);
-        factory(Machine::class, 4)->create(['lab_id' => $unlimitedLab->id]);
-        factory(Machine::class, 2)->create(['lab_id' => $offLimitsLab->id]);
+        factory(Machine::class, 3)->create(['lab_id' => $limitedLab->id, 'logged_in' => false]);
+        factory(Machine::class, 4)->create(['lab_id' => $unlimitedLab->id, 'logged_in' => false]);
+        factory(Machine::class, 2)->create(['lab_id' => $offLimitsLab->id, 'logged_in' => false]);
         option(['remote-start-hour' => 18]);
         option(['remote-end-hour' => 8]);
         option(['remote-start-summer' => '01/Jun']);
