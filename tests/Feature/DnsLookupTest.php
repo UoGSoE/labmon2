@@ -26,20 +26,24 @@ class DnsLookupTest extends TestCase
     /** @test */
     public function if_a_custom_dns_resolver_is_configured_then_it_is_preferred_over_phps_internal_calls()
     {
-        $this->markTestSkipped('TODO');
-        return;
         $machine = factory(Machine::class)->create(['ip' => '1.1.1.1', 'name' => null]);
         config(['labmon.dns_server' => '1.1.1.1']);
-
-        $this->mock(Process::class, function ($mock) {
+        $process = $this->mock(Process::class, function ($mock) {
             $mock->shouldReceive('run')
+                ->once();
+            $mock->shouldReceive('isSuccessful')
                 ->once()
-                ->andReturn('one.one.one.one');
+                ->andReturn(true);
+            $mock->shouldReceive('getOutput')
+                ->once()
+                ->andReturn("some-guff\n1.1.1.1.in-addr.arpa domain name pointer my.fake.domain.\n");
         });
-
+        app()->bind('App\Process', function ($app, $args) use ($process) {
+            return $process;
+        });
         $machine->lookupDns();
 
-        $this->assertEquals('one.one.one.one', $machine->fresh()->name);
+        $this->assertEquals('my.fake.domain', $machine->fresh()->name);
     }
 
     /** @test */

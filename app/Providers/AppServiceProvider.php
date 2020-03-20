@@ -23,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->app->bind('App\Process', function ($app, $args) {
+            return new \Symfony\Component\Process\Process($args);
+       });
     }
 }
