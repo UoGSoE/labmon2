@@ -31,7 +31,7 @@ class Machine extends Model
     public function lookupDns()
     {
         $this->update([
-            'name' => gethostbyaddr($this->ip) ?? 'N/A',
+            'name' => gethostbyaddr($this->ip) ?? null,
         ]);
     }
 }

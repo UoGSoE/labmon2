@@ -33,6 +33,19 @@ class ApiTest extends TestCase
         $response->assertOk();
         $this->assertEquals('1.2.3.4', Machine::first()->ip);
         $this->assertFalse(Machine::first()->logged_in);
+
+        // and repeat just to make sure multiple calls work ok
+        $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
+
+        $response->assertOk();
+        $this->assertEquals('1.2.3.4', Machine::first()->ip);
+        $this->assertTrue(Machine::first()->logged_in);
+
+        $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
+
+        $response->assertOk();
+        $this->assertEquals('1.2.3.4', Machine::first()->ip);
+        $this->assertFalse(Machine::first()->logged_in);
     }
 
     /** @test */

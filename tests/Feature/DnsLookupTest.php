@@ -6,6 +6,7 @@ use App\Jobs\LookupDns;
 use App\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Symfony\Component\Process\Process;
 use Tests\TestCase;
 
 class DnsLookupTest extends TestCase
@@ -17,7 +18,24 @@ class DnsLookupTest extends TestCase
     {
         $machine = factory(Machine::class)->create(['ip' => '1.1.1.1', 'name' => null]);
 
-        $this->assertNull($machine->name);
+        $machine->lookupDns();
+
+        $this->assertEquals('one.one.one.one', $machine->fresh()->name);
+    }
+
+    /** @test */
+    public function if_a_custom_dns_resolver_is_configured_then_it_is_preferred_over_phps_internal_calls()
+    {
+        $this->markTestSkipped('TODO');
+        return;
+        $machine = factory(Machine::class)->create(['ip' => '1.1.1.1', 'name' => null]);
+        config(['labmon.dns_server' => '1.1.1.1']);
+
+        $this->mock(Process::class, function ($mock) {
+            $mock->shouldReceive('run')
+                ->once()
+                ->andReturn('one.one.one.one');
+        });
 
         $machine->lookupDns();
 
