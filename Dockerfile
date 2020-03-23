@@ -43,6 +43,7 @@ WORKDIR /var/www/html
 
 USER nobody
 
+
 #- make paths that the laravel composer.json expects to exist
 RUN mkdir -p database
 #- copy the seeds and factories so that composer generates autoload entries for them
@@ -63,6 +64,10 @@ RUN composer install \
 FROM prod-composer as qa-composer
 ENV APP_ENV=local
 ENV APP_DEBUG=1
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN composer install \
     --no-interaction \
