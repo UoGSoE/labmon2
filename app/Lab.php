@@ -72,7 +72,7 @@ class Lab extends Model
 
     public function getOfflineMachines()
     {
-        return $this->members()->offline()->inRandomOrder()->get();
+        return $this->members()->offline()->unlocked()->inRandomOrder()->get();
     }
 
     public function isInWorkHours()

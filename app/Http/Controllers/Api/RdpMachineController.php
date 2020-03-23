@@ -13,7 +13,7 @@ class RdpMachineController extends Controller
         return response()->json([
             'data' => Lab::availableForRdp()->with('members')->get()->flatMap(function ($lab) {
                 return $lab->members->reject(function ($machine) {
-                    return $machine->logged_in;
+                    return $machine->logged_in or $machine->is_locked;
                 });
             }),
         ]);

@@ -13,6 +13,7 @@ class Machine extends Model
 
     protected $casts = [
         'logged_in' => 'boolean',
+        'is_locked' => 'boolean',
         'meta' => 'array',
     ];
 
@@ -29,6 +30,11 @@ class Machine extends Model
     public function scopeOffline($query)
     {
         return $query->where('logged_in', '=', false);
+    }
+
+    public function scopeUnlocked($query)
+    {
+        return $query->where('is_locked', '=', false);
     }
 
     public function lookupDns()
@@ -64,6 +70,13 @@ class Machine extends Model
         $name = substr($parts[4], 0, -1); // output ends up as 'host.example.com.\n' - so strip trailing chars
         $this->update([
             'name' => $name,
+        ]);
+    }
+
+    public function toggleLocked()
+    {
+        $this->update([
+            'is_locked' => ! $this->is_locked,
         ]);
     }
 }

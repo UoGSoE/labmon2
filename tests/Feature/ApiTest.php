@@ -404,6 +404,7 @@ class ApiTest extends TestCase
         factory(Machine::class, 3)->create(['lab_id' => $limitedLab->id, 'logged_in' => false]);
         factory(Machine::class, 4)->create(['lab_id' => $unlimitedLab->id, 'logged_in' => false]);
         factory(Machine::class, 2)->create(['lab_id' => $offLimitsLab->id, 'logged_in' => false]);
+        factory(Machine::class)->create(['lab_id' => $unlimitedLab->id, 'logged_in' => false, 'is_locked' => true]);
         option(['remote-start-hour' => 18]);
         option(['remote-end-hour' => 8]);
         option(['remote-start-summer' => '01/Jun']);
@@ -419,6 +420,9 @@ class ApiTest extends TestCase
         $response = $this->getJson(route('api.machines.rdp'));
 
         $response->assertOk();
+        // there are 3 machines in the limited lab, but it's the evening so it shows up
+        // 5 machines in the unlimited lab, but one of them is marked as locked, so shouldn't show up
+        // giving 7 available
         $response->assertJsonCount(7, 'data');
     }
 
