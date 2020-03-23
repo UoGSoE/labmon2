@@ -53,7 +53,7 @@ class MachineController extends Controller
         }
 
         return response()->json([
-            'data' => $machine->toArray(),
+            'data' => $machine->fresh()->toArray(),
         ]);
     }
 
