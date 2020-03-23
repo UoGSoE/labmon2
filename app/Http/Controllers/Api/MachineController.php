@@ -64,9 +64,11 @@ class MachineController extends Controller
         }
 
         $machine = Machine::where('ip', '=', $ip)->first();
-        if ($machine) {
-            $machine->update(['logged_in' => false]);
+        if (! $machine) {
+            abort(404, 'Not found');
         }
+
+        $machine->update(['logged_in' => false]);
 
         return response()->json([
             'data' => $machine->toArray(),

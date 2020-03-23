@@ -73,6 +73,14 @@ class ApiTest extends TestCase
     }
 
     /** @test */
+    public function if_we_try_and_say_goodbye_for_an_ip_that_isnt_in_the_database_we_get_a_404()
+    {
+        $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
+
+        $response->assertStatus(404);
+    }
+
+    /** @test */
     public function we_can_record_extra_json_data_about_a_machine()
     {
         $this->withoutExceptionHandling();
