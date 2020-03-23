@@ -39,6 +39,10 @@ FROM uogsoe/soe-php-apache:${PHP_VERSION} as prod-composer
 ENV APP_ENV=production
 ENV APP_DEBUG=0
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /var/www/html
 
 USER nobody
@@ -64,10 +68,6 @@ RUN composer install \
 FROM prod-composer as qa-composer
 ENV APP_ENV=local
 ENV APP_DEBUG=1
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends git && \
-    rm -rf /var/lib/apt/lists/*
 
 RUN composer install \
     --no-interaction \
