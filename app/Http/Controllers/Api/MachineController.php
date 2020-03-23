@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Machine;
-use App\LabMachine;
-use App\MachineLog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\LookupDns;
-use Illuminate\Support\Facades\Redis;
 
 class MachineController extends Controller
 {
@@ -48,7 +45,7 @@ class MachineController extends Controller
             'meta' => request()->meta ?? null,
         ]);
 
-        if (!$machine->name) {
+        if (! $machine->name) {
             LookupDns::dispatch($machine);
         }
 
