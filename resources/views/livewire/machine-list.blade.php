@@ -5,5 +5,22 @@
             <input class="" type="checkbox" wire:model="includeMeta" value="1"> Search metadata?
         </label>
     </div>
+    <div class="mb-4 text-gray-600">
+        <label class="mr-2">
+            <input type="radio" name="statusFilter" id="statusFilterNone" wire:model="statusFilter" value=""> All
+        </label>
+        <label class="mr-2">
+            <input type="radio" name="statusFilter" id="statusFilterLoggedIn" wire:model="statusFilter" value="logged_in"> Logged In
+        </label>
+        <label class="mr-2">
+            <input type="radio" name="statusFilter" id="statusFilterNotLoggedIn" wire:model="statusFilter" value="not_logged_in"> Not Logged In
+        </label>
+        <label class="mr-2">
+            <input type="radio" name="statusFilter" id="statusFilterLocked" wire:model="statusFilter" value="locked"> Locked
+        </label>
+        <label class="mr-2">
+            <input type="radio" name="statusFilter" id="statusFilterNotLocked" wire:model="statusFilter" value="not_locked"> Not Locked
+        </label>
+    </div>
     @include('machine.partials.list')
 </div>

@@ -55,5 +55,5 @@
             </div>
         </div>
     </div>
-    <div class="p-4 bg-blue-100 rounded text-gray-600 font-bold tracking-wide">Total : {{ $machines->count() }}</div>
+    <div class="p-4 bg-blue-100 rounded text-gray-600 font-bold tracking-wide">Total : {{ count($machines) }}</div>
 </div>
