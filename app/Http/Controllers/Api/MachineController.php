@@ -9,6 +9,13 @@ use App\Jobs\LookupDns;
 
 class MachineController extends Controller
 {
+    public function index()
+    {
+        return response()->json([
+            'data' => Machine::orderBy('ip')->get()->toArray(),
+        ]);
+    }
+
     public function store($ip = null)
     {
         if (! $ip) {

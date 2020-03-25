@@ -489,4 +489,19 @@ class ApiTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function we_can_get_a_list_of_all_machines()
+    {
+        $machines = factory(Machine::class, 5)->create();
+
+        $response = $this->getJson(route('api.machine.index'));
+
+        $response->assertOk();
+        $machines->each(function ($machine) use ($response) {
+            $response->assertJsonFragment([
+                'data' => Machine::orderBy('ip')->get()->toArray(),
+            ]);
+        });
+    }
 }
