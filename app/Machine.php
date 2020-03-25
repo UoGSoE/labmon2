@@ -37,6 +37,11 @@ class Machine extends Model
         return $query->where('is_locked', '=', false);
     }
 
+    public function scopeLocked($query)
+    {
+        return $query->where('is_locked', '=', true);
+    }
+
     public function lookupDns()
     {
         if (config('labmon.dns_server')) {

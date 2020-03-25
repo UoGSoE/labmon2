@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "livewire/livewire": "^1.0.0",
+        "superbalist/laravel-prometheus-exporter": "^1.0",
         "uogsoe/ldap-laravel": "^1.0"
     },
     "require-dev": {
