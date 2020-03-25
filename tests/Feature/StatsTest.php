@@ -15,6 +15,7 @@ class StatsTest extends TestCase
     /** @test */
     public function we_can_get_the_prometheus_metrics_stats()
     {
+        $this->withoutExceptionHandling();
         $labs = factory(Lab::class, 3)->create();
         $labs->each(function ($lab) {
             factory(Machine::class, 3)->create(['lab_id' => $lab->id]);
