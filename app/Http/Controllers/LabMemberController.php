@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Lab;
-use App\Machine;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 
 class LabMemberController extends Controller
@@ -22,26 +22,23 @@ class LabMemberController extends Controller
             'ips' => 'required',
         ]);
 
-        $ips = collect(explode("\r\n", $request->ips))
-                ->filter()
-                ->filter(function ($ip) use ($request) {
-                    $validator = Validator::make(['ip' => $ip], [
-                        'ip' => 'required|ip',
-                    ]);
+        $ips = $this->extractValidIps($request->ips);
 
-                    return $validator->passes();
-                });
-        $lab->members->each(function ($machine) {
-            $machine->update(['lab_id' => null]);
-        });
-
-        $ips->each(function ($ip) use ($lab) {
-            $machine = Machine::firstOrCreate([
-                'ip' => $ip,
-            ]);
-            $machine->update(['lab_id' => $lab->id]);
-        });
+        $lab->replaceExistingMembers($ips);
 
         return redirect(route('lab.show', $lab->id));
+    }
+
+    protected function extractValidIps(string $ipList): Collection
+    {
+        return collect(explode("\r\n", $ipList))
+        ->filter()
+        ->filter(function ($ip) {
+            $validator = Validator::make(['ip' => $ip], [
+                'ip' => 'required|ip',
+            ]);
+
+            return $validator->passes();
+        });
     }
 }
