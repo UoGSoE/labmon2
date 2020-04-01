@@ -14,6 +14,7 @@ class OptionsTest extends TestCase
     /** @test */
     public function we_can_see_the_options_page()
     {
+        $this->withoutExceptionHandling();
         $user = $this->createUser();
         $response = $this->actingAs($user)->get(route('options.edit'));
 

@@ -10,7 +10,7 @@ class OptionsController extends Controller
     public function edit()
     {
         return view('options', [
-            'allowedUsers' => User::allowedAccess()->get()
+            'allowedUsers' => User::allowedAccess()->get(),
         ]);
     }
 
@@ -26,34 +26,26 @@ class OptionsController extends Controller
 
         option(['remote-start-hour' => $request->input('remote-start-hour')]);
         option(['remote-end-hour' => $request->input('remote-end-hour')]);
+
         if ($request->filled('remote-summer')) {
-            $parts = explode(' ', $request->input('remote-summer'));
-            option(['remote-start-summer' => $parts[0]]);
-            option(['remote-end-summer' => $parts[2]]);
+            $this->extractDates($request->input('remote-summer'), 'summer');
         }
         if ($request->filled('remote-xmas')) {
-            $parts = explode(' ', $request->input('remote-xmas'));
-            option(['remote-start-xmas' => $parts[0]]);
-            option(['remote-end-xmas' => $parts[2]]);
+            $this->extractDates($request->input('remote-xmas'), 'xmas');
         }
         if ($request->filled('remote-easter')) {
-            $parts = explode(' ', $request->input('remote-easter'));
-            option(['remote-start-easter' => $parts[0]]);
-            option(['remote-end-easter' => $parts[2]]);
+            $this->extractDates($request->input('remote-easter'), 'easter');
         }
 
-        User::where('username', '!=', $request->user()->username)
-            ->update(['is_allowed' => false]);
-
-        collect(explode("\r\n", $request->allowed_guids))
-            ->filter()
-            ->each(function ($guid) {
-                $user = User::where('username', '=', $guid)->first();
-                if ($user) {
-                    $user->grantAccess();
-                }
-            });
+        User::setAllowedUsers($request->user(), $request->allowed_guids);
 
         return redirect('/');
+    }
+
+    protected function extractDates(string $date, string $holidayName): void
+    {
+        $parts = explode(' ', $date);
+        option(["remote-start-{$holidayName}" => $parts[0]]);
+        option(["remote-end-{$holidayName}" => $parts[2]]);
     }
 }
