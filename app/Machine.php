@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use TitasGailius\Terminal\Terminal;
 
 class Machine extends Model
 {
@@ -55,21 +56,12 @@ class Machine extends Model
 
     protected function updateHostnameViaShell()
     {
-        // see AppServiceProvider for this binding/alias and
-        // https://laracasts.com/discuss/channels/testing/how-to-test-symfony-process-inside-a-queued-job?page=1#reply=447955
-        // for the reasons
-        $process = app('App\Process', ['host', $this->ip, config('labmon.dns_server')]);
-        $process->run();
-        if (! $process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
-
-        $output = $process->getOutput();
-        $lines = explode("\n", $output);
-        array_pop($lines); // remove last trailing lines which are a trailing '\n'
-        $parts = explode(' ', array_pop($lines)); // grab & split the last line of the host lookup output
+        $response = Terminal::run("host {$this->ip} " . config('labmon.dns_server'));
+        $hostLine = collect($response->lines())->filter()->last();
+        $hostLine = collect(explode("\n", (string) $hostLine))->filter()->last();
+        $parts = explode(' ', $hostLine);
         if (count($parts) != 5) {
-            throw new Exception('DNS host lookup failed on for output of ' . $output);
+            throw new Exception('DNS host lookup failed on for output of ' . $response->output());
         }
 
         $name = substr($parts[4], 0, -1); // output ends up as 'host.example.com.\n' - so strip trailing chars

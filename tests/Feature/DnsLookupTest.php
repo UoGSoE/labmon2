@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Symfony\Component\Process\Process;
 use Tests\TestCase;
+use TitasGailius\Terminal\Terminal;
 
 class DnsLookupTest extends TestCase
 {
@@ -28,19 +29,11 @@ class DnsLookupTest extends TestCase
     {
         $machine = factory(Machine::class)->create(['ip' => '1.1.1.1', 'name' => null]);
         config(['labmon.dns_server' => '1.1.1.1']);
-        $process = $this->mock(Process::class, function ($mock) {
-            $mock->shouldReceive('run')
-                ->once();
-            $mock->shouldReceive('isSuccessful')
-                ->once()
-                ->andReturn(true);
-            $mock->shouldReceive('getOutput')
-                ->once()
-                ->andReturn("some-guff\n1.1.1.1.in-addr.arpa domain name pointer my.fake.domain.\n");
-        });
-        app()->bind('App\Process', function ($app, $args) use ($process) {
-            return $process;
-        });
+
+        Terminal::fake([
+            'host 1.1.1.1 1.1.1.1' => "some-guff\n1.1.1.1.in-addr.arpa domain name pointer my.fake.domain.",
+        ]);
+
         $machine->lookupDns();
 
         $this->assertEquals('my.fake.domain', $machine->fresh()->name);
