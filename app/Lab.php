@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class Lab extends Model
@@ -48,6 +49,29 @@ class Lab extends Model
         return $query->anyRemote();
     }
 
+    public function replaceExistingMembers(Collection $ipList): void
+    {
+        $this->removeExistingMembers();
+        $this->storeMembers($ipList);
+    }
+
+    public function removeExistingMembers(): void
+    {
+        $this->members->each(function ($machine) {
+            $machine->update(['lab_id' => null]);
+        });
+    }
+
+    public function storeMembers(Collection $ipList): void
+    {
+        $ipList->each(function ($ip) {
+            $machine = Machine::firstOrCreate([
+                'ip' => $ip,
+            ]);
+            $machine->update(['lab_id' => $this->id]);
+        });
+    }
+
     public function recordStats()
     {
         $this->stats()->create([
@@ -72,7 +96,7 @@ class Lab extends Model
 
     public function getOfflineMachines()
     {
-        return $this->members()->offline()->inRandomOrder()->get();
+        return $this->members()->offline()->unlocked()->inRandomOrder()->get();
     }
 
     public function isInWorkHours()

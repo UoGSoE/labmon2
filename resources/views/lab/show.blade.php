@@ -9,6 +9,6 @@
     </a>
 </div>
 
-@include('machine.partials.list', ['machines' => $lab->members])
+@livewire('machine-list', ['machines' => $lab->members()->orderBy('ip')->get(), 'labId' => $lab->id])
 
 @endsection

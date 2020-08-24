@@ -16,7 +16,8 @@
 
                 <!--Footer-->
                 <div class="flex justify-end pt-2">
-                    <button @click="machine = null" class="modal-close px-4 bg-blue-500 p-3 rounded-lg text-white hover:bg-blue-400">Close</button>
+                    <button @click.prevent="machine = null" class="modal-close px-4 bg-blue-500 p-3 rounded-lg text-white hover:bg-blue-400">Close</button>
+                    <button @click.prevent="toggleMachineLocked" class="px-4 bg-blue-500 p-3 rounded-lg text-white hover:bg-blue-400">Mark machine as @if ($machine->locked) available @else locked @endif</button>
                 </div>
 
             </div>

@@ -36,6 +36,21 @@ class User extends Authenticatable
         return $query->where('is_allowed', '=', true);
     }
 
+    public static function setAllowedUsers(User $user, string $guidList): void
+    {
+        static::where('username', '!=', $user->username)
+            ->update(['is_allowed' => false]);
+
+        collect(explode("\r\n", $guidList))
+            ->filter()
+            ->each(function ($guid) {
+                $user = static::where('username', '=', $guid)->first();
+                if ($user) {
+                    $user->grantAccess();
+                }
+            });
+    }
+
     public function isAllowedAccess()
     {
         return $this->is_allowed;

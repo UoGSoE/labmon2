@@ -33,6 +33,19 @@ class ApiTest extends TestCase
         $response->assertOk();
         $this->assertEquals('1.2.3.4', Machine::first()->ip);
         $this->assertFalse(Machine::first()->logged_in);
+
+        // and repeat just to make sure multiple calls work ok
+        $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
+
+        $response->assertOk();
+        $this->assertEquals('1.2.3.4', Machine::first()->ip);
+        $this->assertTrue(Machine::first()->logged_in);
+
+        $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
+
+        $response->assertOk();
+        $this->assertEquals('1.2.3.4', Machine::first()->ip);
+        $this->assertFalse(Machine::first()->logged_in);
     }
 
     /** @test */
@@ -57,6 +70,14 @@ class ApiTest extends TestCase
         $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
 
         Queue::assertNotPushed(LookupDns::class);
+    }
+
+    /** @test */
+    public function if_we_try_and_say_goodbye_for_an_ip_that_isnt_in_the_database_we_get_a_404()
+    {
+        $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
+
+        $response->assertStatus(404);
     }
 
     /** @test */
@@ -373,6 +394,39 @@ class ApiTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
+        /** @test */
+    public function we_can_get_a_list_of_all_machines_available_for_rdp()
+    {
+        $this->withoutExceptionHandling();
+        $limitedLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => true]);
+        $unlimitedLab = factory(Lab::class)->create(['always_remote_access' => true, 'limited_remote_access' => false]);
+        $offLimitsLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => false]);
+        factory(Machine::class, 3)->create(['lab_id' => $limitedLab->id, 'logged_in' => false]);
+        factory(Machine::class, 4)->create(['lab_id' => $unlimitedLab->id, 'logged_in' => false]);
+        factory(Machine::class, 2)->create(['lab_id' => $offLimitsLab->id, 'logged_in' => false]);
+        factory(Machine::class)->create(['lab_id' => $unlimitedLab->id, 'logged_in' => false, 'is_locked' => true]);
+        option(['remote-start-hour' => 18]);
+        option(['remote-end-hour' => 8]);
+        option(['remote-start-summer' => '01/Jun']);
+        option(['remote-end-summer' => '31/Aug']);
+        option(['remote-start-xmas' => '01/Dec']);
+        option(['remote-end-xmas' => '31/Dec']);
+        option(['remote-start-easter' => '01/Apr']);
+        option(['remote-end-easter' => '31/Apr']);
+
+        // evening, outside of holiday - unlimited and limited available
+        TestTime::freeze('Y-m-d H:i', '2019-05-12 20:00');
+
+        $response = $this->getJson(route('api.machines.rdp'));
+
+        $response->assertOk();
+        // there are 3 machines in the limited lab, but it's the evening so it shows up
+        // 5 machines in the unlimited lab, but one of them is marked as locked, so shouldn't show up
+        // giving 7 available
+        $response->assertJsonCount(7, 'data');
+    }
+
+
     /** @test */
     public function we_can_get_the_list_of_labs_available_for_the_lab_usage_stats()
     {
@@ -434,5 +488,20 @@ class ApiTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /** @test */
+    public function we_can_get_a_list_of_all_machines()
+    {
+        $machines = factory(Machine::class, 5)->create();
+
+        $response = $this->getJson(route('api.machine.index'));
+
+        $response->assertOk();
+        $machines->each(function ($machine) use ($response) {
+            $response->assertJsonFragment([
+                'data' => Machine::orderBy('ip')->get()->toArray(),
+            ]);
+        });
     }
 }

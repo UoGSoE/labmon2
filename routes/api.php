@@ -30,6 +30,9 @@ Route::get('labs/graphstats', 'Api\LabGraphStatsController@index')->name('api.la
 
 Route::get('rdp/available/{name}', 'Api\RdpLabController@show')->name('api.lab.rdp_machines');
 Route::get('rdp/labsavailable', 'Api\RdpLabController@index')->name('api.lab.rdp_labs');
+Route::get('rdp/machines', 'Api\RdpMachineController@index')->name('api.machines.rdp');
+
+Route::get('machines', 'Api\MachineController@index')->name('api.machine.index');
 
 Route::post('labmachines/{name}', 'Api\LabMachineController@update')->name('api.lab.machines.update');
 

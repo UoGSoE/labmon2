@@ -5,6 +5,9 @@ ARG PHP_VERSION=7.2
 ### Placeholder for basic dev stage for use with docker-compose
 FROM uogsoe/soe-php-apache:${PHP_VERSION} as dev
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends dnsutils && \
+    rm -rf /var/lib/apt/lists/*
 COPY docker/app-start docker/app-healthcheck /usr/local/bin/
 RUN chmod u+x /usr/local/bin/app-start /usr/local/bin/app-healthcheck
 CMD ["/usr/local/bin/app-start"]
@@ -39,6 +42,7 @@ ENV APP_DEBUG=0
 WORKDIR /var/www/html
 
 USER nobody
+
 
 #- make paths that the laravel composer.json expects to exist
 RUN mkdir -p database

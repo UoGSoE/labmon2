@@ -25,5 +25,5 @@ Route::group(['middleware' => ['auth', 'allowed']], function () {
     Route::get('options', 'OptionsController@edit')->name('options.edit');
     Route::post('options', 'OptionsController@update')->name('options.update');
 
-    Route::redirect('/home', '/')->name('home');
+    Route::redirect('home', '/')->name('home');
 });

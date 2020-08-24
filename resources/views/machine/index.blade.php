@@ -2,6 +2,6 @@
 
 @section('content')
 
-    @livewire('machine-list')
+    @livewire('machine-list', ['machines' => $machines])
 
 @endsection
