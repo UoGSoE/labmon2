@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Livewire\LabList;
 use App\Lab;
 use App\Machine;
 use Tests\TestCase;
@@ -124,6 +125,73 @@ class LabTest extends TestCase
             $this->assertCount(1, $lab->members);
             $this->assertTrue($lab->members->contains('ip', '1.0.3.4'));
         });
+    }
+
+    /** @test */
+    public function we_can_toggle_a_labs_availability_for_remote_access()
+    {
+        $this->withoutExceptionHandling();
+        $this->actingAs($this->createUser());
+        $lab = $this->createLab('blah');
+        $lab->always_remote_access = false;
+        $lab->limited_remote_access = false;
+        $lab->save();
+
+        $this->assertFalse($lab->limited_remote_access);
+        $this->assertFalse($lab->always_remote_access);
+
+        Livewire::test(LabList::class)
+            ->assertSee($lab->name)
+            ->call('toggleLimitedRemote', $lab->id);
+
+        $this->assertTrue($lab->fresh()->limited_remote_access);
+        $this->assertFalse($lab->fresh()->always_remote_access);
+
+        Livewire::test(LabList::class)
+            ->assertSee($lab->name)
+            ->call('toggleLimitedRemote', $lab->id);
+
+        $this->assertFalse($lab->fresh()->limited_remote_access);
+        $this->assertFalse($lab->fresh()->always_remote_access);
+
+        Livewire::test(LabList::class)
+            ->assertSee($lab->name)
+            ->call('toggleAlwaysRemote', $lab->id);
+
+        $this->assertFalse($lab->fresh()->limited_remote_access);
+        $this->assertTrue($lab->fresh()->always_remote_access);
+
+        Livewire::test(LabList::class)
+            ->assertSee($lab->name)
+            ->call('toggleAlwaysRemote', $lab->id);
+
+        $this->assertFalse($lab->fresh()->limited_remote_access);
+        $this->assertFalse($lab->fresh()->always_remote_access);
+    }
+
+    /** @test */
+    public function a_lab_cannot_be_both_limited_and_unlimited_access_at_the_same_time()
+    {
+        $this->withoutExceptionHandling();
+        $this->actingAs($this->createUser());
+        $lab = $this->createLab('blah');
+        $lab->always_remote_access = true;
+        $lab->limited_remote_access = false;
+        $lab->save();
+
+        Livewire::test(LabList::class)
+            ->assertSee($lab->name)
+            ->call('toggleLimitedRemote', $lab->id);
+
+        $this->assertTrue($lab->fresh()->limited_remote_access);
+        $this->assertFalse($lab->fresh()->always_remote_access);
+
+        Livewire::test(LabList::class)
+            ->assertSee($lab->name)
+            ->call('toggleAlwaysRemote', $lab->id);
+
+        $this->assertFalse($lab->fresh()->limited_remote_access);
+        $this->assertTrue($lab->fresh()->always_remote_access);
     }
 
     protected function createLab($name = 'whatevs')

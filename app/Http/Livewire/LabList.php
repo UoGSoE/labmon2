@@ -34,16 +34,20 @@ class LabList extends Component
     public function toggleLimitedRemote($id)
     {
         $lab = Lab::findOrFail($id);
-        $lab->limited_remote_access = !$lab->limited_remote_access;
-        $lab->always_remote_access = !$lab->limited_remote_access;
+        $lab->limited_remote_access = ! $lab->limited_remote_access;
+        if ($lab->limited_remote_access == true) {
+            $lab->always_remote_access = false;
+        }
         $lab->save();
     }
 
     public function toggleAlwaysRemote($id)
     {
         $lab = Lab::findOrFail($id);
-        $lab->always_remote_access = !$lab->always_remote_access;
-        $lab->limited_remote_access = !$lab->always_remote_access;
+        $lab->always_remote_access = ! $lab->always_remote_access;
+        if ($lab->always_remote_access) {
+            $lab->limited_remote_access = false;
+        }
         $lab->save();
     }
 }
