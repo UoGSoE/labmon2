@@ -26,10 +26,10 @@ class OptionsTest extends TestCase
     public function we_can_update_all_of_the_options()
     {
         $this->withoutExceptionHandling();
-        $user1 = factory(User::class)->create();
-        $user2 = factory(User::class)->create(['is_allowed' => true]);
-        $user3 = factory(User::class)->create();
-        $user4 = factory(User::class)->create(['is_allowed' => true]);
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create(['is_allowed' => true]);
+        $user3 = User::factory()->create();
+        $user4 = User::factory()->create(['is_allowed' => true]);
 
         $this->assertFalse($user1->fresh()->isAllowedAccess());
         $this->assertTrue($user2->fresh()->isAllowedAccess());

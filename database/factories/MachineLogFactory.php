@@ -1,14 +1,19 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\MachineLog;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(MachineLog::class, function (Faker $faker) {
-    return [
-        'ip' => $faker->ipv4,
-        'user_agent' => $faker->userAgent,
-        'logged_in' => $faker->boolean(),
-    ];
-});
+class MachineLogFactory extends Factory
+{
+    protected $model = \App\MachineLog::class;
+
+    public function definition()
+    {
+        return [
+            'ip' => $this->faker->ipv4,
+            'user_agent' => $this->faker->userAgent,
+            'logged_in' => $this->faker->boolean(),
+        ];
+    }
+}

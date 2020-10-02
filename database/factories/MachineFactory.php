@@ -1,19 +1,24 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Machine;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Machine::class, function (Faker $faker) {
-    return [
-        'ip' => $faker->ipv4,
-        'logged_in' => $faker->boolean(),
-        'name' => $faker->domainWord . '.' . $faker->domainName,
-        'meta' => [
-            'mac' => $faker->macAddress,
-            'cpu' => $faker->macProcessor,
-            'model' => $faker->randomElement(['Dell 1234', 'HP 456', 'BBC Micro Model B']),
-        ],
-    ];
-});
+class MachineFactory extends Factory
+{
+    protected $model = \App\Machine::class;
+
+    public function definition()
+    {
+        return [
+            'ip' => $this->faker->ipv4,
+            'logged_in' => $this->faker->boolean(),
+            'name' => $this->faker->domainWord . '.' . $this->faker->domainName,
+            'meta' => [
+                'mac' => $this->faker->macAddress,
+                'cpu' => $this->faker->macProcessor,
+                'model' => $this->faker->randomElement(['Dell 1234', 'HP 456', 'BBC Micro Model B']),
+            ],
+        ];
+    }
+}

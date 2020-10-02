@@ -74,8 +74,8 @@ class LabTest extends TestCase
         $this->withoutExceptionHandling();
         $this->actingAs($this->createUser());
         $lab = $this->createLab('blah');
-        $machine1 = factory(Machine::class)->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
-        $machine2 = factory(Machine::class)->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
+        $machine1 = Machine::factory()->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
+        $machine2 = Machine::factory()->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
         $response = $this->post(route('lab.members.update', $lab->id), [
             'ips' => "127.0.0.1\r\n1.0.3.4\r\n"
         ]);
@@ -94,8 +94,8 @@ class LabTest extends TestCase
         $this->withoutExceptionHandling();
         $this->actingAs($this->createUser());
         $lab = $this->createLab('blah');
-        $machine1 = factory(Machine::class)->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
-        $machine2 = factory(Machine::class)->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
+        $machine1 = Machine::factory()->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
+        $machine2 = Machine::factory()->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
         $response = $this->post(route('lab.members.update', $lab->id), [
             'ips' => "127.0.0.1\r\n\r\n\r\n1.0.3.4\r\n\r\n\r\n"
         ]);
@@ -114,8 +114,8 @@ class LabTest extends TestCase
         $this->withoutExceptionHandling();
         $this->actingAs($this->createUser());
         $lab = $this->createLab('blah');
-        $machine1 = factory(Machine::class)->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
-        $machine2 = factory(Machine::class)->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
+        $machine1 = Machine::factory()->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
+        $machine2 = Machine::factory()->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
         $response = $this->post(route('lab.members.update', $lab->id), [
             'ips' => "fred\r\n\r\n\r\n1.0.3.4\r\n\r\n\r\n"
         ]);
@@ -196,6 +196,6 @@ class LabTest extends TestCase
 
     protected function createLab($name = 'whatevs')
     {
-        return factory(Lab::class)->create(['name' => $name]);
+        return Lab::factory()->create(['name' => $name]);
     }
 }

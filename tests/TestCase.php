@@ -24,6 +24,6 @@ abstract class TestCase extends BaseTestCase
 
     protected function createUser($overrides = ['is_allowed' => true])
     {
-        return factory(User::class)->create($overrides);
+        return User::factory()->create($overrides);
     }
 }

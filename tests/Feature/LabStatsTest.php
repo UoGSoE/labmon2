@@ -16,12 +16,12 @@ class LabStatsTest extends TestCase
     /** @test */
     public function we_can_record_the_busyness_of_every_lab()
     {
-        $lab1 = factory(Lab::class)->create();
-        $lab2 = factory(Lab::class)->create();
-        $lab3 = factory(Lab::class)->create();
-        $machines1 = factory(Machine::class, 5)->create(['lab_id' => $lab1->id]);
-        $machines2 = factory(Machine::class, 5)->create(['lab_id' => $lab2->id]);
-        $machines3 = factory(Machine::class, 5)->create(['lab_id' => $lab3->id]);
+        $lab1 = Lab::factory()->create();
+        $lab2 = Lab::factory()->create();
+        $lab3 = Lab::factory()->create();
+        $machines1 = Machine::factory()->count(5)->create(['lab_id' => $lab1->id]);
+        $machines2 = Machine::factory()->count(5)->create(['lab_id' => $lab2->id]);
+        $machines3 = Machine::factory()->count(5)->create(['lab_id' => $lab3->id]);
 
         $this->artisan('labmon:recordstats');
 
@@ -44,9 +44,9 @@ class LabStatsTest extends TestCase
     public function the_lab_stats_are_truncated_after_N_days()
     {
         config(['labmon.truncate_stats_days' => 2]);
-        $stat1 = factory(LabStat::class)->create(['created_at' => now()->subDays(3)]);
-        $stat2 = factory(LabStat::class)->create(['created_at' => now()->subDays(2)]);
-        $stat3 = factory(LabStat::class)->create(['created_at' => now()->subDays(1)]);
+        $stat1 = LabStat::factory()->create(['created_at' => now()->subDays(3)]);
+        $stat2 = LabStat::factory()->create(['created_at' => now()->subDays(2)]);
+        $stat3 = LabStat::factory()->create(['created_at' => now()->subDays(1)]);
 
         $this->assertEquals(3, LabStat::count());
 

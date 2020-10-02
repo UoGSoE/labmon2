@@ -1,17 +1,19 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Lab;
-use App\LabStat;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(LabStat::class, function (Faker $faker) {
-    return [
-        'lab_id' => function () {
-            return factory(Lab::class)->create()->id;
-        },
-        'machine_total' => $faker->randomNumber(),
-        'logged_in_total' => $faker->randomNumber(),
-    ];
-});
+class LabStatFactory extends Factory
+{
+    protected $model = \App\LabStat::class;
+
+    public function definition()
+    {
+        return [
+            'lab_id' => \App\Lab::factory(),
+            'machine_total' => $this->faker->randomNumber(),
+            'logged_in_total' => $this->faker->randomNumber(),
+        ];
+    }
+}

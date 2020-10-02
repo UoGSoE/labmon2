@@ -17,8 +17,9 @@ class MachineListTest extends TestCase
     /** @test */
     public function we_can_see_a_list_of_all_machines()
     {
-        $user = factory(User::class)->create(['is_allowed' => true]);
-        $machines = factory(Machine::class, 10)->create();
+        $this->withoutExceptionHandling();
+        $user = User::factory()->create(['is_allowed' => true]);
+        $machines = Machine::factory()->count(10)->create();
 
         $response = $this->actingAs($user)->get(route('machine.index'));
 
@@ -31,10 +32,10 @@ class MachineListTest extends TestCase
     /** @test */
     public function we_can_see_a_list_of_all_machines_for_a_specific_lab()
     {
-        $user = factory(User::class)->create(['is_allowed' => true]);
-        $lab = factory(Lab::class)->create();
-        $labMachines = factory(Machine::class, 3)->create(['lab_id' => $lab->id]);
-        $otherMachines = factory(Machine::class, 3)->create(['lab_id' => null]);
+        $user = User::factory()->create(['is_allowed' => true]);
+        $lab = Lab::factory()->create();
+        $labMachines = Machine::factory()->count(3)->create(['lab_id' => $lab->id]);
+        $otherMachines = Machine::factory()->count(3)->create(['lab_id' => null]);
 
         $response = $this->actingAs($user)->get(route('lab.show', $lab->id));
 
@@ -50,9 +51,9 @@ class MachineListTest extends TestCase
     /** @test */
     public function we_can_filter_the_list_of_machines_by_name_or_ip_address()
     {
-        $user = factory(User::class)->create(['is_allowed' => true]);
-        $machine1 = factory(Machine::class)->create(['name' => 'test.example.com', 'ip' => '1.1.1.1']);
-        $machine2 = factory(Machine::class)->create(['name' => 'jenny.something.org', 'ip' => '2.2.2.2']);
+        $user = User::factory()->create(['is_allowed' => true]);
+        $machine1 = Machine::factory()->create(['name' => 'test.example.com', 'ip' => '1.1.1.1']);
+        $machine2 = Machine::factory()->create(['name' => 'jenny.something.org', 'ip' => '2.2.2.2']);
 
         $this->actingAs($user);
 
@@ -70,9 +71,9 @@ class MachineListTest extends TestCase
     /** @test */
     public function we_can_optionally_filter_the_list_of_machines_by_meta_data()
     {
-        $user = factory(User::class)->create(['is_allowed' => true]);
-        $machine1 = factory(Machine::class)->create(['name' => 'test.example.com', 'ip' => '1.1.1.1', 'meta' => 'blah']);
-        $machine2 = factory(Machine::class)->create(['name' => 'jenny.something.org', 'ip' => '2.2.2.2', 'meta' => 'spoons']);
+        $user = User::factory()->create(['is_allowed' => true]);
+        $machine1 = Machine::factory()->create(['name' => 'test.example.com', 'ip' => '1.1.1.1', 'meta' => 'blah']);
+        $machine2 = Machine::factory()->create(['name' => 'jenny.something.org', 'ip' => '2.2.2.2', 'meta' => 'spoons']);
 
         $this->actingAs($user);
 
@@ -89,11 +90,11 @@ class MachineListTest extends TestCase
     /** @test */
     public function we_can_filter_the_list_of_machines_by_their_status()
     {
-        $user = factory(User::class)->create(['is_allowed' => true]);
-        $machine1 = factory(Machine::class)->create(['name' => 'test.example.com', 'is_locked' => true, 'logged_in' => false]);
-        $machine2 = factory(Machine::class)->create(['name' => 'jenny.something.org', 'is_locked' => false, 'logged_in' => false]);
-        $machine3 = factory(Machine::class)->create(['name' => 'cat.example.com', 'is_locked' => false, 'logged_in' => true]);
-        $machine4 = factory(Machine::class)->create(['name' => 'dog.something.org', 'is_locked' => false, 'logged_in' => false]);
+        $user = User::factory()->create(['is_allowed' => true]);
+        $machine1 = Machine::factory()->create(['name' => 'test.example.com', 'is_locked' => true, 'logged_in' => false]);
+        $machine2 = Machine::factory()->create(['name' => 'jenny.something.org', 'is_locked' => false, 'logged_in' => false]);
+        $machine3 = Machine::factory()->create(['name' => 'cat.example.com', 'is_locked' => false, 'logged_in' => true]);
+        $machine4 = Machine::factory()->create(['name' => 'dog.something.org', 'is_locked' => false, 'logged_in' => false]);
 
         $this->actingAs($user);
 
@@ -128,5 +129,4 @@ class MachineListTest extends TestCase
             ->assertSee('cat.example.com')
             ->assertSee('dog.something.org');
     }
-
 }

@@ -1,12 +1,15 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\LabMachine;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(LabMachine::class, function (Faker $faker) {
-    return [
-        //
-    ];
-});
+class LabMachineFactory extends Factory
+{
+    protected $model = \App\LabMachine::class;
+
+    public function definition()
+    {
+        return [];
+    }
+}

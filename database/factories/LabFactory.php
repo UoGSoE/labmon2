@@ -1,17 +1,22 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Lab;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Lab::class, function (Faker $faker) {
-    $limited = $faker->boolean();
-    $always = ! $limited;
-    return [
-        'name' => $faker->randomElement(['Rankine', 'JWS']) . ' ' . $faker->randomNumber(3),
-        'is_on_graphs' => $faker->boolean(),
-        'always_remote_access' => $always,
-        'limited_remote_access' => $limited,
-    ];
-});
+class LabFactory extends Factory
+{
+    protected $model = \App\Lab::class;
+
+    public function definition()
+    {
+        $limited = $this->faker->boolean();
+        $always = ! $limited;
+        return [
+            'name' => $this->faker->randomElement(['Rankine', 'JWS']) . ' ' . $this->faker->randomNumber(3),
+            'is_on_graphs' => $this->faker->boolean(),
+            'always_remote_access' => $always,
+            'limited_remote_access' => $limited,
+        ];
+    }
+}

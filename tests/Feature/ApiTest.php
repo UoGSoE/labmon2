@@ -65,7 +65,7 @@ class ApiTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Queue::fake();
-        factory(Machine::class)->create(['ip' => '1.2.3.4', 'name' => 'blah.example.com']);
+        Machine::factory()->create(['ip' => '1.2.3.4', 'name' => 'blah.example.com']);
 
         $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
 
@@ -148,8 +148,8 @@ class ApiTest extends TestCase
     public function the_machines_log_can_be_automatically_trimmed_by_a_scheduled_task()
     {
         config(['labmon.machine_log_days' => 3]);
-        $currentLog = factory(Machine::class)->create();
-        $oldLog = factory(Machine::class)->create(['updated_at' => now()->subDays(4)]);
+        $currentLog = Machine::factory()->create();
+        $oldLog = Machine::factory()->create(['updated_at' => now()->subDays(4)]);
         $this->assertEquals(2, Machine::count());
 
         $this->artisan('labmon:trimlogs');
@@ -176,11 +176,11 @@ class ApiTest extends TestCase
     public function we_can_get_the_busyness_of_a_lab()
     {
         $this->withoutExceptionHandling();
-        $lab = factory(Lab::class)->create();
-        $machine1 = factory(Machine::class)->create(['lab_id' => $lab->id, 'logged_in' => true]);
-        $machine2 = factory(Machine::class)->create(['lab_id' => $lab->id, 'logged_in' => false]);
-        $machine3 = factory(Machine::class)->create(['lab_id' => $lab->id, 'logged_in' => true]);
-        $machine4 = factory(Machine::class)->create(['lab_id' => null, 'logged_in' => true]);
+        $lab = Lab::factory()->create();
+        $machine1 = Machine::factory()->create(['lab_id' => $lab->id, 'logged_in' => true]);
+        $machine2 = Machine::factory()->create(['lab_id' => $lab->id, 'logged_in' => false]);
+        $machine3 = Machine::factory()->create(['lab_id' => $lab->id, 'logged_in' => true]);
+        $machine4 = Machine::factory()->create(['lab_id' => null, 'logged_in' => true]);
 
         $response = $this->getJson(route('api.lab.busy', $lab->name));
 
@@ -197,9 +197,9 @@ class ApiTest extends TestCase
     /** @test */
     public function we_can_get_the_stats_for_all_labs_between_given_dates()
     {
-        $stat1 = factory(LabStat::class)->create(['created_at' => now()->subDays(200)]);
-        $stat2 = factory(LabStat::class)->create(['created_at' => now()->subDays(100)]);
-        $stat3 = factory(LabStat::class)->create(['created_at' => now()->subDays(1)]);
+        $stat1 = LabStat::factory()->create(['created_at' => now()->subDays(200)]);
+        $stat2 = LabStat::factory()->create(['created_at' => now()->subDays(100)]);
+        $stat3 = LabStat::factory()->create(['created_at' => now()->subDays(1)]);
 
         $response = $this->getJson(
             route(
@@ -232,9 +232,9 @@ class ApiTest extends TestCase
     public function we_can_get_a_list_of_machines_availabe_for_remote_desktop_on_an_always_on_lab()
     {
         $this->withoutExceptionHandling();
-        $lab = factory(Lab::class)->create(['always_remote_access' => true]);
-        $inUseMachines = factory(Machine::class, 5)->create(['lab_id' => $lab->id, 'logged_in' => true]);
-        $notInUseMachines = factory(Machine::class, 3)->create(['lab_id' => $lab->id, 'logged_in' => false]);
+        $lab = Lab::factory()->create(['always_remote_access' => true]);
+        $inUseMachines = Machine::factory()->count(5)->create(['lab_id' => $lab->id, 'logged_in' => true]);
+        $notInUseMachines = Machine::factory()->count(3)->create(['lab_id' => $lab->id, 'logged_in' => false]);
 
         $response = $this->getJson(route('api.lab.rdp_machines', $lab->name));
 
@@ -255,8 +255,8 @@ class ApiTest extends TestCase
     public function a_lab_that_is_not_available_at_all_for_rdp_returns_no_results()
     {
         $this->withoutExceptionHandling();
-        $lab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => false]);
-        $machines = factory(Machine::class, 10)->create(['lab_id' => $lab->id]);
+        $lab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => false]);
+        $machines = Machine::factory()->count(10)->create(['lab_id' => $lab->id]);
 
         $response = $this->getJson(route('api.lab.rdp_machines', $lab->name));
 
@@ -268,9 +268,9 @@ class ApiTest extends TestCase
     public function a_lab_that_is_limited_available_for_rdp_returns_results_if_the_time_is_right()
     {
         $this->withoutExceptionHandling();
-        $lab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => true]);
-        $inUseMachines = factory(Machine::class, 5)->create(['lab_id' => $lab->id, 'logged_in' => true]);
-        $notInUseMachines = factory(Machine::class, 3)->create(['lab_id' => $lab->id, 'logged_in' => false]);
+        $lab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => true]);
+        $inUseMachines = Machine::factory()->count(5)->create(['lab_id' => $lab->id, 'logged_in' => true]);
+        $notInUseMachines = Machine::factory()->count(3)->create(['lab_id' => $lab->id, 'logged_in' => false]);
         option(['remote-start-hour' => 18]);
         option(['remote-end-hour' => 8]);
 
@@ -309,9 +309,9 @@ class ApiTest extends TestCase
     public function a_lab_that_is_limited_available_for_rdp_doesnt_returns_correct_results_based_on_the_date_and_time()
     {
         $this->withoutExceptionHandling();
-        $lab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => true]);
-        $inUseMachines = factory(Machine::class, 5)->create(['lab_id' => $lab->id, 'logged_in' => true]);
-        $notInUseMachines = factory(Machine::class, 3)->create(['lab_id' => $lab->id, 'logged_in' => false]);
+        $lab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => true]);
+        $inUseMachines = Machine::factory()->count(5)->create(['lab_id' => $lab->id, 'logged_in' => true]);
+        $notInUseMachines = Machine::factory()->count(3)->create(['lab_id' => $lab->id, 'logged_in' => false]);
         option(['remote-start-hour' => 18]);
         option(['remote-end-hour' => 8]);
         option(['remote-start-summer' => '01/Jun']);
@@ -350,9 +350,9 @@ class ApiTest extends TestCase
     public function we_can_get_a_list_of_labs_available_for_rdp()
     {
         $this->withoutExceptionHandling();
-        $limitedLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => true]);
-        $unlimitedLab = factory(Lab::class)->create(['always_remote_access' => true, 'limited_remote_access' => false]);
-        $offLimitsLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => false]);
+        $limitedLab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => true]);
+        $unlimitedLab = Lab::factory()->create(['always_remote_access' => true, 'limited_remote_access' => false]);
+        $offLimitsLab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => false]);
         option(['remote-start-hour' => 18]);
         option(['remote-end-hour' => 8]);
         option(['remote-start-summer' => '01/Jun']);
@@ -394,17 +394,17 @@ class ApiTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
-        /** @test */
+    /** @test */
     public function we_can_get_a_list_of_all_machines_available_for_rdp()
     {
         $this->withoutExceptionHandling();
-        $limitedLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => true]);
-        $unlimitedLab = factory(Lab::class)->create(['always_remote_access' => true, 'limited_remote_access' => false]);
-        $offLimitsLab = factory(Lab::class)->create(['always_remote_access' => false, 'limited_remote_access' => false]);
-        factory(Machine::class, 3)->create(['lab_id' => $limitedLab->id, 'logged_in' => false]);
-        factory(Machine::class, 4)->create(['lab_id' => $unlimitedLab->id, 'logged_in' => false]);
-        factory(Machine::class, 2)->create(['lab_id' => $offLimitsLab->id, 'logged_in' => false]);
-        factory(Machine::class)->create(['lab_id' => $unlimitedLab->id, 'logged_in' => false, 'is_locked' => true]);
+        $limitedLab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => true]);
+        $unlimitedLab = Lab::factory()->create(['always_remote_access' => true, 'limited_remote_access' => false]);
+        $offLimitsLab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => false]);
+        Machine::factory()->count(3)->create(['lab_id' => $limitedLab->id, 'logged_in' => false]);
+        Machine::factory()->count(4)->create(['lab_id' => $unlimitedLab->id, 'logged_in' => false]);
+        Machine::factory()->count(2)->create(['lab_id' => $offLimitsLab->id, 'logged_in' => false]);
+        Machine::factory()->create(['lab_id' => $unlimitedLab->id, 'logged_in' => false, 'is_locked' => true]);
         option(['remote-start-hour' => 18]);
         option(['remote-end-hour' => 8]);
         option(['remote-start-summer' => '01/Jun']);
@@ -430,9 +430,9 @@ class ApiTest extends TestCase
     /** @test */
     public function we_can_get_the_list_of_labs_available_for_the_lab_usage_stats()
     {
-        $lab1 = factory(Lab::class)->create(['is_on_graphs' => true]);
-        $lab2 = factory(Lab::class)->create(['is_on_graphs' => false]);
-        $lab3 = factory(Lab::class)->create(['is_on_graphs' => true]);
+        $lab1 = Lab::factory()->create(['is_on_graphs' => true]);
+        $lab2 = Lab::factory()->create(['is_on_graphs' => false]);
+        $lab3 = Lab::factory()->create(['is_on_graphs' => true]);
 
         $response = $this->getJson(route('api.lab.graphable'));
 
@@ -456,13 +456,13 @@ class ApiTest extends TestCase
     public function we_can_get_all_the_stats_for_the_lab_usage_stats_in_one_api_call()
     {
         $this->withoutExceptionHandling();
-        $lab1 = factory(Lab::class)->create(['is_on_graphs' => true, 'name' => 'ABC1']);
-        $lab2 = factory(Lab::class)->create(['is_on_graphs' => false, 'name' => 'DEF1']);
-        $lab3 = factory(Lab::class)->create(['is_on_graphs' => true, 'name' => 'GHK1']);
-        $inUseMachines = factory(Machine::class, 5)->create(['lab_id' => $lab1->id, 'logged_in' => true]);
-        $notInUseMachines = factory(Machine::class, 3)->create(['lab_id' => $lab1->id, 'logged_in' => false]);
-        $inUseMachines = factory(Machine::class, 3)->create(['lab_id' => $lab3->id, 'logged_in' => true]);
-        $notInUseMachines = factory(Machine::class, 5)->create(['lab_id' => $lab3->id, 'logged_in' => false]);
+        $lab1 = Lab::factory()->create(['is_on_graphs' => true, 'name' => 'ABC1']);
+        $lab2 = Lab::factory()->create(['is_on_graphs' => false, 'name' => 'DEF1']);
+        $lab3 = Lab::factory()->create(['is_on_graphs' => true, 'name' => 'GHK1']);
+        $inUseMachines = Machine::factory()->count(5)->create(['lab_id' => $lab1->id, 'logged_in' => true]);
+        $notInUseMachines = Machine::factory()->count(3)->create(['lab_id' => $lab1->id, 'logged_in' => false]);
+        $inUseMachines = Machine::factory()->count(3)->create(['lab_id' => $lab3->id, 'logged_in' => true]);
+        $notInUseMachines = Machine::factory()->count(5)->create(['lab_id' => $lab3->id, 'logged_in' => false]);
 
         $response = $this->getJson(route('api.lab.graph_stats'));
 
@@ -493,7 +493,7 @@ class ApiTest extends TestCase
     /** @test */
     public function we_can_get_a_list_of_all_machines()
     {
-        $machines = factory(Machine::class, 5)->create();
+        $machines = Machine::factory()->count(5)->create();
 
         $response = $this->getJson(route('api.machine.index'));
 

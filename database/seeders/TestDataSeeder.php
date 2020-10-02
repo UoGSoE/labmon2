@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Lab;
 use App\Machine;
 use App\User;
