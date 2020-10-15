@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Lab;
-use App\Machine;
-use App\User;
+use App\Models\Lab;
+use App\Models\Machine;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;

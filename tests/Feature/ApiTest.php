@@ -3,11 +3,11 @@
 namespace Tests\Feature;
 
 use App\Jobs\LookupDns;
-use App\Lab;
+use App\Models\Lab;
 use App\LabMachine;
-use App\LabStat;
-use App\Machine;
-use App\MachineLog;
+use App\Models\LabStat;
+use App\Models\Machine;
+use App\Models\MachineLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Queue;

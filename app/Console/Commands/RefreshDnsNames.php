@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\LookupDns;
-use App\Machine;
+use App\Models\Machine;
 use Illuminate\Console\Command;
 
 class RefreshDnsNames extends Command

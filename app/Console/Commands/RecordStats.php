@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Lab;
-use App\LabStat;
+use App\Models\Lab;
+use App\Models\LabStat;
 use Illuminate\Console\Command;
 
 class RecordStats extends Command

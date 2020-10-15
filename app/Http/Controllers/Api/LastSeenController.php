@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Machine;
-use App\MachineLog;
+use App\Models\Machine;
+use App\Models\MachineLog;
 use Illuminate\Http\Request;
 
 class LastSeenController extends Controller

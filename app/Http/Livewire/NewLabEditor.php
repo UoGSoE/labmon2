@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Lab;
+use App\Models\Lab;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 

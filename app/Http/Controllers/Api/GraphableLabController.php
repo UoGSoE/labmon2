@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Lab;
+use App\Models\Lab;
 use Illuminate\Http\Request;
 
 class GraphableLabController extends Controller
