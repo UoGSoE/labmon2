@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\LabStat;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class LabStatDateController extends Controller
 {

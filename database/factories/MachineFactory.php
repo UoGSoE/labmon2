@@ -13,7 +13,7 @@ class MachineFactory extends Factory
         return [
             'ip' => $this->faker->ipv4,
             'logged_in' => $this->faker->boolean(),
-            'name' => $this->faker->domainWord . '.' . $this->faker->domainName,
+            'name' => $this->faker->domainWord.'.'.$this->faker->domainName,
             'meta' => [
                 'mac' => $this->faker->macAddress,
                 'cpu' => $this->faker->macProcessor,

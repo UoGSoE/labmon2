@@ -3,8 +3,8 @@
 namespace App\Http\Livewire;
 
 use App\Lab;
-use Livewire\Component;
 use Illuminate\Validation\Rule;
+use Livewire\Component;
 
 class NewLabEditor extends Component
 {

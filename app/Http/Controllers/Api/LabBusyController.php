@@ -20,7 +20,7 @@ class LabBusyController extends Controller
                 'machines_total' => (int) $total,
                 'logged_in_total' => (int) $loggedInTotal,
                 'logged_in_percent' => number_format(($loggedInTotal / $total) * 100, 2),
-            ]
+            ],
         ]);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Machine;
 use App\MachineLog;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class LastSeenController extends Controller
 {

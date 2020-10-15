@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Lab;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class RdpMachineController extends Controller
 {

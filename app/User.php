@@ -38,7 +38,7 @@ class User extends Authenticatable
         return $query->where('is_allowed', '=', true);
     }
 
-    public static function setAllowedUsers(User $user, string $guidList): void
+    public static function setAllowedUsers(self $user, string $guidList): void
     {
         static::where('username', '!=', $user->username)
             ->update(['is_allowed' => false]);

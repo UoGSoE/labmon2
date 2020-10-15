@@ -12,8 +12,9 @@ class LabFactory extends Factory
     {
         $limited = $this->faker->boolean();
         $always = ! $limited;
+
         return [
-            'name' => $this->faker->randomElement(['Rankine', 'JWS']) . ' ' . $this->faker->randomNumber(3),
+            'name' => $this->faker->randomElement(['Rankine', 'JWS']).' '.$this->faker->randomNumber(3),
             'is_on_graphs' => $this->faker->boolean(),
             'always_remote_access' => $always,
             'limited_remote_access' => $limited,

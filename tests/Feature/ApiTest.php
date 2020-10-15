@@ -2,17 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\LookupDns;
 use App\Lab;
+use App\LabMachine;
 use App\LabStat;
 use App\Machine;
-use App\LabMachine;
 use App\MachineLog;
-use Tests\TestCase;
-use App\Jobs\LookupDns;
-use Spatie\TestTime\TestTime;
-use Illuminate\Support\Facades\Queue;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Queue;
+use Spatie\TestTime\TestTime;
+use Tests\TestCase;
 
 class ApiTest extends TestCase
 {
@@ -91,9 +91,9 @@ class ApiTest extends TestCase
                     'ram' => 'loads',
                 ],
                 'users' => [
-                    'fred', 'ginger'
+                    'fred', 'ginger',
                 ],
-            ]
+            ],
         ]);
 
         $response->assertOk();
@@ -106,8 +106,8 @@ class ApiTest extends TestCase
                     'ram' => 'loads',
                 ],
                 'users' => [
-                    'fred', 'ginger'
-                ]
+                    'fred', 'ginger',
+                ],
                 ], $machine->meta);
         });
     }
@@ -206,7 +206,7 @@ class ApiTest extends TestCase
                 'api.labstats.dates',
                 [
                     'from' => now()->subDays(101)->format('Y-m-d'),
-                    'until' => now()->format('Y-m-d')
+                    'until' => now()->format('Y-m-d'),
                 ]
             )
         );
@@ -223,8 +223,8 @@ class ApiTest extends TestCase
                     'id' => $stat3->id,
                     'machine_total' => $stat3->machine_total,
                     'logged_in_total' => $stat3->logged_in_total,
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -373,8 +373,8 @@ class ApiTest extends TestCase
             'data' => [
                 [
                     'id' => $unlimitedLab->id,
-                ]
-            ]
+                ],
+            ],
         ]);
 
         // evening, outside of holiday - unlimited and limited available
@@ -426,7 +426,6 @@ class ApiTest extends TestCase
         $response->assertJsonCount(7, 'data');
     }
 
-
     /** @test */
     public function we_can_get_the_list_of_labs_available_for_the_lab_usage_stats()
     {
@@ -447,8 +446,8 @@ class ApiTest extends TestCase
                 [
                     'id' => $lab3->id,
                     'name' => $lab3->name,
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -485,8 +484,8 @@ class ApiTest extends TestCase
                         'machine_total' => $lab3->members()->count(),
                         'logged_in_total' => $lab3->members()->online()->count(),
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 

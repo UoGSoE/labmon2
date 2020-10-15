@@ -25,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind('App\Process', function ($app, $args) {
             return new \Symfony\Component\Process\Process($args);
-       });
+        });
     }
 }

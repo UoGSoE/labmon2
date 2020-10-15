@@ -18,6 +18,7 @@ class AllowedUser
         if ($request->user()->is_allowed) {
             return $next($request);
         }
+
         return redirect()->route('unauthorised');
     }
 }

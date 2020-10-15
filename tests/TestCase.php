@@ -10,7 +10,7 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
     /**
-     * Asserts that a command is registered with the console kernel schedular
+     * Asserts that a command is registered with the console kernel schedular.
      * @param string $command The artisan-format command (eg 'myapp:do-a-thing')
      * @return void
      */

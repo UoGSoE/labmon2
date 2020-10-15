@@ -4,8 +4,8 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Lab extends Model
 {
@@ -49,6 +49,7 @@ class Lab extends Model
         if ($this->isntAHolidayPeriod() and $this->isInWorkHours()) {
             return $query->alwaysRemote();
         }
+
         return $query->anyRemote();
     }
 
@@ -94,6 +95,7 @@ class Lab extends Model
         if ($this->isntAHolidayPeriod() and $this->isInWorkHours()) {
             return collect([]);
         }
+
         return $this->getOfflineMachines();
     }
 
@@ -130,6 +132,6 @@ class Lab extends Model
 
     public function doesntAllowRdp()
     {
-        return !($this->always_remote_access || $this->limited_remote_access);
+        return ! ($this->always_remote_access || $this->limited_remote_access);
     }
 }

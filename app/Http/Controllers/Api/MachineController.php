@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Machine;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\LookupDns;
+use App\Machine;
+use Illuminate\Http\Request;
 
 class MachineController extends Controller
 {

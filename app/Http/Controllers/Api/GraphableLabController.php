@@ -11,7 +11,7 @@ class GraphableLabController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => Lab::graphable()->get()->toArray()
+            'data' => Lab::graphable()->get()->toArray(),
         ]);
     }
 }

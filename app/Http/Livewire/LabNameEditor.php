@@ -3,8 +3,8 @@
 namespace App\Http\Livewire;
 
 use App\Lab;
-use Livewire\Component;
 use Illuminate\Support\Facades\Log;
+use Livewire\Component;
 
 class LabNameEditor extends Component
 {
@@ -34,6 +34,7 @@ class LabNameEditor extends Component
     {
         if ($this->deleteButtonText === 'Delete') {
             $this->deleteButtonText = 'Confirm';
+
             return;
         }
 
