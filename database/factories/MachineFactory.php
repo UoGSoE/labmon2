@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MachineFactory extends Factory
 {
-    protected $model = \App\Machine::class;
+    protected $model = \App\Models\Machine::class;
 
     public function definition()
     {
         return [
             'ip' => $this->faker->ipv4,
             'logged_in' => $this->faker->boolean(),
-            'name' => $this->faker->domainWord . '.' . $this->faker->domainName,
+            'name' => $this->faker->domainWord.'.'.$this->faker->domainName,
             'meta' => [
                 'mac' => $this->faker->macAddress,
                 'cpu' => $this->faker->macProcessor,

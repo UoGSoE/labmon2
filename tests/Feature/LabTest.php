@@ -3,14 +3,14 @@
 namespace Tests\Feature;
 
 use App\Http\Livewire\LabList;
-use App\Lab;
-use App\Machine;
-use Tests\TestCase;
-use Livewire\Livewire;
-use App\Http\Livewire\NewLabEditor;
 use App\Http\Livewire\LabNameEditor;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Http\Livewire\NewLabEditor;
+use App\Models\Lab;
+use App\Models\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Livewire\Livewire;
+use Tests\TestCase;
 
 class LabTest extends TestCase
 {
@@ -57,7 +57,7 @@ class LabTest extends TestCase
         $lab = $this->createLab('blah');
 
         $response = $this->post(route('lab.members.update', $lab->id), [
-            'ips' => "127.0.0.1\r\n1.2.3.4\r\n"
+            'ips' => "127.0.0.1\r\n1.2.3.4\r\n",
         ]);
 
         $response->assertRedirect(route('lab.show', $lab->id));
@@ -77,7 +77,7 @@ class LabTest extends TestCase
         $machine1 = Machine::factory()->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
         $machine2 = Machine::factory()->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
         $response = $this->post(route('lab.members.update', $lab->id), [
-            'ips' => "127.0.0.1\r\n1.0.3.4\r\n"
+            'ips' => "127.0.0.1\r\n1.0.3.4\r\n",
         ]);
 
         $response->assertRedirect(route('lab.show', $lab->id));
@@ -97,7 +97,7 @@ class LabTest extends TestCase
         $machine1 = Machine::factory()->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
         $machine2 = Machine::factory()->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
         $response = $this->post(route('lab.members.update', $lab->id), [
-            'ips' => "127.0.0.1\r\n\r\n\r\n1.0.3.4\r\n\r\n\r\n"
+            'ips' => "127.0.0.1\r\n\r\n\r\n1.0.3.4\r\n\r\n\r\n",
         ]);
 
         $response->assertRedirect(route('lab.show', $lab->id));
@@ -117,7 +117,7 @@ class LabTest extends TestCase
         $machine1 = Machine::factory()->create(['ip' => '1.2.3.4', 'lab_id' => $lab->id]);
         $machine2 = Machine::factory()->create(['ip' => '127.0.0.1', 'lab_id' => $lab->id]);
         $response = $this->post(route('lab.members.update', $lab->id), [
-            'ips' => "fred\r\n\r\n\r\n1.0.3.4\r\n\r\n\r\n"
+            'ips' => "fred\r\n\r\n\r\n1.0.3.4\r\n\r\n\r\n",
         ]);
 
         $response->assertRedirect(route('lab.show', $lab->id));

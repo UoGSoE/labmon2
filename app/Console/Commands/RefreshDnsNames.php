@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\LookupDns;
-use App\Machine;
+use App\Models\Machine;
 use Illuminate\Console\Command;
 
 class RefreshDnsNames extends Command
@@ -39,7 +39,7 @@ class RefreshDnsNames extends Command
      */
     public function handle()
     {
-        Machine::all()->each(function($machine) {
+        Machine::all()->each(function ($machine) {
             LookupDns::dispatch($machine);
         });
     }

@@ -2,7 +2,7 @@
 
 namespace App\Stats;
 
-use App\Machine;
+use App\Models\Machine;
 use Prometheus\Gauge;
 use Superbalist\LaravelPrometheusExporter\CollectorInterface;
 use Superbalist\LaravelPrometheusExporter\PrometheusExporter;

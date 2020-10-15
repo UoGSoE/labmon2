@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Lab;
+use App\Models\Lab;
 use Illuminate\Http\Request;
 
 class LabBusyController extends Controller
@@ -20,7 +20,7 @@ class LabBusyController extends Controller
                 'machines_total' => (int) $total,
                 'logged_in_total' => (int) $loggedInTotal,
                 'logged_in_percent' => number_format(($loggedInTotal / $total) * 100, 2),
-            ]
+            ],
         ]);
     }
 }

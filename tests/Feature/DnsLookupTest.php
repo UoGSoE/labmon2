@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Jobs\LookupDns;
-use App\Machine;
+use App\Models\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Symfony\Component\Process\Process;

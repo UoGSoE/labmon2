@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Lab;
-use App\User;
-use App\Machine;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Lab;
+use App\Models\Machine;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
+use Tests\TestCase;
 
 class MachineListTest extends TestCase
 {

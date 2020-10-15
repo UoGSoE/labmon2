@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -50,6 +50,7 @@ class Machine extends Model
     {
         if (config('labmon.dns_server')) {
             $this->updateHostnameViaShell();
+
             return;
         }
         $this->update([
@@ -59,12 +60,12 @@ class Machine extends Model
 
     protected function updateHostnameViaShell()
     {
-        $response = Terminal::run("host {$this->ip} " . config('labmon.dns_server'));
+        $response = Terminal::run("host {$this->ip} ".config('labmon.dns_server'));
         $hostLine = collect($response->lines())->filter()->last();
         $hostLine = collect(explode("\n", (string) $hostLine))->filter()->last();
         $parts = explode(' ', $hostLine);
         if (count($parts) != 5) {
-            throw new Exception('DNS host lookup failed on for output of ' . $response->output());
+            throw new Exception('DNS host lookup failed on for output of '.$response->output());
         }
 
         $name = substr($parts[4], 0, -1); // output ends up as 'host.example.com.\n' - so strip trailing chars

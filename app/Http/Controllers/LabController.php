@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Lab;
+use App\Models\Lab;
 use Illuminate\Http\Request;
 
 class LabController extends Controller

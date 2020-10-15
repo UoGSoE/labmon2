@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Lab;
+use App\Models\Lab;
 use Livewire\Component;
 
 class LabList extends Component
@@ -14,6 +14,7 @@ class LabList extends Component
     public function render()
     {
         $this->labs = Lab::orderBy('name')->get();
+
         return view('livewire.lab-list', [
             'labs' => $this->labs,
         ]);

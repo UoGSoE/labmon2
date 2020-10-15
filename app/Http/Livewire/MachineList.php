@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Machine;
+use App\Models\Machine;
 use Livewire\Component;
 
 class MachineList extends Component
@@ -63,7 +63,6 @@ class MachineList extends Component
             $query = $this->mapStatusFilterToQuery($query);
         }
         $this->machines = $query->orderBy('ip')->get();
-        return;
     }
 
     public function toggleLocked($id)
@@ -87,6 +86,7 @@ class MachineList extends Component
             default:
                 return $query;
         }
+
         return $query;
     }
 }
