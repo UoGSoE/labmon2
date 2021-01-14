@@ -1,5 +1,5 @@
 ### PHP version we are targetting
-ARG PHP_VERSION=7.2
+ARG PHP_VERSION=7.4
 
 
 ### Placeholder for basic dev stage for use with docker-compose
@@ -8,9 +8,10 @@ FROM uogsoe/soe-php-apache:${PHP_VERSION} as dev
 RUN apt-get update && \
     apt-get install -y --no-install-recommends dnsutils && \
     rm -rf /var/lib/apt/lists/*
+
 COPY docker/app-start docker/app-healthcheck /usr/local/bin/
 RUN chmod u+x /usr/local/bin/app-start /usr/local/bin/app-healthcheck
-CMD ["/usr/local/bin/app-start"]
+CMD ["tini", "--", "/usr/local/bin/app-start"]
 
 
 ### Build JS/css assets
@@ -27,6 +28,7 @@ RUN mkdir -p /home/node/public/css /home/node/public/js /home/node/resources
 COPY --chown=node:node package*.json webpack.mix.js .babelrc* /home/node/
 COPY --chown=node:node resources/js* /home/node/resources/js
 COPY --chown=node:node resources/sass* /home/node/resources/sass
+COPY --chown=node:node resources/scss* /home/node/resources/scss
 COPY --chown=node:node resources/css* /home/node/resources/css
 
 RUN npm install && \
@@ -42,7 +44,6 @@ ENV APP_DEBUG=0
 WORKDIR /var/www/html
 
 USER nobody
-
 
 #- make paths that the laravel composer.json expects to exist
 RUN mkdir -p database
@@ -99,7 +100,7 @@ COPY . /var/www/html
 RUN rm -fr /var/www/html/bootstrap/cache/*.php
 
 #- If horizon is installed force it to rebuild it's public assets
-RUN if grep -q horizon composer.json; then chown -R www-data:www-data public/vendor; php /var/www/html/artisan horizon:publish; fi
+RUN if grep -q horizon composer.json; then chown -R www-data:www-data public/vendor; php /var/www/html/artisan horizon:publish ; fi
 
 #- Symlink the docker secret to the local .env so Laravel can see it
 RUN ln -sf /run/secrets/.env /var/www/html/.env
@@ -112,9 +113,6 @@ RUN php /var/www/html/artisan storage:link && \
 
 #- Set up the default healthcheck
 HEALTHCHECK --start-period=30s CMD /usr/local/bin/app-healthcheck
-
-#- And off we go...
-CMD ["/usr/local/bin/app-start"]
 
 
 ### Build the ci version of the app (prod+dev packages)
@@ -131,3 +129,4 @@ RUN curl -o /usr/local/bin/security-checker https://get.sensiolabs.org/security-
     curl -OL -o /usr/local/bin/phpcs https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && \
     php /var/www/html/artisan view:clear && \
     php /var/www/html/artisan cache:clear
+
