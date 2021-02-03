@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.3|^8.0",
         "appstract/laravel-options": "^5.0",
         "fideloper/proxy": "^4.0",
         "fruitcake/laravel-cors": "^1.0",
@@ -28,8 +28,9 @@
         "uogsoe/ldap-laravel": "^1.0"
     },
     "require-dev": {
+        "brianium/paratest": "^6.2",
         "facade/ignition": "^2.3.6",
-        "fzaninotto/faker": "^1.9.1",
+        "fakerphp/faker": "^1.13",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^5.0",
         "phpunit/phpunit": "^9.0",
