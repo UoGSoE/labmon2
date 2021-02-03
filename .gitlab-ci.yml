@@ -67,7 +67,7 @@ unit-tests:
   - cat .env
   - composer dump-autoload
   - php artisan test --parallel
-  - egrep -r '[^a-zA-Z](dd\(|dump\()' app || exit 1
+  - egrep -r '[^a-zA-Z](dd\(|dump\()' app || exit 0
 
 php-security-scan:
   stage: test
