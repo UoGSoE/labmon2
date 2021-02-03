@@ -24,7 +24,7 @@
         "laravel/ui": "^3.0",
         "livewire/livewire": "^2.0.0",
         "futurematt/laravel-prometheus-exporter": "^3.0",
-        "titasgailius/terminal": "^0.2.4",
+        "titasgailius/terminal": "^1.0.1",
         "uogsoe/ldap-laravel": "^1.0"
     },
     "require-dev": {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2c919bfddc598b61e20725596d3b16ea",
+    "content-hash": "0b3544ee7a3b4c27f799e8a538c12f60",
     "packages": [
         {
             "name": "appstract/laravel-options",
@@ -1411,16 +1411,16 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "v2.3.11",
+            "version": "v2.3.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "5036ba31571c7ec3feca9a171e96e33628bab5ea"
+                "reference": "55e8a6269376945a59cecf998a25440af6df934a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/5036ba31571c7ec3feca9a171e96e33628bab5ea",
-                "reference": "5036ba31571c7ec3feca9a171e96e33628bab5ea",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/55e8a6269376945a59cecf998a25440af6df934a",
+                "reference": "55e8a6269376945a59cecf998a25440af6df934a",
                 "shasum": ""
             },
             "require": {
@@ -1471,7 +1471,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v2.3.11"
+                "source": "https://github.com/livewire/livewire/tree/v2.3.12"
             },
             "funding": [
                 {
@@ -1479,7 +1479,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-02-03T01:16:27+00:00"
+            "time": "2021-02-03T13:17:17+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4804,16 +4804,16 @@
         },
         {
             "name": "titasgailius/terminal",
-            "version": "0.2.7",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TitasGailius/terminal.git",
-                "reference": "15c6d9a80263feeb05a4752c0f3a7e4c282d8f50"
+                "reference": "33396b5128d8fb1ee108bb1b4ed64ba74c85c642"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TitasGailius/terminal/zipball/15c6d9a80263feeb05a4752c0f3a7e4c282d8f50",
-                "reference": "15c6d9a80263feeb05a4752c0f3a7e4c282d8f50",
+                "url": "https://api.github.com/repos/TitasGailius/terminal/zipball/33396b5128d8fb1ee108bb1b4ed64ba74c85c642",
+                "reference": "33396b5128d8fb1ee108bb1b4ed64ba74c85c642",
                 "shasum": ""
             },
             "require": {
@@ -4853,7 +4853,7 @@
                 "issues": "https://github.com/TitasGailius/terminal/issues",
                 "source": "https://github.com/TitasGailius/terminal"
             },
-            "time": "2020-04-13T16:24:00+00:00"
+            "time": "2021-01-24T15:15:06+00:00"
         },
         {
             "name": "uogsoe/ldap-laravel",
