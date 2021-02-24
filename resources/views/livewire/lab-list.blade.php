@@ -18,10 +18,10 @@
         </a>
     </div>
     <div>
-        {{ $lab->members()->count() }}
+        {{ $lab->members_count }}
     </div>
     <div>
-        {{ $lab->members()->online()->count() }}
+        {{ $lab->online_count }}
     </div>
     <div>
         <button wire:click="toggleGraphable({{$lab->id}})" title="Show {{ $lab->name }} on student graphs" class="@if ($lab->is_on_graphs) bg-blue-500 text-white @endif bg-transparent text-blue-700 font-semibold py-2 px-4 border border-blue-500 rounded">

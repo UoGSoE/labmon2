@@ -13,7 +13,10 @@ class LabList extends Component
 
     public function render()
     {
-        $this->labs = Lab::orderBy('name')->get();
+        $this->labs = Lab::withCount([
+            'members',
+            'members as online_count' => fn ($query) => $query->online(),
+        ])->orderBy('name')->get();
 
         return view('livewire.lab-list', [
             'labs' => $this->labs,
@@ -22,7 +25,7 @@ class LabList extends Component
 
     public function refreshLabList()
     {
-        $this->labs = Lab::orderBy('name')->get();
+        $this->labs = Lab::withCount('members')->orderBy('name')->get();
     }
 
     public function toggleGraphable($id)
