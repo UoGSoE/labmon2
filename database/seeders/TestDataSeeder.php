@@ -16,13 +16,13 @@ class TestDataSeeder extends Seeder
      */
     public function run()
     {
-        $labs = factory(Lab::class, 20)->create();
-        $machines = factory(Machine::class, 500)->create();
+        $labs = Lab::factory()->count(120)->create();
+        $machines = Machine::factory()->count(500)->create();
         $machines->each(function ($machine) use ($labs) {
             $machine->lab_id = $labs->random()->id;
             $machine->save();
         });
-        factory(User::class)->create([
+        User::factory()->create([
             'username' => 'billy',
             'is_allowed' => true,
             'password' => bcrypt('hellokitty'),
