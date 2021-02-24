@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Jobs\LookupDns;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Lab extends Model
 {
@@ -73,6 +74,7 @@ class Lab extends Model
                 'ip' => $ip,
             ]);
             $machine->update(['lab_id' => $this->id]);
+            LookupDns::dispatch($machine);
         });
     }
 
