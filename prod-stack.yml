@@ -13,7 +13,7 @@ x-deploy-php:
     - "traefik.enable=false"
   placement:
     constraints:
-      - node.role == worker
+      - "node.labels.weaksauce==false"
   resources:
     limits:
       memory: 2048M
