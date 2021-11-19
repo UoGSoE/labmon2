@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -46,7 +47,22 @@ class User extends Authenticatable
         collect(explode("\r\n", $guidList))
             ->filter()
             ->each(function ($guid) {
+                $guid = strtolower(trim($guid));
                 $user = static::where('username', '=', $guid)->first();
+                if (! $user) {
+                    $ldapUser = \Ldap::findUser($guid);
+                    if (! $ldapUser) {
+                        return;
+                    }
+                    $user = new User();
+                    $user->username = $guid;
+                    $user->surname = $ldapUser->surname;
+                    $user->forenames = $ldapUser->forenames;
+                    $user->email = $ldapUser->email;
+                    $user->password = bcrypt(Str::random(64));
+                    $user->is_staff = true;
+                    $user->save();
+                }
                 if ($user) {
                     $user->grantAccess();
                 }

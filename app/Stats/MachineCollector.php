@@ -2,8 +2,9 @@
 
 namespace App\Stats;
 
-use App\Models\Machine;
+use App\Models\Lab;
 use Prometheus\Gauge;
+use App\Models\Machine;
 use Superbalist\LaravelPrometheusExporter\CollectorInterface;
 use Superbalist\LaravelPrometheusExporter\PrometheusExporter;
 
@@ -41,6 +42,10 @@ class MachineCollector implements CollectorInterface
     {
         $this->machineStatusGauge->set(Machine::online()->count(), ['in_use']);
         $this->machineStatusGauge->set(Machine::locked()->count(), ['locked']);
-        $this->machineTotalGauge->set(Machine::count());
+        $this->machineTotalGauge->set(
+            Lab::with('members')->get()->sum(function ($lab) {
+                return $lab->members()->count();
+            })
+        );
     }
 }
