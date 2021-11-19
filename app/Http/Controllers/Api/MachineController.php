@@ -18,23 +18,28 @@ class MachineController extends Controller
 
     public function store($ip = null)
     {
+        info('a' . microtime(true));
         if (! $ip) {
             $ip = request()->ip();
         }
         $userAgent = request()->userAgent();
 
+        info('a' . microtime(true));
         $machine = Machine::firstOrCreate(['ip' => $ip], ['ip' => $ip]);
         $machine->update([
             'user_agent' => $userAgent,
             'logged_in' => true,
         ]);
 
+        info('a' . microtime(true));
         if (! $machine->name) {
+            info('b' . microtime(true));
             LookupDns::dispatch($machine);
         }
 
+        info('a' . microtime(true));
         return response()->json([
-            'data' => $machine->toArray(),
+            'data' => [],//$machine->toArray(),
         ]);
     }
 
@@ -57,7 +62,7 @@ class MachineController extends Controller
         }
 
         return response()->json([
-            'data' => $machine->fresh()->toArray(),
+            'data' => [],//$machine->fresh()->toArray(),
         ]);
     }
 
@@ -75,7 +80,7 @@ class MachineController extends Controller
         $machine->update(['logged_in' => false]);
 
         return response()->json([
-            'data' => $machine->toArray(),
+            'data' => [],//$machine->toArray(),
         ]);
     }
 }
