@@ -12,7 +12,7 @@ class MachineFactory extends Factory
     {
         return [
             'ip' => $this->faker->ipv4,
-            'logged_in' => $this->faker->boolean(),
+            'logged_in' => false,
             'name' => $this->faker->domainWord.'.'.$this->faker->domainName,
             'meta' => [
                 'mac' => $this->faker->macAddress,
@@ -20,5 +20,14 @@ class MachineFactory extends Factory
                 'model' => $this->faker->randomElement(['Dell 1234', 'HP 456', 'BBC Micro Model B']),
             ],
         ];
+    }
+
+    public function locked()
+    {
+        return $this->state(function (array $attribs) {
+            return [
+                'is_locked' => true,
+            ];
+        });
     }
 }

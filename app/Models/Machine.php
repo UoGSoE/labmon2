@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Exception;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
+use Carbon\Carbon;
 use TitasGailius\Terminal\Terminal;
+use Symfony\Component\Process\Process;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Machine extends Model
 {
@@ -19,6 +20,8 @@ class Machine extends Model
         'logged_in' => 'boolean',
         'is_locked' => 'boolean',
         'meta' => 'array',
+        'locked_from' => 'datetime',
+        'locked_until' => 'datetime',
     ];
 
     public function lab()
@@ -44,6 +47,19 @@ class Machine extends Model
     public function scopeLocked($query)
     {
         return $query->where('is_locked', '=', true);
+    }
+
+    public function scopeUnlockedBetween($query, Carbon $from, Carbon $to)
+    {
+        return $query->offline()->unlocked()->where(
+            fn ($query) =>
+                $query->whereNull('locked_from')
+                        ->orWhere(
+                            fn ($query) =>
+                                $query->whereNotBetween('locked_until', [$from->copy()->subMinutes(5), $to->copy()->addMinutes(5)])
+                                    ->whereNotBetween('locked_from', [$from->copy()->subMinutes(5), $to->copy()->addMinutes(5)])
+                        )
+        );
     }
 
     public function lookupDns()
@@ -74,10 +90,30 @@ class Machine extends Model
         ]);
     }
 
+    public function lockFor(string $guid, Carbon $from, Carbon $to)
+    {
+        $this->update([
+            'locked_from' => $from,
+            'locked_until' => $to,
+            'locked_for' => $guid,
+            'is_locked' => true,
+        ]);
+    }
+
     public function toggleLocked()
     {
         $this->update([
             'is_locked' => ! $this->is_locked,
         ]);
+    }
+
+    public function isLocked(): bool
+    {
+        return (bool) $this->is_locked;
+    }
+
+    public function isNotLocked(): bool
+    {
+        return ! $this->isLocked();
     }
 }

@@ -35,3 +35,5 @@ Route::get('rdp/machines', [\App\Http\Controllers\Api\RdpMachineController::clas
 Route::get('machines', [\App\Http\Controllers\Api\MachineController::class, 'index'])->name('api.machine.index');
 
 Route::get('lastseen/{ip}', [\App\Http\Controllers\Api\LastSeenController::class, 'show'])->name('api.lastseen');
+
+Route::post('lock', [\App\Http\Controllers\Api\LockController::class, 'store'])->name('api.lock.store');
