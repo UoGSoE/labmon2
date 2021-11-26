@@ -10,12 +10,14 @@ class LabNameEditor extends Component
 {
     public $lab;
     public $labName;
+    public $school;
     public $editing = false;
     public $deleteButtonText = 'Delete';
 
     public function mount($lab)
     {
         $this->lab = $lab;
+        $this->school = $lab->school;
         $this->labName = $lab->name;
     }
 
@@ -26,7 +28,7 @@ class LabNameEditor extends Component
 
     public function updateLabName()
     {
-        Lab::findOrFail($this->lab->id)->update(['name' => $this->labName]);
+        Lab::findOrFail($this->lab->id)->update(['name' => $this->labName, 'school' => $this->school]);
         $this->editing = false;
     }
 
