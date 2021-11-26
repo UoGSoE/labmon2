@@ -26,11 +26,13 @@ class LabTest extends TestCase
             ->assertDontSee('Add new lab')
             ->assertSee('Save')
             ->set('labName', 'LABLAB')
+            ->set('school', 'Science')
             ->call('saveLab')
             ->assertSet('labName', '')
             ->assertSet('editing', false)
             ->assertEmitted('labAdded');
         $this->assertEquals('LABLAB', Lab::first()->name);
+        $this->assertEquals('Science', Lab::first()->school);
     }
 
     /** @test */
