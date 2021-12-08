@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Exception;
 use Carbon\Carbon;
+use App\Models\MachineBooking;
 use TitasGailius\Terminal\Terminal;
 use Symfony\Component\Process\Process;
 use Illuminate\Database\Eloquent\Model;
@@ -20,13 +21,16 @@ class Machine extends Model
         'logged_in' => 'boolean',
         'is_locked' => 'boolean',
         'meta' => 'array',
-        'locked_from' => 'datetime',
-        'locked_until' => 'datetime',
     ];
 
     public function lab()
     {
         return $this->belongsTo(Lab::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(MachineBooking::class);
     }
 
     public function scopeOnline($query)
@@ -49,17 +53,11 @@ class Machine extends Model
         return $query->where('is_locked', '=', true);
     }
 
-    public function scopeUnlockedBetween($query, Carbon $from, Carbon $to)
+    public function scopeUnbookedBetween($query, Carbon $from, Carbon $to)
     {
-        return $query->offline()->unlocked()->where(
-            fn ($query) =>
-                $query->whereNull('locked_from')
-                        ->orWhere(
-                            fn ($query) =>
-                                $query->whereNotBetween('locked_until', [$from->copy()->subMinutes(5), $to->copy()->addMinutes(5)])
-                                    ->whereNotBetween('locked_from', [$from->copy()->subMinutes(5), $to->copy()->addMinutes(5)])
-                        )
-        );
+        return $query->offline()->unlocked()->whereDoesntHave('bookings', function ($query) use ($from, $to) {
+            $query->where('start', '<=', $to)->where('end', '>=', $from);
+        });
     }
 
     public function lookupDns()

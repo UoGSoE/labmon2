@@ -36,4 +36,4 @@ Route::get('machines', [\App\Http\Controllers\Api\MachineController::class, 'ind
 
 Route::get('lastseen/{ip}', [\App\Http\Controllers\Api\LastSeenController::class, 'show'])->name('api.lastseen');
 
-Route::post('lock', [\App\Http\Controllers\Api\LockController::class, 'store'])->name('api.lock.store');
+Route::post('lock', [\App\Http\Controllers\Api\LockController::class, 'store'])->name('api.lock.store')->middleware('basic.apikey');

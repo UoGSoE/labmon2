@@ -42,6 +42,7 @@ class LockController extends Controller
     {
         $lockData['from'] = Carbon::createFromFormat('Y-m-d H:i', $lockData['from']);
         $lockData['until'] = Carbon::createFromFormat('Y-m-d H:i', $lockData['until']);
+
         return match ($lockData['lock_type']) {
             'school' => $this->schoolLock($lockData),
             'building' => $this->buildingLock($lockData),
@@ -52,30 +53,54 @@ class LockController extends Controller
 
     public function anyLock(array $lockData)
     {
-        $machine = Machine::unlockedBetween($lockData['from'], $lockData['until'])->first();
+        $machine = Machine::unbookedBetween($lockData['from'], $lockData['until'])->first();
 
-        if (! $machine) {
-            return null;
-        }
-
-        $machine->lockFor($lockData['guid'], $lockData['from'], $lockData['until']);
-
-        return $machine;
+        return $this->attemptLockOnMachine($machine, $lockData);
     }
 
     protected function labLock(array $lockData)
     {
         $lab = Lab::where('name', '=', $lockData['lock_name'])->first();
+
+        return $this->findFreeMachineInLab($lab, $lockData);
+    }
+
+    protected function buildingLock(array $lockData)
+    {
+        $lab = Lab::where('name', 'like', $lockData['lock_name'] . '%')->first();
+
+        return $this->findFreeMachineInLab($lab, $lockData);
+    }
+
+    protected function schoolLock(array $lockData)
+    {
+        $lab = Lab::where('school', '=', $lockData['lock_name'])->first();
+
+        return $this->findFreeMachineInLab($lab, $lockData);
+    }
+
+    protected function findFreeMachineInLab(?Lab $lab, array $lockData)
+    {
         if (! $lab) {
             return null;
         }
 
-        $machine = $lab->members()->unlockedBetween($lockData['from'], $lockData['until'])->first();
+        $machine = $lab->members()->unbookedBetween($lockData['from'], $lockData['until'])->first();
+
+        return $this->attemptLockOnMachine($machine, $lockData);
+    }
+
+    protected function attemptLockOnMachine(?Machine $machine, array $lockData)
+    {
         if (! $machine) {
             return null;
         }
 
-        $machine->lockFor($lockData['guid'], $lockData['from'], $lockData['until']);
+        $machine->bookings()->create([
+            'guid' => $lockData['guid'],
+            'start' => $lockData['from'],
+            'end' => $lockData['until'],
+        ]);
 
         return $machine;
     }

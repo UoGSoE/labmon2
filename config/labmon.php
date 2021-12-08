@@ -8,4 +8,5 @@ return [
         'Maths&Stats',
         'Compsci',
     ],
+    'api_key' => env('API_KEY', \Illuminate\Support\Str::random(32)),
 ];
