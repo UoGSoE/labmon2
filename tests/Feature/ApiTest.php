@@ -22,37 +22,27 @@ class ApiTest extends TestCase
     public function we_can_record_a_machine_being_logged_in_or_out()
     {
         $this->withoutExceptionHandling();
-        Queue::fake();
-        info('1' . microtime(true));
+        Queue::fake([LookupDns::class]);
         $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
-        info('2' . microtime(true));
 
         $response->assertOk();
         $this->assertEquals('1.2.3.4', Machine::first()->ip);
-        info('3' . microtime(true));
         $this->assertTrue(Machine::first()->logged_in);
 
-        info('4' . microtime(true));
         $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
-        info('5' . microtime(true));
 
         $response->assertOk();
         $this->assertEquals('1.2.3.4', Machine::first()->ip);
         $this->assertFalse(Machine::first()->logged_in);
 
-        info('6' . microtime(true));
         // and repeat just to make sure multiple calls work ok
         $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
 
-        info('7' . microtime(true));
         $response->assertOk();
         $this->assertEquals('1.2.3.4', Machine::first()->ip);
         $this->assertTrue(Machine::first()->logged_in);
-        info('8' . microtime(true));
 
         $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
-
-        info('9' . microtime(true));
 
         $response->assertOk();
         $this->assertEquals('1.2.3.4', Machine::first()->ip);
@@ -63,7 +53,7 @@ class ApiTest extends TestCase
     public function when_we_record_a_hello_we_dispatch_a_job_to_lookup_its_dns_name()
     {
         $this->withoutExceptionHandling();
-        Queue::fake();
+        Queue::fake([LookupDns::class]);
 
         $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
 
