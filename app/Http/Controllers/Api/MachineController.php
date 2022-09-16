@@ -24,7 +24,7 @@ class MachineController extends Controller
         if (! $ip) {
             $ip = request()->ip();
         }
-        $userAgent = request()->userAgent();
+        $userAgent = request()->userAgent() ?? '';
 
         MarkMachineLoggedIn::dispatch($ip, $userAgent);
 
@@ -38,7 +38,7 @@ class MachineController extends Controller
         if (! $ip) {
             $ip = request()->ip();
         }
-        $userAgent = request()->userAgent();
+        $userAgent = request()->userAgent() ?? '';
         $meta = request()->meta;
 
         MarkMachineNotLoggedIn::dispatch($ip, $userAgent, $meta);
