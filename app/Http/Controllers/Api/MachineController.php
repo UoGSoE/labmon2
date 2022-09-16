@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\LookupDns;
+use App\Jobs\MarkMachineLoggedIn;
+use App\Jobs\MarkMachineNotLoggedIn;
 use App\Models\Machine;
 use Illuminate\Http\Request;
 
@@ -24,20 +26,8 @@ class MachineController extends Controller
         }
         $userAgent = request()->userAgent();
 
-        info('a' . microtime(true));
-        $machine = Machine::firstOrCreate(['ip' => $ip], ['ip' => $ip]);
-        $machine->update([
-            'user_agent' => $userAgent,
-            'logged_in' => true,
-        ]);
+        MarkMachineLoggedIn::dispatch($ip, $userAgent);
 
-        info('a' . microtime(true));
-        if (! $machine->name) {
-            info('b' . microtime(true));
-            LookupDns::dispatch($machine);
-        }
-
-        info('a' . microtime(true));
         return response()->json([
             'data' => [],//$machine->toArray(),
         ]);
@@ -49,17 +39,9 @@ class MachineController extends Controller
             $ip = request()->ip();
         }
         $userAgent = request()->userAgent();
+        $meta = request()->meta;
 
-        $machine = Machine::firstOrCreate(['ip' => $ip], [
-            'user_agent' => $userAgent,
-        ]);
-        $machine->update([
-            'meta' => request()->meta ?? null,
-        ]);
-
-        if (! $machine->name) {
-            LookupDns::dispatch($machine);
-        }
+        MarkMachineNotLoggedIn::dispatch($ip, $userAgent, $meta);
 
         return response()->json([
             'data' => [],//$machine->fresh()->toArray(),
