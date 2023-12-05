@@ -5,8 +5,6 @@ namespace App\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 use TitasGailius\Terminal\Terminal;
 
 class Machine extends Model

@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Lab;
 use App\Models\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class StatsTest extends TestCase

@@ -21,8 +21,8 @@ class LabStatDateController extends Controller
         }
 
         $stats = LabStat::whereBetween('created_at', [$from, $until])
-                    ->orderBy('created_at')
-                    ->get();
+            ->orderBy('created_at')
+            ->get();
 
         return response()->json([
             'data' => $stats->toArray(),

@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use App\Jobs\LookupDns;
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Lab extends Model
 {

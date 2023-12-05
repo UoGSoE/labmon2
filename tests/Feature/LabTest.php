@@ -8,7 +8,6 @@ use App\Http\Livewire\NewLabEditor;
 use App\Models\Lab;
 use App\Models\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 

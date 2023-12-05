@@ -4,12 +4,9 @@ namespace Tests\Feature;
 
 use App\Jobs\LookupDns;
 use App\Models\Lab;
-use App\LabMachine;
 use App\Models\LabStat;
 use App\Models\Machine;
-use App\Models\MachineLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Queue;
 use Spatie\TestTime\TestTime;
 use Tests\TestCase;
@@ -23,36 +20,36 @@ class ApiTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Queue::fake();
-        info('1' . microtime(true));
+        info('1'.microtime(true));
         $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
-        info('2' . microtime(true));
+        info('2'.microtime(true));
 
         $response->assertOk();
         $this->assertEquals('1.2.3.4', Machine::first()->ip);
-        info('3' . microtime(true));
+        info('3'.microtime(true));
         $this->assertTrue(Machine::first()->logged_in);
 
-        info('4' . microtime(true));
+        info('4'.microtime(true));
         $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
-        info('5' . microtime(true));
+        info('5'.microtime(true));
 
         $response->assertOk();
         $this->assertEquals('1.2.3.4', Machine::first()->ip);
         $this->assertFalse(Machine::first()->logged_in);
 
-        info('6' . microtime(true));
+        info('6'.microtime(true));
         // and repeat just to make sure multiple calls work ok
         $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
 
-        info('7' . microtime(true));
+        info('7'.microtime(true));
         $response->assertOk();
         $this->assertEquals('1.2.3.4', Machine::first()->ip);
         $this->assertTrue(Machine::first()->logged_in);
-        info('8' . microtime(true));
+        info('8'.microtime(true));
 
         $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
 
-        info('9' . microtime(true));
+        info('9'.microtime(true));
 
         $response->assertOk();
         $this->assertEquals('1.2.3.4', Machine::first()->ip);
@@ -119,7 +116,7 @@ class ApiTest extends TestCase
                 'users' => [
                     'fred', 'ginger',
                 ],
-                ], $machine->meta);
+            ], $machine->meta);
         });
     }
 

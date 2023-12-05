@@ -3,15 +3,18 @@
 namespace App\Http\Livewire;
 
 use App\Models\Lab;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class LabNameEditor extends Component
 {
     public $lab;
+
     public $labName;
+
     public $school;
+
     public $editing = false;
+
     public $deleteButtonText = 'Delete';
 
     public function mount($lab)

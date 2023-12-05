@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Machine;
-use App\Models\MachineLog;
 use Illuminate\Console\Command;
 
 class TrimLogs extends Command

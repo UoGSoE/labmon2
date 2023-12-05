@@ -3,8 +3,8 @@
 namespace App\Stats;
 
 use App\Models\Lab;
-use Prometheus\Gauge;
 use App\Models\Machine;
+use Prometheus\Gauge;
 use Superbalist\LaravelPrometheusExporter\CollectorInterface;
 use Superbalist\LaravelPrometheusExporter\PrometheusExporter;
 

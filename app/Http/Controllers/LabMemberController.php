@@ -32,13 +32,13 @@ class LabMemberController extends Controller
     protected function extractValidIps(string $ipList): Collection
     {
         return collect(explode("\r\n", $ipList))
-        ->filter()
-        ->filter(function ($ip) {
-            $validator = Validator::make(['ip' => $ip], [
-                'ip' => 'required|ip',
-            ]);
+            ->filter()
+            ->filter(function ($ip) {
+                $validator = Validator::make(['ip' => $ip], [
+                    'ip' => 'required|ip',
+                ]);
 
-            return $validator->passes();
-        });
+                return $validator->passes();
+            });
     }
 }
