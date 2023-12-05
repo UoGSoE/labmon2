@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LabFactory extends Factory
 {
-    protected $model = \App\Models\Lab::class;
-
     public function definition()
     {
         $limited = $this->faker->boolean();

@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MachineLogFactory extends Factory
 {
-    protected $model = \App\Models\MachineLog::class;
-
     public function definition()
     {
         return [

@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MachineFactory extends Factory
 {
-    protected $model = \App\Models\Machine::class;
-
     public function definition()
     {
         return [

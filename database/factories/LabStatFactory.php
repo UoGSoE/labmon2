@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LabStatFactory extends Factory
 {
-    protected $model = \App\Models\LabStat::class;
-
     public function definition()
     {
         return [
