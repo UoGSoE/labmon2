@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Jobs\LookupDns;
 use App\Models\Machine;
 
 class MachineController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
         return response()->json([
             'data' => Machine::orderBy('ip')->get()->toArray(),
         ]);
     }
 
-    public function store($ip = null)
+    public function store($ip = null): JsonResponse
     {
         info('a'.microtime(true));
         if (! $ip) {
@@ -43,7 +44,7 @@ class MachineController extends Controller
         ]);
     }
 
-    public function update($ip = null)
+    public function update($ip = null): JsonResponse
     {
         if (! $ip) {
             $ip = request()->ip();
@@ -66,7 +67,7 @@ class MachineController extends Controller
         ]);
     }
 
-    public function destroy($ip = null)
+    public function destroy($ip = null): JsonResponse
     {
         if (! $ip) {
             $ip = request()->ip();

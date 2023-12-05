@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Models\Lab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -9,14 +11,14 @@ use Illuminate\Support\Facades\Validator;
 
 class LabMemberController extends Controller
 {
-    public function edit(Lab $lab)
+    public function edit(Lab $lab): View
     {
         return view('lab.members.edit', [
             'lab' => $lab,
         ]);
     }
 
-    public function update(Lab $lab, Request $request)
+    public function update(Lab $lab, Request $request): RedirectResponse
     {
         $request->validate([
             'ips' => 'required',
