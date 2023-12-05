@@ -11,10 +11,8 @@ class TestDataSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $labs = Lab::factory()->count(120)->create();
         $machines = Machine::factory()->count(500)->create();

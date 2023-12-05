@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Machine;
-use App\Models\MachineLog;
 use Illuminate\Console\Command;
 
 class TrimLogs extends Command
@@ -34,10 +33,8 @@ class TrimLogs extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         Machine::where(
             'updated_at',

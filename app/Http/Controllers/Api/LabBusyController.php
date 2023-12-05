@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lab;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class LabBusyController extends Controller
 {
-    public function show($name)
+    public function show($name): JsonResponse
     {
         $lab = Lab::where('name', '=', $name)->firstOrFail();
 

@@ -9,7 +9,9 @@ use Livewire\Component;
 class NewLabEditor extends Component
 {
     public $editing = false;
+
     public $labName = '';
+
     public $school = '';
 
     public function saveLab()

@@ -8,7 +8,7 @@ class LabMachineFactory extends Factory
 {
     protected $model = \App\LabMachine::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [];
     }

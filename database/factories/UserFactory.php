@@ -7,13 +7,11 @@ use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
-    protected $model = \App\Models\User::class;
-
-    public function definition()
+    public function definition(): array
     {
         return [
-            'username' => $this->faker->userName,
-            'email' => $this->faker->unique()->safeEmail,
+            'username' => $this->faker->userName(),
+            'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'forenames' => $this->faker->firstName(),
             'surname' => $this->faker->lastName(),

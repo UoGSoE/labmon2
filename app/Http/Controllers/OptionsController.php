@@ -3,18 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class OptionsController extends Controller
 {
-    public function edit()
+    public function edit(): View
     {
         return view('options', [
             'allowedUsers' => User::allowedAccess()->get(),
         ]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         $request->validate([
             'remote-start-hour' => 'required|numeric',

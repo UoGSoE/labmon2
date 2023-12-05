@@ -3,7 +3,7 @@
 Auth::routes();
 Route::get('unauthorised', [\App\Http\Controllers\UnauthorisedController::class, 'show'])->name('unauthorised');
 
-Route::group(['middleware' => ['auth', 'allowed']], function () {
+Route::middleware('auth', 'allowed')->group(function () {
     Route::get('/', [\App\Http\Controllers\LabController::class, 'index'])->name('lab.index');
     Route::get('lab/{lab}', [\App\Http\Controllers\LabController::class, 'show'])->name('lab.show');
     Route::get('lab/{lab}/members', [\App\Http\Controllers\LabMemberController::class, 'edit'])->name('lab.members.edit');

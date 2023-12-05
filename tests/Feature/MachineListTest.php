@@ -6,7 +6,6 @@ use App\Models\Lab;
 use App\Models\Machine;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -15,7 +14,7 @@ class MachineListTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function we_can_see_a_list_of_all_machines()
+    public function we_can_see_a_list_of_all_machines(): void
     {
         $this->withoutExceptionHandling();
         $user = User::factory()->create(['is_allowed' => true]);
@@ -30,7 +29,7 @@ class MachineListTest extends TestCase
     }
 
     /** @test */
-    public function we_can_see_a_list_of_all_machines_for_a_specific_lab()
+    public function we_can_see_a_list_of_all_machines_for_a_specific_lab(): void
     {
         $user = User::factory()->create(['is_allowed' => true]);
         $lab = Lab::factory()->create();
@@ -49,7 +48,7 @@ class MachineListTest extends TestCase
     }
 
     /** @test */
-    public function we_can_filter_the_list_of_machines_by_name_or_ip_address()
+    public function we_can_filter_the_list_of_machines_by_name_or_ip_address(): void
     {
         $user = User::factory()->create(['is_allowed' => true]);
         $machine1 = Machine::factory()->create(['name' => 'test.example.com', 'ip' => '1.1.1.1']);
@@ -69,7 +68,7 @@ class MachineListTest extends TestCase
     }
 
     /** @test */
-    public function we_can_optionally_filter_the_list_of_machines_by_meta_data()
+    public function we_can_optionally_filter_the_list_of_machines_by_meta_data(): void
     {
         $user = User::factory()->create(['is_allowed' => true]);
         $machine1 = Machine::factory()->create(['name' => 'test.example.com', 'ip' => '1.1.1.1', 'meta' => 'blah']);
@@ -88,7 +87,7 @@ class MachineListTest extends TestCase
     }
 
     /** @test */
-    public function we_can_filter_the_list_of_machines_by_their_status()
+    public function we_can_filter_the_list_of_machines_by_their_status(): void
     {
         $user = User::factory()->create(['is_allowed' => true]);
         $machine1 = Machine::factory()->create(['name' => 'test.example.com', 'is_locked' => true, 'logged_in' => false]);

@@ -8,7 +8,6 @@ use App\Http\Livewire\NewLabEditor;
 use App\Models\Lab;
 use App\Models\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -17,7 +16,7 @@ class LabTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function we_can_create_a_new_lab()
+    public function we_can_create_a_new_lab(): void
     {
         $this->actingAs($this->createUser());
         Livewire::test(NewLabEditor::class)
@@ -36,7 +35,7 @@ class LabTest extends TestCase
     }
 
     /** @test */
-    public function we_can_delete_an_existing_lab()
+    public function we_can_delete_an_existing_lab(): void
     {
         $this->actingAs($this->createUser());
         $lab = $this->createLab('My Amazing Lab');
@@ -53,7 +52,7 @@ class LabTest extends TestCase
     }
 
     /** @test */
-    public function we_can_add_machine_ips_to_a_lab()
+    public function we_can_add_machine_ips_to_a_lab(): void
     {
         $this->actingAs($this->createUser());
         $lab = $this->createLab('blah');
@@ -71,7 +70,7 @@ class LabTest extends TestCase
     }
 
     /** @test */
-    public function sending_a_list_of_labmember_ips_removes_any_not_on_the_list()
+    public function sending_a_list_of_labmember_ips_removes_any_not_on_the_list(): void
     {
         $this->withoutExceptionHandling();
         $this->actingAs($this->createUser());
@@ -91,7 +90,7 @@ class LabTest extends TestCase
     }
 
     /** @test */
-    public function blank_lines_in_the_list_of_ips_are_ignored()
+    public function blank_lines_in_the_list_of_ips_are_ignored(): void
     {
         $this->withoutExceptionHandling();
         $this->actingAs($this->createUser());
@@ -111,7 +110,7 @@ class LabTest extends TestCase
     }
 
     /** @test */
-    public function invalid_ips_are_ignored()
+    public function invalid_ips_are_ignored(): void
     {
         $this->withoutExceptionHandling();
         $this->actingAs($this->createUser());
@@ -130,7 +129,7 @@ class LabTest extends TestCase
     }
 
     /** @test */
-    public function we_can_toggle_a_labs_availability_for_remote_access()
+    public function we_can_toggle_a_labs_availability_for_remote_access(): void
     {
         $this->withoutExceptionHandling();
         $this->actingAs($this->createUser());
@@ -172,7 +171,7 @@ class LabTest extends TestCase
     }
 
     /** @test */
-    public function a_lab_cannot_be_both_limited_and_unlimited_access_at_the_same_time()
+    public function a_lab_cannot_be_both_limited_and_unlimited_access_at_the_same_time(): void
     {
         $this->withoutExceptionHandling();
         $this->actingAs($this->createUser());
