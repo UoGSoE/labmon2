@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Machine;
+use Illuminate\Http\JsonResponse;
 
 class LastSeenController extends Controller
 {

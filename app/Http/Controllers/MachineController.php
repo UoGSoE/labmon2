@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
 use App\Models\Machine;
+use Illuminate\View\View;
 
 class MachineController extends Controller
 {
