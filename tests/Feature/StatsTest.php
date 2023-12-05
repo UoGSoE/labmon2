@@ -12,7 +12,7 @@ class StatsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function we_can_get_the_prometheus_metrics_stats()
+    public function we_can_get_the_prometheus_metrics_stats(): void
     {
         $this->withoutExceptionHandling();
         $labs = Lab::factory()->count(3)->create();

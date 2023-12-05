@@ -13,7 +13,7 @@ class LabStatsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function we_can_record_the_busyness_of_every_lab()
+    public function we_can_record_the_busyness_of_every_lab(): void
     {
         $lab1 = Lab::factory()->create();
         $lab2 = Lab::factory()->create();
@@ -40,7 +40,7 @@ class LabStatsTest extends TestCase
     }
 
     /** @test */
-    public function the_lab_stats_are_truncated_after_N_days()
+    public function the_lab_stats_are_truncated_after_N_days(): void
     {
         config(['labmon.truncate_stats_days' => 2]);
         $stat1 = LabStat::factory()->create(['created_at' => now()->subDays(3)]);
@@ -58,7 +58,7 @@ class LabStatsTest extends TestCase
     }
 
     /** @test */
-    public function the_recordstats_command_is_registered_with_the_schedular()
+    public function the_recordstats_command_is_registered_with_the_schedular(): void
     {
         $this->assertCommandIsScheduled('labmon:recordstats');
     }

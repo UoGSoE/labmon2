@@ -16,7 +16,7 @@ class ApiTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function we_can_record_a_machine_being_logged_in_or_out()
+    public function we_can_record_a_machine_being_logged_in_or_out(): void
     {
         $this->withoutExceptionHandling();
         Queue::fake();
@@ -57,7 +57,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function when_we_record_a_hello_we_dispatch_a_job_to_lookup_its_dns_name()
+    public function when_we_record_a_hello_we_dispatch_a_job_to_lookup_its_dns_name(): void
     {
         $this->withoutExceptionHandling();
         Queue::fake();
@@ -69,7 +69,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_do_not_dispatch_a_job_to_lookup_its_dns_name_if_it_already_has_been_looked_up()
+    public function we_do_not_dispatch_a_job_to_lookup_its_dns_name_if_it_already_has_been_looked_up(): void
     {
         $this->withoutExceptionHandling();
         Queue::fake();
@@ -81,7 +81,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function if_we_try_and_say_goodbye_for_an_ip_that_isnt_in_the_database_we_get_a_404()
+    public function if_we_try_and_say_goodbye_for_an_ip_that_isnt_in_the_database_we_get_a_404(): void
     {
         $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
 
@@ -89,7 +89,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_can_record_extra_json_data_about_a_machine()
+    public function we_can_record_extra_json_data_about_a_machine(): void
     {
         $this->withoutExceptionHandling();
         $response = $this->postJson(route('api.machine.update', ['ip' => '1.2.3.4']), [
@@ -121,7 +121,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function if_an_ip_isnt_supplied_we_make_a_best_guess_at_the_ip()
+    public function if_an_ip_isnt_supplied_we_make_a_best_guess_at_the_ip(): void
     {
         $this->withoutExceptionHandling();
         $response = $this->get(route('api.hello'));
@@ -138,7 +138,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function when_a_machine_logs_in_or_out_we_store_its_ip_and_user_agent_and_current_timestamp()
+    public function when_a_machine_logs_in_or_out_we_store_its_ip_and_user_agent_and_current_timestamp(): void
     {
         $this->withoutExceptionHandling();
 
@@ -153,7 +153,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function the_machines_log_can_be_automatically_trimmed_by_a_scheduled_task()
+    public function the_machines_log_can_be_automatically_trimmed_by_a_scheduled_task(): void
     {
         config(['labmon.machine_log_days' => 3]);
         $currentLog = Machine::factory()->create();
@@ -167,7 +167,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_the_last_time_an_ip_was_seen()
+    public function we_can_get_the_last_time_an_ip_was_seen(): void
     {
         $response = $this->get(route('api.hello'));
         $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
@@ -181,7 +181,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_the_busyness_of_a_lab()
+    public function we_can_get_the_busyness_of_a_lab(): void
     {
         $this->withoutExceptionHandling();
         $lab = Lab::factory()->create();
@@ -203,7 +203,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_the_stats_for_all_labs_between_given_dates()
+    public function we_can_get_the_stats_for_all_labs_between_given_dates(): void
     {
         $stat1 = LabStat::factory()->create(['created_at' => now()->subDays(200)]);
         $stat2 = LabStat::factory()->create(['created_at' => now()->subDays(100)]);
@@ -237,7 +237,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_a_list_of_machines_availabe_for_remote_desktop_on_an_always_on_lab()
+    public function we_can_get_a_list_of_machines_availabe_for_remote_desktop_on_an_always_on_lab(): void
     {
         $this->withoutExceptionHandling();
         $lab = Lab::factory()->create(['always_remote_access' => true]);
@@ -260,7 +260,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function a_lab_that_is_not_available_at_all_for_rdp_returns_no_results()
+    public function a_lab_that_is_not_available_at_all_for_rdp_returns_no_results(): void
     {
         $this->withoutExceptionHandling();
         $lab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => false]);
@@ -273,7 +273,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function a_lab_that_is_limited_available_for_rdp_returns_results_if_the_time_is_right()
+    public function a_lab_that_is_limited_available_for_rdp_returns_results_if_the_time_is_right(): void
     {
         $this->withoutExceptionHandling();
         $lab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => true]);
@@ -314,7 +314,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function a_lab_that_is_limited_available_for_rdp_doesnt_returns_correct_results_based_on_the_date_and_time()
+    public function a_lab_that_is_limited_available_for_rdp_doesnt_returns_correct_results_based_on_the_date_and_time(): void
     {
         $this->withoutExceptionHandling();
         $lab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => true]);
@@ -355,7 +355,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_a_list_of_labs_available_for_rdp()
+    public function we_can_get_a_list_of_labs_available_for_rdp(): void
     {
         $this->withoutExceptionHandling();
         $limitedLab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => true]);
@@ -403,7 +403,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_a_list_of_all_machines_available_for_rdp()
+    public function we_can_get_a_list_of_all_machines_available_for_rdp(): void
     {
         $this->withoutExceptionHandling();
         $limitedLab = Lab::factory()->create(['always_remote_access' => false, 'limited_remote_access' => true]);
@@ -435,7 +435,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_the_list_of_labs_available_for_the_lab_usage_stats()
+    public function we_can_get_the_list_of_labs_available_for_the_lab_usage_stats(): void
     {
         $lab1 = Lab::factory()->create(['is_on_graphs' => true]);
         $lab2 = Lab::factory()->create(['is_on_graphs' => false]);
@@ -460,7 +460,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_all_the_stats_for_the_lab_usage_stats_in_one_api_call()
+    public function we_can_get_all_the_stats_for_the_lab_usage_stats_in_one_api_call(): void
     {
         $this->withoutExceptionHandling();
         $lab1 = Lab::factory()->create(['is_on_graphs' => true, 'name' => 'ABC1']);
@@ -498,7 +498,7 @@ class ApiTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_a_list_of_all_machines()
+    public function we_can_get_a_list_of_all_machines(): void
     {
         $machines = Machine::factory()->count(5)->create();
 

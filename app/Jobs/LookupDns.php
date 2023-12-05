@@ -20,7 +20,7 @@ class LookupDns implements ShouldQueue
         $this->machine = $machine;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $this->machine->lookupDns();
     }

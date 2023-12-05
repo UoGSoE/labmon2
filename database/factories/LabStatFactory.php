@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LabStatFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         return [
             'lab_id' => \App\Models\Lab::factory(),

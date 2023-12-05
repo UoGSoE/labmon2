@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MachineLogFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         return [
             'ip' => $this->faker->ipv4(),

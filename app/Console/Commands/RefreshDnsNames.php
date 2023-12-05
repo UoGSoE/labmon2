@@ -37,7 +37,7 @@ class RefreshDnsNames extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         Machine::all()->each(function ($machine) {
             LookupDns::dispatch($machine);

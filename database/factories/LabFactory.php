@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LabFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         $limited = $this->faker->boolean();
         $always = ! $limited;

@@ -11,7 +11,7 @@ class OptionsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function we_can_see_the_options_page()
+    public function we_can_see_the_options_page(): void
     {
         $this->withoutExceptionHandling();
         $user = $this->createUser();
@@ -22,7 +22,7 @@ class OptionsTest extends TestCase
     }
 
     /** @test */
-    public function we_can_update_all_of_the_options()
+    public function we_can_update_all_of_the_options(): void
     {
         $this->withoutExceptionHandling();
         $user1 = User::factory()->create();

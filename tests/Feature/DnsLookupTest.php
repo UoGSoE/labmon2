@@ -13,7 +13,7 @@ class DnsLookupTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function a_machine_can_lookup_the_dns_name_for_its_ip_address()
+    public function a_machine_can_lookup_the_dns_name_for_its_ip_address(): void
     {
         $machine = Machine::factory()->create(['ip' => '1.1.1.1', 'name' => null]);
 
@@ -23,7 +23,7 @@ class DnsLookupTest extends TestCase
     }
 
     /** @test */
-    public function if_a_custom_dns_resolver_is_configured_then_it_is_preferred_over_phps_internal_calls()
+    public function if_a_custom_dns_resolver_is_configured_then_it_is_preferred_over_phps_internal_calls(): void
     {
         $machine = Machine::factory()->create(['ip' => '1.1.1.1', 'name' => null]);
         config(['labmon.dns_server' => '1.1.1.1']);
@@ -38,7 +38,7 @@ class DnsLookupTest extends TestCase
     }
 
     /** @test */
-    public function there_is_an_artisan_command_to_lookup_all_machine_dns_names()
+    public function there_is_an_artisan_command_to_lookup_all_machine_dns_names(): void
     {
         $machine1 = Machine::factory()->create(['ip' => '1.1.1.1']);
         $machine2 = Machine::factory()->create(['ip' => '8.8.8.8']);
@@ -50,13 +50,13 @@ class DnsLookupTest extends TestCase
     }
 
     /** @test */
-    public function the_artisan_command_is_registered_with_the_schedular()
+    public function the_artisan_command_is_registered_with_the_schedular(): void
     {
         $this->assertCommandIsScheduled('labmon:refreshdns');
     }
 
     /** @test */
-    public function the_lookup_dns_job_can_lookup_the_dns_for_a_machine()
+    public function the_lookup_dns_job_can_lookup_the_dns_for_a_machine(): void
     {
         $machine = Machine::factory()->create([
             'ip' => '1.1.1.1',
