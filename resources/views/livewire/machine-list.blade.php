@@ -21,6 +21,16 @@
         <label class="mr-2">
             <input type="radio" name="statusFilter" id="statusFilterNotLocked" wire:model="statusFilter" value="not_locked"> Not Locked
         </label>
+        <span class="mr-2"> | </span>
+        <label for="" class="mr-2">
+            <input type="radio" name="osFilter" id="osFilterAny" wire:model="osFilter" value=""> Any OS
+        </label>
+        <label for="" class="mr-2">
+            <input type="radio" name="osFilter" id="osFilterWindows" wire:model="osFilter" value="Power"> Windows
+        </label>
+        <label for="" class="mr-2">
+            <input type="radio" name="osFilter" id="osFilterLinux" wire:model="osFilter" value="curl"> Linux
+        </label>
     </div>
     @include('machine.partials.list')
 </div>

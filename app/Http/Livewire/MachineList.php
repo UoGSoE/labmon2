@@ -15,6 +15,8 @@ class MachineList extends Component
 
     public $statusFilter = '';
 
+    public $osFilter = '';
+
     public $includeMeta = false;
 
     public function mount($machines = null, $labId = null)
@@ -46,6 +48,11 @@ class MachineList extends Component
         $this->getMachines();
     }
 
+    public function updatedOsFilter($value)
+    {
+        $this->getMachines();
+    }
+
     public function getMachines()
     {
         $query = Machine::query();
@@ -61,6 +68,9 @@ class MachineList extends Component
         }
         if ($this->statusFilter) {
             $query = $this->mapStatusFilterToQuery($query);
+        }
+        if ($this->osFilter) {
+            $query = $query->where('user_agent', 'like', "{$this->osFilter}%");
         }
         $this->machines = $query->orderBy('ip')->get();
     }
