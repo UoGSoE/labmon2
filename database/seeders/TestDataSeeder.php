@@ -15,7 +15,8 @@ class TestDataSeeder extends Seeder
     public function run(): void
     {
         $labs = Lab::factory()->count(120)->create();
-        $machines = Machine::factory()->count(500)->create();
+        $machines = Machine::factory()->count(250)->create(['user_agent' => 'PowerShell']);
+        $machines = $machines->merge(Machine::factory()->count(250)->create(['user_agent' => 'curl']));
         $machines->each(function ($machine) use ($labs) {
             $machine->lab_id = $labs->random()->id;
             $machine->save();
