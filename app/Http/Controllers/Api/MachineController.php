@@ -26,7 +26,6 @@ class MachineController extends Controller
         }
         $userAgent = request()->userAgent() ?? '';
 
-<<<<<<< HEAD
         info('a'.microtime(true));
         $machine = Machine::firstOrCreate(['ip' => $ip], ['ip' => $ip]);
         $machine->update([
@@ -42,10 +41,8 @@ class MachineController extends Controller
 
         info('a'.microtime(true));
 
-=======
         MarkMachineLoggedIn::dispatch($ip, $userAgent);
 
->>>>>>> master
         return response()->json([
             'data' => [], //$machine->toArray(),
         ]);
