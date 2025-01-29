@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Jobs\LookupDns;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,12 +23,12 @@ class Lab extends Model
         ];
     }
 
-    public function members()
+    public function members(): HasMany
     {
         return $this->hasMany(Machine::class);
     }
 
-    public function stats()
+    public function stats(): HasMany
     {
         return $this->hasMany(LabStat::class);
     }

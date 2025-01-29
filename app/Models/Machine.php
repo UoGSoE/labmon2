@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +23,7 @@ class Machine extends Model
         ];
     }
 
-    public function lab()
+    public function lab(): BelongsTo
     {
         return $this->belongsTo(Lab::class);
     }

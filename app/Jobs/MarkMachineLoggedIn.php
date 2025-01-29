@@ -36,7 +36,7 @@ class MarkMachineLoggedIn implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $machine = Machine::firstOrCreate(['ip' => $this->ip], ['ip' => $this->ip]);
 

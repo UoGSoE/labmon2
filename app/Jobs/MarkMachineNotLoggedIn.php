@@ -39,7 +39,7 @@ class MarkMachineNotLoggedIn implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $machine = Machine::firstOrCreate(['ip' => $this->ip], [
             'user_agent' => $this->userAgent,
