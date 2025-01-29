@@ -14,7 +14,29 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectUsersTo(RouteServiceProvider::HOME);
+
+        $middleware->append(\App\Http\Middleware\CheckForMaintenanceMode::class);
+
+        $middleware->throttleApi('200,1');
+
+        $middleware->replace(\Illuminate\Http\Middleware\TrustProxies::class, \App\Http\Middleware\TrustProxies::class);
+
+        $middleware->alias([
+            'allowed' => \App\Http\Middleware\AllowedUser::class,
+            'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
+
+        $middleware->priority([
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\Authenticate::class,
+            \Illuminate\Routing\Middleware\ThrottleRequests::class,
+            \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Illuminate\Auth\Middleware\Authorize::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
