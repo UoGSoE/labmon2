@@ -9,8 +9,8 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use Notifiable;
     use HasFactory;
+    use Notifiable;
 
     protected $guarded = [];
 
@@ -53,7 +53,7 @@ class User extends Authenticatable
                     if (! $ldapUser) {
                         return;
                     }
-                    $user = new User();
+                    $user = new User;
                     $user->username = $guid;
                     $user->surname = $ldapUser->surname;
                     $user->forenames = $ldapUser->forenames;
