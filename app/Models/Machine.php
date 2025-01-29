@@ -13,11 +13,14 @@ class Machine extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'logged_in' => 'boolean',
-        'is_locked' => 'boolean',
-        'meta' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'logged_in' => 'boolean',
+            'is_locked' => 'boolean',
+            'meta' => 'array',
+        ];
+    }
 
     public function lab()
     {

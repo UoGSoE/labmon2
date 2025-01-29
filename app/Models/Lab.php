@@ -14,10 +14,13 @@ class Lab extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'always_remote_access' => 'boolean',
-        'limited_remote_access' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'always_remote_access' => 'boolean',
+            'limited_remote_access' => 'boolean',
+        ];
+    }
 
     public function members()
     {
