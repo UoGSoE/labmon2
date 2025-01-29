@@ -11,7 +11,10 @@ class MachineLog extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'logged_in' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'logged_in' => 'boolean',
+        ];
+    }
 }

@@ -6,6 +6,7 @@ use App\Jobs\LookupDns;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 class Lab extends Model
@@ -14,17 +15,20 @@ class Lab extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'always_remote_access' => 'boolean',
-        'limited_remote_access' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'always_remote_access' => 'boolean',
+            'limited_remote_access' => 'boolean',
+        ];
+    }
 
-    public function members()
+    public function members(): HasMany
     {
         return $this->hasMany(Machine::class);
     }
 
-    public function stats()
+    public function stats(): HasMany
     {
         return $this->hasMany(LabStat::class);
     }
