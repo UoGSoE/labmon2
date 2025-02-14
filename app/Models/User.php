@@ -9,8 +9,8 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use Notifiable;
     use HasFactory;
+    use Notifiable;
 
     protected $guarded = [];
 
@@ -24,14 +24,17 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'is_allowed' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'is_allowed' => 'boolean',
+        ];
+    }
 
     public function scopeallowedAccess($query)
     {
@@ -53,7 +56,7 @@ class User extends Authenticatable
                     if (! $ldapUser) {
                         return;
                     }
-                    $user = new User();
+                    $user = new User;
                     $user->username = $guid;
                     $user->surname = $ldapUser->surname;
                     $user->forenames = $ldapUser->forenames;

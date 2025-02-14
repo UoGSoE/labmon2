@@ -5,6 +5,7 @@ namespace App\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use TitasGailius\Terminal\Terminal;
 
 class Machine extends Model
@@ -13,13 +14,16 @@ class Machine extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'logged_in' => 'boolean',
-        'is_locked' => 'boolean',
-        'meta' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'logged_in' => 'boolean',
+            'is_locked' => 'boolean',
+            'meta' => 'array',
+        ];
+    }
 
-    public function lab()
+    public function lab(): BelongsTo
     {
         return $this->belongsTo(Lab::class);
     }
