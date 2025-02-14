@@ -6,8 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use TitasGailius\Terminal\Terminal;
 
-uses(TestCase::class);
-uses(RefreshDatabase::class);
 
 test('a machine can lookup the dns name for its ip address', function () {
     $machine = Machine::factory()->create(['ip' => '1.1.1.1', 'name' => null]);

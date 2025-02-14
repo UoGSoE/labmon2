@@ -5,8 +5,6 @@ use App\Models\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-uses(TestCase::class);
-uses(RefreshDatabase::class);
 
 test('we can get the prometheus metrics stats', function () {
     $this->withoutExceptionHandling();

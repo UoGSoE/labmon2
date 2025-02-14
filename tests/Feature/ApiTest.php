@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Queue;
 use Spatie\TestTime\TestTime;
 use Tests\TestCase;
 
-uses(TestCase::class);
-uses(RefreshDatabase::class);
 
 test('we can record a machine being logged in or out', function () {
     $this->withoutExceptionHandling();

@@ -6,8 +6,6 @@ use App\Models\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-uses(TestCase::class);
-uses(RefreshDatabase::class);
 
 test('we can record the busyness of every lab', function () {
     $lab1 = Lab::factory()->create();
