@@ -56,7 +56,7 @@ unit-tests:
   #- npm run dev
 
   script:
-  # - php vendor/bin/phpunit --coverage-text --colors=never
+  # - php vendor/bin/pest
   - cd /var/www/html
   - mkdir -p /run/secrets
   - cp -f .env.gitlab /run/secrets/.env
