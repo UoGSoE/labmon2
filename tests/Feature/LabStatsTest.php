@@ -3,9 +3,6 @@
 use App\Models\Lab;
 use App\Models\LabStat;
 use App\Models\Machine;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-
 
 test('we can record the busyness of every lab', function () {
     $lab1 = Lab::factory()->create();

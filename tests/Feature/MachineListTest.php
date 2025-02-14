@@ -3,10 +3,7 @@
 use App\Models\Lab;
 use App\Models\Machine;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Tests\TestCase;
-
 
 test('we can see a list of all machines', function () {
     $this->withoutExceptionHandling();

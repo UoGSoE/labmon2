@@ -2,10 +2,7 @@
 
 use App\Jobs\LookupDns;
 use App\Models\Machine;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use TitasGailius\Terminal\Terminal;
-
 
 test('a machine can lookup the dns name for its ip address', function () {
     $machine = Machine::factory()->create(['ip' => '1.1.1.1', 'name' => null]);

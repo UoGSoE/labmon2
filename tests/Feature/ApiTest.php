@@ -4,11 +4,8 @@ use App\Jobs\LookupDns;
 use App\Models\Lab;
 use App\Models\LabStat;
 use App\Models\Machine;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Spatie\TestTime\TestTime;
-use Tests\TestCase;
-
 
 test('we can record a machine being logged in or out', function () {
     $this->withoutExceptionHandling();

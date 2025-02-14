@@ -5,10 +5,7 @@ use App\Livewire\LabNameEditor;
 use App\Livewire\NewLabEditor;
 use App\Models\Lab;
 use App\Models\Machine;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Tests\TestCase;
-
 
 test('we can create a new lab', function () {
     $this->actingAs($this->createUser());
