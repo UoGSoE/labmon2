@@ -6,9 +6,15 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
-                'resources/js/app.js',
+                'resources/js/app.jsx',
             ],
             refresh: true,
         }),
     ],
+    server: {
+        https: false,
+        host: true,
+        port: 3009,
+        hmr: {host: 'localhost', protocol: 'ws'},
+    },
 });

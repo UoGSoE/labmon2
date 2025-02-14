@@ -1,4 +1,3 @@
-import 'alpinejs'
 import Litepicker from 'litepicker'
 import 'prismjs'
 window.Litepicker = Litepicker;
