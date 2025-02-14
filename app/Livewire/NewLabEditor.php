@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\Lab;
 use Illuminate\Validation\Rule;
@@ -25,7 +25,7 @@ class NewLabEditor extends Component
         $this->editing = false;
         $this->labName = '';
         $this->school = '';
-        $this->emit('labAdded');
+        $this->dispatch('labAdded');
     }
 
     public function render()

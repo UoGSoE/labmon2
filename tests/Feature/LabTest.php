@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\LabList;
-use App\Http\Livewire\LabNameEditor;
-use App\Http\Livewire\NewLabEditor;
+use App\Livewire\LabList;
+use App\Livewire\LabNameEditor;
+use App\Livewire\NewLabEditor;
 use App\Models\Lab;
 use App\Models\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -29,7 +29,7 @@ class LabTest extends TestCase
             ->call('saveLab')
             ->assertSet('labName', '')
             ->assertSet('editing', false)
-            ->assertEmitted('labAdded');
+            ->assertDispatched('labAdded');
         $this->assertEquals('LABLAB', Lab::first()->name);
         $this->assertEquals('Science', Lab::first()->school);
     }
