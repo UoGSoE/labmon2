@@ -14,7 +14,7 @@ test('a machine can lookup the dns name for its ip address', function () {
 
     $machine->lookupDns();
 
-    $this->assertEquals('one.one.one.one', $machine->fresh()->name);
+    expect($machine->fresh()->name)->toEqual('one.one.one.one');
 });
 
 test('if a custom dns resolver is configured then it is preferred over phps internal calls', function () {
@@ -27,7 +27,7 @@ test('if a custom dns resolver is configured then it is preferred over phps inte
 
     $machine->lookupDns();
 
-    $this->assertEquals('my.fake.domain', $machine->fresh()->name);
+    expect($machine->fresh()->name)->toEqual('my.fake.domain');
 });
 
 test('there is an artisan command to lookup all machine dns names', function () {
@@ -36,8 +36,8 @@ test('there is an artisan command to lookup all machine dns names', function () 
 
     $this->artisan('labmon:refreshdns');
 
-    $this->assertEquals('one.one.one.one', $machine1->fresh()->name);
-    $this->assertEquals('dns.google', $machine2->fresh()->name);
+    expect($machine1->fresh()->name)->toEqual('one.one.one.one');
+    expect($machine2->fresh()->name)->toEqual('dns.google');
 });
 
 test('the artisan command is registered with the schedular', function () {
@@ -52,5 +52,5 @@ test('the lookup dns job can lookup the dns for a machine', function () {
 
     LookupDns::dispatch($machine);
 
-    $this->assertEquals('one.one.one.one', $machine->fresh()->name);
+    expect($machine->fresh()->name)->toEqual('one.one.one.one');
 });

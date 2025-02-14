@@ -23,10 +23,10 @@ test('we can update all of the options', function () {
     $user3 = User::factory()->create();
     $user4 = User::factory()->create(['is_allowed' => true]);
 
-    $this->assertFalse($user1->fresh()->isAllowedAccess());
-    $this->assertTrue($user2->fresh()->isAllowedAccess());
-    $this->assertFalse($user3->fresh()->isAllowedAccess());
-    $this->assertTrue($user4->fresh()->isAllowedAccess());
+    expect($user1->fresh()->isAllowedAccess())->toBeFalse();
+    expect($user2->fresh()->isAllowedAccess())->toBeTrue();
+    expect($user3->fresh()->isAllowedAccess())->toBeFalse();
+    expect($user4->fresh()->isAllowedAccess())->toBeTrue();
 
     $response = $this->actingAs($user2)->post(route('options.update'), [
         'remote-start-hour' => 20,
@@ -39,19 +39,19 @@ test('we can update all of the options', function () {
 
     $response->assertRedirect('/');
     $response->assertSessionDoesntHaveErrors();
-    $this->assertEquals('20', option('remote-start-hour'));
-    $this->assertEquals('10', option('remote-end-hour'));
-    $this->assertEquals('04/Feb', option('remote-start-summer'));
-    $this->assertEquals('11/Mar', option('remote-end-summer'));
-    $this->assertEquals('04/Dec', option('remote-start-xmas'));
-    $this->assertEquals('31/Dec', option('remote-end-xmas'));
-    $this->assertEquals('04/Apr', option('remote-start-easter'));
-    $this->assertEquals('10/Apr', option('remote-end-easter'));
-    $this->assertTrue($user1->fresh()->isAllowedAccess());
+    expect(option('remote-start-hour'))->toEqual('20');
+    expect(option('remote-end-hour'))->toEqual('10');
+    expect(option('remote-start-summer'))->toEqual('04/Feb');
+    expect(option('remote-end-summer'))->toEqual('11/Mar');
+    expect(option('remote-start-xmas'))->toEqual('04/Dec');
+    expect(option('remote-end-xmas'))->toEqual('31/Dec');
+    expect(option('remote-start-easter'))->toEqual('04/Apr');
+    expect(option('remote-end-easter'))->toEqual('10/Apr');
+    expect($user1->fresh()->isAllowedAccess())->toBeTrue();
     // note: users can't remove themselves from the permission list
     // so user2 is still allowed access even though they weren't in
     // the supplied allowed_guids
-    $this->assertTrue($user2->fresh()->isAllowedAccess());
-    $this->assertTrue($user3->fresh()->isAllowedAccess());
-    $this->assertFalse($user4->fresh()->isAllowedAccess());
+    expect($user2->fresh()->isAllowedAccess())->toBeTrue();
+    expect($user3->fresh()->isAllowedAccess())->toBeTrue();
+    expect($user4->fresh()->isAllowedAccess())->toBeFalse();
 });

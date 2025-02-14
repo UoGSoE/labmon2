@@ -20,17 +20,17 @@ test('we can record the busyness of every lab', function () {
     $this->artisan('labmon:recordstats');
 
     tap(LabStat::all(), function ($stats) use ($lab1, $lab2, $lab3) {
-        $this->assertEquals($lab1->id, $stats[0]->lab_id);
-        $this->assertEquals($lab1->members()->count(), $stats[0]->machine_total);
-        $this->assertEquals($lab1->members()->online()->count(), $stats[0]->logged_in_total);
+        expect($stats[0]->lab_id)->toEqual($lab1->id);
+        expect($stats[0]->machine_total)->toEqual($lab1->members()->count());
+        expect($stats[0]->logged_in_total)->toEqual($lab1->members()->online()->count());
 
-        $this->assertEquals($lab2->id, $stats[1]->lab_id);
-        $this->assertEquals($lab2->members()->count(), $stats[1]->machine_total);
-        $this->assertEquals($lab2->members()->online()->count(), $stats[1]->logged_in_total);
+        expect($stats[1]->lab_id)->toEqual($lab2->id);
+        expect($stats[1]->machine_total)->toEqual($lab2->members()->count());
+        expect($stats[1]->logged_in_total)->toEqual($lab2->members()->online()->count());
 
-        $this->assertEquals($lab3->id, $stats[2]->lab_id);
-        $this->assertEquals($lab3->members()->count(), $stats[2]->machine_total);
-        $this->assertEquals($lab3->members()->online()->count(), $stats[2]->logged_in_total);
+        expect($stats[2]->lab_id)->toEqual($lab3->id);
+        expect($stats[2]->machine_total)->toEqual($lab3->members()->count());
+        expect($stats[2]->logged_in_total)->toEqual($lab3->members()->online()->count());
     });
 });
 
@@ -40,14 +40,14 @@ test('the lab stats are truncated after n days', function () {
     $stat2 = LabStat::factory()->create(['created_at' => now()->subDays(2)]);
     $stat3 = LabStat::factory()->create(['created_at' => now()->subDays(1)]);
 
-    $this->assertEquals(3, LabStat::count());
+    expect(LabStat::count())->toEqual(3);
 
     $this->artisan('labmon:recordstats');
 
     // we should have 5 stats - the 2 old that should have been kept, and 3
     // new ones for each lab that the stat factories created
-    $this->assertEquals(5, LabStat::count());
-    $this->assertNull(LabStat::find($stat1->id));
+    expect(LabStat::count())->toEqual(5);
+    expect(LabStat::find($stat1->id))->toBeNull();
 });
 
 test('the recordstats command is registered with the schedular', function () {

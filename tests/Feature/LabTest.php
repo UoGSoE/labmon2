@@ -25,8 +25,8 @@ test('we can create a new lab', function () {
         ->assertSet('labName', '')
         ->assertSet('editing', false)
         ->assertDispatched('labAdded');
-    $this->assertEquals('LABLAB', Lab::first()->name);
-    $this->assertEquals('Science', Lab::first()->school);
+    expect(Lab::first()->name)->toEqual('LABLAB');
+    expect(Lab::first()->school)->toEqual('Science');
 });
 
 test('we can delete an existing lab', function () {
@@ -41,7 +41,7 @@ test('we can delete an existing lab', function () {
         ->assertDontSee('Delete')
         ->assertSee('Confirm')
         ->call('deleteLab');
-    $this->assertCount(0, Lab::all());
+    expect(Lab::all())->toHaveCount(0);
 });
 
 test('we can add machine ips to a lab', function () {
@@ -54,9 +54,9 @@ test('we can add machine ips to a lab', function () {
 
     $response->assertRedirect(route('lab.show', $lab->id));
     tap($lab->fresh(), function ($lab) {
-        $this->assertCount(2, $lab->members);
-        $this->assertTrue($lab->members->contains('ip', '1.2.3.4'));
-        $this->assertTrue($lab->members->contains('ip', '127.0.0.1'));
+        expect($lab->members)->toHaveCount(2);
+        expect($lab->members->contains('ip', '1.2.3.4'))->toBeTrue();
+        expect($lab->members->contains('ip', '127.0.0.1'))->toBeTrue();
     });
 });
 
@@ -72,9 +72,9 @@ test('sending a list of labmember ips removes any not on the list', function () 
 
     $response->assertRedirect(route('lab.show', $lab->id));
     tap($lab->fresh(), function ($lab) {
-        $this->assertCount(2, $lab->members);
-        $this->assertTrue($lab->members->contains('ip', '1.0.3.4'));
-        $this->assertTrue($lab->members->contains('ip', '127.0.0.1'));
+        expect($lab->members)->toHaveCount(2);
+        expect($lab->members->contains('ip', '1.0.3.4'))->toBeTrue();
+        expect($lab->members->contains('ip', '127.0.0.1'))->toBeTrue();
     });
 });
 
@@ -90,9 +90,9 @@ test('blank lines in the list of ips are ignored', function () {
 
     $response->assertRedirect(route('lab.show', $lab->id));
     tap($lab->fresh(), function ($lab) {
-        $this->assertCount(2, $lab->members);
-        $this->assertTrue($lab->members->contains('ip', '1.0.3.4'));
-        $this->assertTrue($lab->members->contains('ip', '127.0.0.1'));
+        expect($lab->members)->toHaveCount(2);
+        expect($lab->members->contains('ip', '1.0.3.4'))->toBeTrue();
+        expect($lab->members->contains('ip', '127.0.0.1'))->toBeTrue();
     });
 });
 
@@ -108,8 +108,8 @@ test('invalid ips are ignored', function () {
 
     $response->assertRedirect(route('lab.show', $lab->id));
     tap($lab->fresh(), function ($lab) {
-        $this->assertCount(1, $lab->members);
-        $this->assertTrue($lab->members->contains('ip', '1.0.3.4'));
+        expect($lab->members)->toHaveCount(1);
+        expect($lab->members->contains('ip', '1.0.3.4'))->toBeTrue();
     });
 });
 
@@ -121,36 +121,36 @@ test('we can toggle a labs availability for remote access', function () {
     $lab->limited_remote_access = false;
     $lab->save();
 
-    $this->assertFalse($lab->limited_remote_access);
-    $this->assertFalse($lab->always_remote_access);
+    expect($lab->limited_remote_access)->toBeFalse();
+    expect($lab->always_remote_access)->toBeFalse();
 
     Livewire::test(LabList::class)
         ->assertSee($lab->name)
         ->call('toggleLimitedRemote', $lab->id);
 
-    $this->assertTrue($lab->fresh()->limited_remote_access);
-    $this->assertFalse($lab->fresh()->always_remote_access);
+    expect($lab->fresh()->limited_remote_access)->toBeTrue();
+    expect($lab->fresh()->always_remote_access)->toBeFalse();
 
     Livewire::test(LabList::class)
         ->assertSee($lab->name)
         ->call('toggleLimitedRemote', $lab->id);
 
-    $this->assertFalse($lab->fresh()->limited_remote_access);
-    $this->assertFalse($lab->fresh()->always_remote_access);
+    expect($lab->fresh()->limited_remote_access)->toBeFalse();
+    expect($lab->fresh()->always_remote_access)->toBeFalse();
 
     Livewire::test(LabList::class)
         ->assertSee($lab->name)
         ->call('toggleAlwaysRemote', $lab->id);
 
-    $this->assertFalse($lab->fresh()->limited_remote_access);
-    $this->assertTrue($lab->fresh()->always_remote_access);
+    expect($lab->fresh()->limited_remote_access)->toBeFalse();
+    expect($lab->fresh()->always_remote_access)->toBeTrue();
 
     Livewire::test(LabList::class)
         ->assertSee($lab->name)
         ->call('toggleAlwaysRemote', $lab->id);
 
-    $this->assertFalse($lab->fresh()->limited_remote_access);
-    $this->assertFalse($lab->fresh()->always_remote_access);
+    expect($lab->fresh()->limited_remote_access)->toBeFalse();
+    expect($lab->fresh()->always_remote_access)->toBeFalse();
 });
 
 test('a lab cannot be both limited and unlimited access at the same time', function () {
@@ -165,15 +165,15 @@ test('a lab cannot be both limited and unlimited access at the same time', funct
         ->assertSee($lab->name)
         ->call('toggleLimitedRemote', $lab->id);
 
-    $this->assertTrue($lab->fresh()->limited_remote_access);
-    $this->assertFalse($lab->fresh()->always_remote_access);
+    expect($lab->fresh()->limited_remote_access)->toBeTrue();
+    expect($lab->fresh()->always_remote_access)->toBeFalse();
 
     Livewire::test(LabList::class)
         ->assertSee($lab->name)
         ->call('toggleAlwaysRemote', $lab->id);
 
-    $this->assertFalse($lab->fresh()->limited_remote_access);
-    $this->assertTrue($lab->fresh()->always_remote_access);
+    expect($lab->fresh()->limited_remote_access)->toBeFalse();
+    expect($lab->fresh()->always_remote_access)->toBeTrue();
 });
 
 // Helpers

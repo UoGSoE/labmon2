@@ -18,27 +18,27 @@ test('we can record a machine being logged in or out', function () {
     $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
 
     $response->assertOk();
-    $this->assertEquals('1.2.3.4', Machine::first()->ip);
-    $this->assertTrue(Machine::first()->logged_in);
+    expect(Machine::first()->ip)->toEqual('1.2.3.4');
+    expect(Machine::first()->logged_in)->toBeTrue();
 
     $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
 
     $response->assertOk();
-    $this->assertEquals('1.2.3.4', Machine::first()->ip);
-    $this->assertFalse(Machine::first()->logged_in);
+    expect(Machine::first()->ip)->toEqual('1.2.3.4');
+    expect(Machine::first()->logged_in)->toBeFalse();
 
     // and repeat just to make sure multiple calls work ok
     $response = $this->get(route('api.hello', ['ip' => '1.2.3.4']));
 
     $response->assertOk();
-    $this->assertEquals('1.2.3.4', Machine::first()->ip);
-    $this->assertTrue(Machine::first()->logged_in);
+    expect(Machine::first()->ip)->toEqual('1.2.3.4');
+    expect(Machine::first()->logged_in)->toBeTrue();
 
     $response = $this->get(route('api.goodbye', ['ip' => '1.2.3.4']));
 
     $response->assertOk();
-    $this->assertEquals('1.2.3.4', Machine::first()->ip);
-    $this->assertFalse(Machine::first()->logged_in);
+    expect(Machine::first()->ip)->toEqual('1.2.3.4');
+    expect(Machine::first()->logged_in)->toBeFalse();
 });
 
 test('when we record a hello we dispatch a job to lookup its dns name', function () {
@@ -83,8 +83,8 @@ test('we can record extra json data about a machine', function () {
 
     $response->assertOk();
     tap(Machine::first(), function ($machine) {
-        $this->assertEquals('1.2.3.4', $machine->ip);
-        $this->assertFalse($machine->logged_in);
+        expect($machine->ip)->toEqual('1.2.3.4');
+        expect($machine->logged_in)->toBeFalse();
         $this->assertEquals([
             'spec' => [
                 'model' => 'blah',
@@ -102,14 +102,14 @@ test('if an ip isnt supplied we make a best guess at the ip', function () {
     $response = $this->get(route('api.hello'));
 
     $response->assertOk();
-    $this->assertEquals('127.0.0.1', Machine::first()->ip);
-    $this->assertTrue(Machine::first()->logged_in);
+    expect(Machine::first()->ip)->toEqual('127.0.0.1');
+    expect(Machine::first()->logged_in)->toBeTrue();
 
     $response = $this->get(route('api.goodbye'));
 
     $response->assertOk();
-    $this->assertEquals('127.0.0.1', Machine::first()->ip);
-    $this->assertFalse(Machine::first()->logged_in);
+    expect(Machine::first()->ip)->toEqual('127.0.0.1');
+    expect(Machine::first()->logged_in)->toBeFalse();
 });
 
 test('when a machine logs in or out we store its ip and user agent and current timestamp', function () {
@@ -119,9 +119,9 @@ test('when a machine logs in or out we store its ip and user agent and current t
 
     $response->assertOk();
     tap(Machine::first(), function ($machine) {
-        $this->assertEquals('Symfony', $machine->user_agent);
-        $this->assertEquals(now()->format('Y-m-d H:i'), $machine->created_at->format('Y-m-d H:i'));
-        $this->assertTrue($machine->logged_in);
+        expect($machine->user_agent)->toEqual('Symfony');
+        expect($machine->created_at->format('Y-m-d H:i'))->toEqual(now()->format('Y-m-d H:i'));
+        expect($machine->logged_in)->toBeTrue();
     });
 });
 
@@ -129,12 +129,12 @@ test('the machines log can be automatically trimmed by a scheduled task', functi
     config(['labmon.machine_log_days' => 3]);
     $currentLog = Machine::factory()->create();
     $oldLog = Machine::factory()->create(['updated_at' => now()->subDays(4)]);
-    $this->assertEquals(2, Machine::count());
+    expect(Machine::count())->toEqual(2);
 
     $this->artisan('labmon:trimlogs');
 
-    $this->assertEquals(1, Machine::count());
-    $this->assertTrue(Machine::first()->is($currentLog));
+    expect(Machine::count())->toEqual(1);
+    expect(Machine::first()->is($currentLog))->toBeTrue();
 });
 
 test('we can get the last time an ip was seen', function () {
