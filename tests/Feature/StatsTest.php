@@ -1,28 +1,17 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Models\Lab;
 use App\Models\Machine;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class StatsTest extends TestCase
-{
-    use RefreshDatabase;
+test('we can get the prometheus metrics stats', function () {
+    $this->withoutExceptionHandling();
+    $labs = Lab::factory()->count(3)->create();
+    $labs->each(function ($lab) {
+        Machine::factory()->count(3)->create(['lab_id' => $lab->id]);
+    });
 
-    /** @test */
-    public function we_can_get_the_prometheus_metrics_stats(): void
-    {
-        $this->withoutExceptionHandling();
-        $labs = Lab::factory()->count(3)->create();
-        $labs->each(function ($lab) {
-            Machine::factory()->count(3)->create(['lab_id' => $lab->id]);
-        });
+    $response = $this->get('/metrics');
 
-        $response = $this->get('/metrics');
-
-        $response->assertOk();
-        $response->assertSee($labs->first()->name);
-    }
-}
+    $response->assertOk();
+    $response->assertSee($labs->first()->name);
+});
