@@ -7,23 +7,25 @@
         "laravel"
     ],
     "license": "MIT",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/ohnotnow/laravel-prometheus-exporter"
+    "repositories": {
+        "flux-pro": {
+            "type": "composer",
+            "url": "https://composer.fluxui.dev"
         }
-    ],
+    },
     "require": {
         "php": "^8.2",
         "appstract/laravel-options": "^6.0",
-        "ohnotnow/laravel-prometheus-exporter": "^2.0",
         "laravel/framework": "^11.41",
         "laravel/horizon": "^5.22",
+        "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.4",
-        "livewire/livewire": "^3.3",
+        "livewire/flux": "^2.2",
+        "livewire/livewire": "^3.5",
         "sentry/sentry-laravel": "^4.3",
-        "titasgailius/terminal": "dev-symfony/process-7.0",
+        "socialiteproviders/keycloak": "^5.3",
+        "titasgailius/terminal": "^1.2",
         "uogsoe/ldap-laravel": "^3.0"
     },
     "require-dev": {
