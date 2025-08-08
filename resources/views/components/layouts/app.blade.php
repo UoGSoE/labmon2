@@ -12,22 +12,34 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    @fluxAppearance
     @livewireStyles
 </head>
 
-<body>
-    <div id="app">
-        @if (Auth::check())
-        @include('layouts.navbar')
-        <main class="container mx-auto px-4">
-            @yield('content')
-        </main>
-        @else
-            @yield('content')
-        @endif
-        <div class="h-16 mt-8 mb-8"></div>
-    </div>
-    @livewireScripts
+<body class="min-h-screen bg-white dark:bg-zinc-800">
+    <flux:header class="lg:hidden">
+
+        <flux:dropdown position="top" alignt="start">
+            <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
+
+            <flux:menu>
+                <flux:menu.radio.group>
+                    <flux:menu.radio checked>Olivia Martin</flux:menu.radio>
+                    <flux:menu.radio>Truly Delta</flux:menu.radio>
+                </flux:menu.radio.group>
+
+                <flux:menu.separator />
+
+                <flux:menu.item icon="arrow-right-start-on-rectangle">Logout</flux:menu.item>
+            </flux:menu>
+        </flux:dropdown>
+    </flux:header>
+
+    <flux:main>
+        @yield('content')
+    </flux:main>
+
+    @fluxScripts
     @stack('scripts')
 </body>
 
