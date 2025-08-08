@@ -18,8 +18,8 @@
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
     <flux:header class="bg-white border-b border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
+            <div class="flex flex-col md:flex-row justify-between items-center py-4 w-full">
+              <div class="flex gap-6">
                 <flux:heading size="lg">{{ config('app.name', 'LabMon') }}</flux:heading>
 
                 <nav class="hidden md:flex space-x-8">
@@ -27,15 +27,12 @@
                     <a href="{{ route('machine.index') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Machines</a>
                     <a href="{{ route('options.edit') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Options</a>
                 </nav>
+              </div>
 
-                <flux:dropdown position="bottom" align="end">
-                    <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
-                    <flux:menu>
-                        <flux:menu.item icon="arrow-right-start-on-rectangle">Logout</flux:menu.item>
-                    </flux:menu>
-                </flux:dropdown>
+              <div>
+                <flux:button size="sm" inset>Log Out</flux:button>
+              </div>
             </div>
-        </div>
     </flux:header>
 
     <flux:main>
