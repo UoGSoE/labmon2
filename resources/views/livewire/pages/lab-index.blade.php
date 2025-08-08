@@ -2,7 +2,7 @@
     <div class="mb-6">
         <div class="flex justify-between items-center">
             <flux:heading size="xl">Lab List</flux:heading>
-            
+
             {{-- New Lab Creation Form --}}
             <div>
                 @if (!$editing)
@@ -11,20 +11,20 @@
                     </flux:button>
                 @else
                     <div class="space-y-4">
-                        @error('labName') 
+                        @error('labName')
                             <flux:text variant="danger">{{ $message }}</flux:text>
                         @enderror
-                        
+
                         <div class="flex gap-4 items-end">
                             <div class="flex-1">
-                                <flux:input 
-                                    wire:model.live="labName" 
-                                    wire:keydown.enter="saveLab" 
+                                <flux:input
+                                    wire:model.live="labName"
+                                    wire:keydown.enter="saveLab"
                                     label="Lab Name"
                                     placeholder="Lab name..."
                                 />
                             </div>
-                            
+
                             <div class="flex-1">
                                 <flux:select wire:model.live="school" label="School">
                                     <option value="">Select school</option>
@@ -33,7 +33,7 @@
                                     @endforeach
                                 </flux:select>
                             </div>
-                            
+
                             <div class="flex gap-2">
                                 <flux:button wire:click="saveLab" variant="primary">
                                     Save
@@ -62,7 +62,7 @@
                 <flux:table.column>Lab</flux:table.column>
                 <flux:table.column>Machines</flux:table.column>
                 <flux:table.column>Online</flux:table.column>
-                <flux:table.column>Options</flux:table.column>
+                <flux:table.column align="end">Options</flux:table.column>
             </flux:table.columns>
 
             <flux:table.rows>
@@ -77,8 +77,10 @@
                     <flux:table.cell>
                         <flux:text>{{ $lab->online_count }}</flux:text>
                     </flux:table.cell>
-                    <flux:table.cell>
-                        <div class="flex gap-2">
+                    <flux:table.cell align="end">
+                        <div class="flex">
+                           <flux:spacer />
+                        <flux:button.group>
                             <flux:button
                                 wire:click="toggleGraphable({{$lab->id}})"
                                 variant="{{ $lab->is_on_graphs ? 'primary' : 'subtle' }}"
@@ -103,6 +105,7 @@
                                 tooltip="{{ $lab->name }} Always remote access"
                                 inset="top bottom"
                             />
+                        </flux:button.group>
                         </div>
                     </flux:table.cell>
                 </flux:table.row>
