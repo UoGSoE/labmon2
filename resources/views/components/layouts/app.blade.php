@@ -17,29 +17,33 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:header class="lg:hidden">
+    <flux:header class="bg-white border-b border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <flux:heading size="lg">{{ config('app.name', 'LabMon') }}</flux:heading>
 
-        <flux:dropdown position="top" alignt="start">
-            <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
+                <nav class="hidden md:flex space-x-8">
+                    <a href="{{ route('home') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Labs</a>
+                    <a href="{{ route('machine.index') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Machines</a>
+                    <a href="{{ route('options.edit') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Options</a>
+                </nav>
 
-            <flux:menu>
-                <flux:menu.radio.group>
-                    <flux:menu.radio checked>Olivia Martin</flux:menu.radio>
-                    <flux:menu.radio>Truly Delta</flux:menu.radio>
-                </flux:menu.radio.group>
-
-                <flux:menu.separator />
-
-                <flux:menu.item icon="arrow-right-start-on-rectangle">Logout</flux:menu.item>
-            </flux:menu>
-        </flux:dropdown>
+                <flux:dropdown position="bottom" align="end">
+                    <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
+                    <flux:menu>
+                        <flux:menu.item icon="arrow-right-start-on-rectangle">Logout</flux:menu.item>
+                    </flux:menu>
+                </flux:dropdown>
+            </div>
+        </div>
     </flux:header>
 
-    <flux:main>
-        @yield('content')
+    <flux:main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {{ $slot }}
     </flux:main>
 
     @fluxScripts
+    @livewireScripts
     @stack('scripts')
 </body>
 

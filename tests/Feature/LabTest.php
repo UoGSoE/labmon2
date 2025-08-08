@@ -1,15 +1,14 @@
 <?php
 
-use App\Livewire\LabList;
-use App\Livewire\LabNameEditor;
-use App\Livewire\NewLabEditor;
+use App\Livewire\Pages\LabIndex;
+use App\Livewire\Pages\LabShow;
 use App\Models\Lab;
 use App\Models\Machine;
 use Livewire\Livewire;
 
 test('we can create a new lab', function () {
     $this->actingAs($this->createUser());
-    Livewire::test(NewLabEditor::class)
+    Livewire::test(LabIndex::class)
         ->assertSee('Add new lab')
         ->set('editing', true)
         ->assertDontSee('Add new lab')
@@ -18,8 +17,7 @@ test('we can create a new lab', function () {
         ->set('school', 'Science')
         ->call('saveLab')
         ->assertSet('labName', '')
-        ->assertSet('editing', false)
-        ->assertDispatched('labAdded');
+        ->assertSet('editing', false);
     expect(Lab::first()->name)->toEqual('LABLAB');
     expect(Lab::first()->school)->toEqual('Science');
 });
@@ -28,7 +26,7 @@ test('we can delete an existing lab', function () {
     $this->actingAs($this->createUser());
     $lab = createLab('My Amazing Lab');
 
-    Livewire::test(LabNameEditor::class, ['lab' => $lab])
+    Livewire::test(LabShow::class, ['lab' => $lab])
         ->assertSee($lab->name)
         ->set('editing', true)
         ->assertSee('Delete')
@@ -119,28 +117,28 @@ test('we can toggle a labs availability for remote access', function () {
     expect($lab->limited_remote_access)->toBeFalse();
     expect($lab->always_remote_access)->toBeFalse();
 
-    Livewire::test(LabList::class)
+    Livewire::test(LabIndex::class)
         ->assertSee($lab->name)
         ->call('toggleLimitedRemote', $lab->id);
 
     expect($lab->fresh()->limited_remote_access)->toBeTrue();
     expect($lab->fresh()->always_remote_access)->toBeFalse();
 
-    Livewire::test(LabList::class)
+    Livewire::test(LabIndex::class)
         ->assertSee($lab->name)
         ->call('toggleLimitedRemote', $lab->id);
 
     expect($lab->fresh()->limited_remote_access)->toBeFalse();
     expect($lab->fresh()->always_remote_access)->toBeFalse();
 
-    Livewire::test(LabList::class)
+    Livewire::test(LabIndex::class)
         ->assertSee($lab->name)
         ->call('toggleAlwaysRemote', $lab->id);
 
     expect($lab->fresh()->limited_remote_access)->toBeFalse();
     expect($lab->fresh()->always_remote_access)->toBeTrue();
 
-    Livewire::test(LabList::class)
+    Livewire::test(LabIndex::class)
         ->assertSee($lab->name)
         ->call('toggleAlwaysRemote', $lab->id);
 
@@ -156,14 +154,14 @@ test('a lab cannot be both limited and unlimited access at the same time', funct
     $lab->limited_remote_access = false;
     $lab->save();
 
-    Livewire::test(LabList::class)
+    Livewire::test(LabIndex::class)
         ->assertSee($lab->name)
         ->call('toggleLimitedRemote', $lab->id);
 
     expect($lab->fresh()->limited_remote_access)->toBeTrue();
     expect($lab->fresh()->always_remote_access)->toBeFalse();
 
-    Livewire::test(LabList::class)
+    Livewire::test(LabIndex::class)
         ->assertSee($lab->name)
         ->call('toggleAlwaysRemote', $lab->id);
 

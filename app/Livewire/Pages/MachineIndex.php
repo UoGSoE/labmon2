@@ -1,85 +1,80 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Pages;
 
 use App\Models\Machine;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class MachineList extends Component
+#[Layout('components.layouts.app')]
+#[Title('All Machines')]
+class MachineIndex extends Component
 {
-    public $machines;
-
-    public $labId;
-
+    // Machine list properties
     public $filter = '';
-
     public $statusFilter = '';
-
     public $osFilter = '';
-
     public $includeMeta = false;
-
-    public function mount($machines = null, $labId = null)
-    {
-        if (! $machines) {
-            $machines = collect([]);
-        }
-        $this->machines = $machines;
-        $this->labId = $labId;
-    }
 
     public function render()
     {
-        return view('livewire.machine-list');
+        $machines = $this->getMachines();
+        
+        return view('livewire.pages.machine-index', [
+            'machines' => $machines,
+        ]);
     }
 
-    public function updatedFilter($value)
-    {
-        $this->getMachines();
-    }
-
-    public function updatedIncludeMeta($value)
-    {
-        $this->getMachines();
-    }
-
-    public function updatedStatusFilter($value)
-    {
-        $this->getMachines();
-    }
-
-    public function updatedOsFilter($value)
-    {
-        $this->getMachines();
-    }
-
+    // Machine list methods
     public function getMachines()
     {
         $query = Machine::query();
+        
         if ($this->filter) {
             $query = $query->where('ip', 'like', "%{$this->filter}%")
                 ->orWhere('name', 'like', "%{$this->filter}%");
         }
+        
         if ($this->includeMeta) {
             $query = $query->orWhere('meta', 'like', "%{$this->filter}%");
         }
-        if ($this->labId) {
-            $query = $query->where('lab_id', '=', $this->labId);
-        }
+        
         if ($this->statusFilter) {
             $query = $this->mapStatusFilterToQuery($query);
         }
+        
         if ($this->osFilter) {
             $query = $query->where('user_agent', 'like', "{$this->osFilter}%");
         }
-        $this->machines = $query->orderBy('ip')->get();
+        
+        return $query->orderBy('ip')->get();
+    }
+
+    public function updatedFilter($value)
+    {
+        // This will trigger re-rendering
+    }
+
+    public function updatedIncludeMeta($value)
+    {
+        // This will trigger re-rendering
+    }
+
+    public function updatedStatusFilter($value)
+    {
+        // This will trigger re-rendering
+    }
+
+    public function updatedOsFilter($value)
+    {
+        // This will trigger re-rendering
     }
 
     public function toggleLocked($id)
     {
         $machine = Machine::findOrFail($id);
         $machine->toggleLocked();
-        $this->getMachines();
     }
 
     protected function mapStatusFilterToQuery($query)
@@ -96,7 +91,5 @@ class MachineList extends Component
             default:
                 return $query;
         }
-
-        return $query;
     }
 }

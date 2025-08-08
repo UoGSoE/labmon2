@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\Pages\MachineIndex;
+use App\Livewire\Pages\LabShow;
 use App\Models\Lab;
 use App\Models\Machine;
 use App\Models\User;
@@ -42,7 +44,7 @@ test('we can filter the list of machines by name or ip address', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('machine-list', ['machines' => [$machine1, $machine2]])
+    Livewire::test(MachineIndex::class)
         ->assertSee('test.example.com')
         ->assertSee('jenny.something.org')
         ->set('filter', 'test')
@@ -60,7 +62,7 @@ test('we can optionally filter the list of machines by meta data', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('machine-list', ['machines' => [$machine1, $machine2]])
+    Livewire::test(MachineIndex::class)
         ->assertSee('test.example.com')
         ->assertSee('jenny.something.org')
         ->set('filter', 'spoons')
@@ -79,7 +81,7 @@ test('we can filter the list of machines by their status', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('machine-list', ['machines' => [$machine1, $machine2, $machine3, $machine4]])
+    Livewire::test(MachineIndex::class)
         ->assertSee('test.example.com')
         ->assertSee('jenny.something.org')
         ->assertSee('cat.example.com')

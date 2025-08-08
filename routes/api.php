@@ -16,8 +16,8 @@ Route::get('goodbye/{ip?}', [\App\Http\Controllers\Api\MachineController::class,
 
 Route::post('bzzz/{ip?}', [\App\Http\Controllers\Api\MachineController::class, 'update'])->name('api.machine.update');
 
-Route::post('lab', [\App\Http\Controllers\LabController::class, 'store'])->name('api.lab.store');
-Route::delete('lab/{name}', [\App\Http\Controllers\LabController::class, 'destroy'])->name('api.lab.destroy');
+Route::post('lab', [\App\Http\Controllers\Api\LabController::class, 'store'])->name('api.lab.store');
+Route::delete('lab/{name}', [\App\Http\Controllers\Api\LabController::class, 'destroy'])->name('api.lab.destroy');
 
 Route::get('labstats/busy/{name}', [\App\Http\Controllers\Api\LabBusyController::class, 'show'])->name('api.lab.busy');
 Route::get('labstats/dates', [\App\Http\Controllers\Api\LabStatDateController::class, 'index'])->name('api.labstats.dates');

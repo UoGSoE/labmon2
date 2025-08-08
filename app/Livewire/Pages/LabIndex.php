@@ -1,33 +1,50 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Pages;
 
 use App\Models\Lab;
+use Illuminate\Validation\Rule;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class LabList extends Component
+#[Layout('components.layouts.app')]
+#[Title('Labs')]
+class LabIndex extends Component
 {
-    public $labs;
-
-    protected $listeners = ['labAdded' => 'refreshLabList'];
+    // New lab creation properties
+    public $editing = false;
+    public $labName = '';
+    public $school = '';
 
     public function render()
     {
-        $this->labs = Lab::withCount([
+        $labs = Lab::withCount([
             'members',
             'members as online_count' => fn ($query) => $query->online(),
         ])->orderBy('name')->get();
 
-        return view('livewire.lab-list', [
-            'labs' => $this->labs,
+        return view('livewire.pages.lab-index', [
+            'labs' => $labs,
         ]);
     }
 
-    public function refreshLabList()
+    // New lab creation methods
+    public function saveLab()
     {
-        $this->labs = Lab::withCount('members')->orderBy('name')->get();
+        $this->validate([
+            'labName' => ['required', Rule::unique('labs', 'name')],
+            'school' => ['required'],
+        ]);
+
+        Lab::create(['name' => $this->labName, 'school' => $this->school]);
+        $this->editing = false;
+        $this->labName = '';
+        $this->school = '';
+        $this->dispatch('refreshLabs');
     }
 
+    // Lab management methods
     public function toggleGraphable($id)
     {
         $lab = Lab::findOrFail($id);
