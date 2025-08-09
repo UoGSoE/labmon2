@@ -17,10 +17,14 @@ class MachineIndex extends Component
     public $osFilter = '';
     public $includeMeta = false;
 
+    // Modal state and selected machine details
+    public bool $showMachineModal = false;
+    public ?array $selectedMachine = null;
+
     public function render()
     {
         $machines = $this->getMachines();
-        
+
         return view('livewire.pages.machine-index', [
             'machines' => $machines,
         ]);
@@ -30,24 +34,24 @@ class MachineIndex extends Component
     public function getMachines()
     {
         $query = Machine::query();
-        
+
         if ($this->filter) {
             $query = $query->where('ip', 'like', "%{$this->filter}%")
                 ->orWhere('name', 'like', "%{$this->filter}%");
         }
-        
+
         if ($this->includeMeta) {
             $query = $query->orWhere('meta', 'like', "%{$this->filter}%");
         }
-        
+
         if ($this->statusFilter) {
             $query = $this->mapStatusFilterToQuery($query);
         }
-        
+
         if ($this->osFilter) {
             $query = $query->where('user_agent', 'like', "{$this->osFilter}%");
         }
-        
+
         return $query->orderBy('ip')->get();
     }
 
@@ -75,6 +79,19 @@ class MachineIndex extends Component
     {
         $machine = Machine::findOrFail($id);
         $machine->toggleLocked();
+    }
+
+    public function openMachineModal(int $id): void
+    {
+        $machine = Machine::findOrFail($id);
+        $this->selectedMachine = $machine->toArray();
+        $this->showMachineModal = true;
+    }
+
+    public function closeMachineModal(): void
+    {
+        $this->showMachineModal = false;
+        $this->selectedMachine = null;
     }
 
     protected function mapStatusFilterToQuery($query)

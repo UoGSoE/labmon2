@@ -12,7 +12,7 @@ use Livewire\Component;
 class LabShow extends Component
 {
     public Lab $lab;
-    
+
     // Lab name editing properties
     public $labName;
     public $school;
@@ -24,6 +24,10 @@ class LabShow extends Component
     public $statusFilter = '';
     public $osFilter = '';
     public $includeMeta = false;
+
+    // Modal state and selected machine details
+    public bool $showMachineModal = false;
+    public ?array $selectedMachine = null;
 
     public function mount(Lab $lab)
     {
@@ -40,7 +44,7 @@ class LabShow extends Component
     public function render()
     {
         $machines = $this->getMachines();
-        
+
         return view('livewire.pages.lab-show', [
             'machines' => $machines,
         ])->title($this->getTitle());
@@ -69,26 +73,26 @@ class LabShow extends Component
     public function getMachines()
     {
         $query = $this->lab->members();
-        
+
         if ($this->filter) {
             $query = $query->where(function($q) {
                 $q->where('ip', 'like', "%{$this->filter}%")
                   ->orWhere('name', 'like', "%{$this->filter}%");
             });
         }
-        
+
         if ($this->includeMeta && $this->filter) {
             $query = $query->orWhere('meta', 'like', "%{$this->filter}%");
         }
-        
+
         if ($this->statusFilter) {
             $query = $this->mapStatusFilterToQuery($query);
         }
-        
+
         if ($this->osFilter) {
             $query = $query->where('user_agent', 'like', "{$this->osFilter}%");
         }
-        
+
         return $query->orderBy('ip')->get();
     }
 
@@ -116,6 +120,19 @@ class LabShow extends Component
     {
         $machine = Machine::findOrFail($id);
         $machine->toggleLocked();
+    }
+
+    public function openMachineModal(int $id): void
+    {
+        $machine = Machine::findOrFail($id);
+        $this->selectedMachine = $machine->toArray();
+        $this->showMachineModal = true;
+    }
+
+    public function closeMachineModal(): void
+    {
+        $this->showMachineModal = false;
+        $this->selectedMachine = null;
     }
 
     protected function mapStatusFilterToQuery($query)
