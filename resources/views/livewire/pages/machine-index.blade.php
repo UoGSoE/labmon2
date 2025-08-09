@@ -43,12 +43,12 @@
     </div>
 
     {{-- Machine Cards --}}
-    <div x-cloak x-data="{ modalMachine: null }" @updatemachine="modalMachine = $event.detail.machine">
+    <div x-cloak x-data="{ modalMachine: null }" @updatemachine="modalMachine = $event.detail.machine; $flux.modal('machine-detail').show()">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
             @foreach ($machines as $machine)
             <flux:card class="relative {{ $machine->logged_in ? 'border-green-500' : '' }}">
                 <div class="flex items-start gap-3" x-data="{ machine: {{ json_encode($machine) }} }">
-                    <button @click="$dispatch('updatemachine', {machine: machine})" class="cursor-pointer">
+                    <button x-on:click="alert('clicked'); $dispatch('updatemachine', {machine: machine})" class="cursor-pointer">
                         <flux:icon.computer-desktop
                             class="w-12 h-12 {{ $machine->logged_in ? 'text-green-500 hover:text-green-600' : 'text-zinc-300 hover:text-zinc-400' }}"
                         />
@@ -83,8 +83,14 @@
                                 <flux:text variant="subtle" size="xs" class="mt-1">Linux</flux:text>
                             @else
                                 <span>
-                                    <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
-  <path d="M112,144v51.63672a7.9983,7.9983,0,0,1-9.43115,7.87061l-64-11.63623A8.00019,8.00019,0,0,1,32,184V144a8.00008,8.00008,0,0,1,8-8h64A8.00008,8.00008,0,0,1,112,144ZM109.126,54.2217a7.995,7.995,0,0,0-6.55713-1.729l-64,11.63623A8.00017,8.00017,0,0,0,32,72v40a8.00008,8.00008,0,0,0,8,8h64a8.00008,8.00008,0,0,0,8-8V60.3633A7.99853,7.99853,0,0,0,109.126,54.2217Zm112-20.36377a7.99714,7.99714,0,0,0-6.55713-1.729l-80,14.5459A7.99965,7.99965,0,0,0,128,54.54543V112a8.00008,8.00008,0,0,0,8,8h80a8.00008,8.00008,0,0,0,8-8V40A8.00028,8.00028,0,0,0,221.126,33.85793ZM216,136H136a8.00008,8.00008,0,0,0-8,8v57.45459a7.99967,7.99967,0,0,0,6.56885,7.87061l80,14.5459A8.0001,8.0001,0,0,0,224,216V144A8.00008,8.00008,0,0,0,216,136Z"/>
+                                    <svg
+                                        fill="currentColor"
+                                        class="w-6 h-6"
+                                        viewBox="0 0 256 256"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path d="M112,144v51.63672a7.9983,7.9983,0,0,1-9.43115,7.87061l-64-11.63623A8.00019,8.00019,0,0,1,32,184V144a8.00008,8.00008,0,0,1,8-8h64A8.00008,8.00008,0,0,1,112,144ZM109.126,54.2217a7.995,7.995,0,0,0-6.55713-1.729l-64,11.63623A8.00017,8.00017,0,0,0,32,72v40a8.00008,8.00008,0,0,0,8,8h64a8.00008,8.00008,0,0,0,8-8V60.3633A7.99853,7.99853,0,0,0,109.126,54.2217Zm112-20.36377a7.99714,7.99714,0,0,0-6.55713-1.729l-80,14.5459A7.99965,7.99965,0,0,0,128,54.54543V112a8.00008,8.00008,0,0,0,8,8h80a8.00008,8.00008,0,0,0,8-8V40A8.00028,8.00028,0,0,0,221.126,33.85793ZM216,136H136a8.00008,8.00008,0,0,0-8,8v57.45459a7.99967,7.99967,0,0,0,6.56885,7.87061l80,14.5459A8.0001,8.0001,0,0,0,224,216V144A8.00008,8.00008,0,0,0,216,136Z"/>
+                                    </svg>
                                 </span>
                                 <flux:text variant="subtle" size="xs" class="mt-1">Windows</flux:text>
                             @endif
@@ -99,7 +105,12 @@
             @endforeach
         </div>
 
-        <flux:modal name="machine-detail" x-show="modalMachine">
+        <flux:modal
+            name="machine-detail"
+            variant="flyout"
+            @close="modalMachine = null"
+            @cancel="modalMachine = null"
+        >
             <div class="space-y-6">
                 <div>
                     <flux:heading size="lg">Machine Details</flux:heading>
@@ -111,7 +122,9 @@
                 </div>
 
                 <div class="flex justify-end">
-                    <flux:button @click="modalMachine = null">Close</flux:button>
+                    <flux:modal.close>
+                        <flux:button>Close</flux:button>
+                    </flux:modal.close>
                 </div>
             </div>
         </flux:modal>

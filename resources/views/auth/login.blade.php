@@ -1,37 +1,51 @@
-@extends('components.layouts.app')
+<x-layouts.app>
+    <div class="py-16 flex items-center justify-center">
+        <div class="w-full max-w-md">
+            <flux:card class="space-y-6">
+                <div>
+                    <flux:heading size="lg">Sign in</flux:heading>
+                    <flux:subheading>Enter your credentials to access your account.</flux:subheading>
+                </div>
 
-@section('content')
-<div class="flex items-center justify-center h-screen">
-    <div class="shadow-lg w-1/4">
-        <div class="bg-blue-500 h-full text-white text-4xl tracking-wide font-bold p-8 rounded-t-lg text-center">
-            Labmon
+                @if ($errors->any())
+                    <flux:callout variant="danger" icon="exclamation-triangle">
+                        <flux:callout.heading>Unable to sign in</flux:callout.heading>
+                        <flux:callout.text>
+                            <ul class="list-disc pl-5 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </flux:callout.text>
+                    </flux:callout>
+                @endif
+
+                <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                    @csrf
+
+                    <flux:input
+                        name="username"
+                        id="username"
+                        label="Username"
+                        autocomplete="username"
+                        placeholder="Username"
+                        icon="user"
+                    />
+
+                    <flux:input
+                        type="password"
+                        name="password"
+                        id="password"
+                        label="Password"
+                        autocomplete="current-password"
+                        placeholder="••••••••"
+                        viewable
+                        icon="lock-closed"
+                    />
+
+                    <flux:button type="submit" variant="primary" class="w-full">Sign in</flux:button>
+                </form>
+            </flux:card>
         </div>
-        <form method="POST" action="{{ route('login') }}" class="bg-white rounded px-8 pt-6 pb-8 mb-4">
-            @csrf
-            @if (count($errors))
-                @foreach ($errors->all() as $e)
-                  {{ $e }}
-                @endforeach
-            @endif
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                    Username
-                </label>
-                <input name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username">
-            </div>
-            <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                    Password
-                </label>
-                <input name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************">
-            </div>
-            <div class="flex items-center justify-between">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-                    Sign In
-                </button>
-            </div>
-        </form>
     </div>
-</div>
-
-@endsection
+</x-layouts.app>

@@ -22,16 +22,20 @@
               <div class="flex gap-6">
                 <flux:heading size="lg">{{ config('app.name', 'LabMon') }}</flux:heading>
 
-                <nav class="hidden md:flex space-x-8">
-                    <a href="{{ route('home') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Labs</a>
-                    <a href="{{ route('machine.index') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Machines</a>
-                    <a href="{{ route('options.edit') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Options</a>
-                </nav>
+                @auth
+                    <nav class="hidden md:flex space-x-8">
+                        <a href="{{ route('home') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Labs</a>
+                        <a href="{{ route('machine.index') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Machines</a>
+                        <a href="{{ route('options.edit') }}" class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">Options</a>
+                    </nav>
+                @endauth
               </div>
 
-              <div>
-                <flux:button size="sm" inset>Log Out</flux:button>
-              </div>
+              @auth
+                  <div>
+                    <flux:button size="sm" inset>Log Out</flux:button>
+                  </div>
+              @endauth
             </div>
     </flux:header>
 
