@@ -1,20 +1,26 @@
-@extends('components.layouts.app')
+<x-layouts.app>
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <flux:card class="space-y-6">
+            <div>
+                <flux:heading size="lg">Edit Members of Lab {{ $lab->name }}</flux:heading>
+                <flux:subheading>Provide one IP per line.</flux:subheading>
+            </div>
 
-@section('content')
+            <form method="POST" action="{{ route('lab.members.update', $lab->id) }}" class="space-y-6">
+                @csrf
 
-<div class=" border-b border-blue-300 mb-8 flex justify-between items-center">
-    <h1 class="text-3xl">Edit Members of Lab {{ $lab->name }}</h1>
-</div>
+                <flux:textarea
+                    name="ips"
+                    label="IP addresses"
+                    rows="12"
+                    placeholder="10.0.0.12\n10.0.0.13"
+                >{{ $lab->members->pluck('ip')->join("\n") }}</flux:textarea>
 
-<form action="{{ route('lab.members.update', $lab->id) }}" method="POST">
-    @csrf
-    <textarea name="ips" class="mb-8 shadow h-64 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-loose focus:outline-none focus:shadow-outline">{{ $lab->members->pluck("ip")->join("\n") }}</textarea>
-    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Update
-    </button>
-    <a href="{{ route('lab.show', $lab->id) }}" class="bg-transparent text-blue-700 font-semibold hover:text-blue-500 py-2 px-4 border-transparent rounded">
-        Cancel
-    </a>
-</form>
-
-@endsection
+                <div class="flex gap-2">
+                    <flux:button type="submit" variant="primary">Update</flux:button>
+                    <flux:button href="{{ route('lab.show', $lab->id) }}" variant="ghost">Cancel</flux:button>
+                </div>
+            </form>
+        </flux:card>
+    </div>
+</x-layouts.app>
