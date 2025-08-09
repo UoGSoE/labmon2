@@ -39,16 +39,17 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         @foreach ($machines as $machine)
-        <flux:card class="relative {{ $machine->logged_in ? 'border-green-500' : '' }}">
+        <flux:card>
             <div class="flex items-start gap-3">
-                <button wire:click="openMachineModal({{ $machine->id }})" class="cursor-pointer">
-                    <flux:icon.computer-desktop
-                        class="w-12 h-12 {{ $machine->logged_in ? 'text-green-500 hover:text-green-600' : 'text-zinc-300 hover:text-zinc-400' }}"
-                    />
-                </button>
-
                 <div class="flex-1 min-w-0 cursor-pointer" wire:click="openMachineModal({{ $machine->id }})">
-                    <flux:heading size="sm" class="mb-1">{{ $machine->ip }}</flux:heading>
+
+                    <flux:heading size="sm" class="mb-1 flex items-center gap-2">
+                        <flux:icon.computer-desktop
+                            class="size-8 {{ $machine->logged_in ? 'text-green-500 hover:text-green-600' : 'text-zinc-300 hover:text-zinc-400' }}"
+                        />
+
+                        {{ $machine->ip }}
+                    </flux:heading>
 
                     <flux:text variant="subtle" class="mb-2">{{ $machine->name ?? 'No name' }}</flux:text>
 
@@ -58,7 +59,7 @@
                     </flux:text>
                 </div>
 
-                <div class="flex flex-col items-end gap-2">
+                <div class="flex flex-col items-center gap-2">
                     <flux:button
                         wire:click="toggleLocked({{ $machine->id }})"
                         variant="{{ $machine->is_locked ? 'primary' : 'subtle' }}"
@@ -88,12 +89,10 @@
                             <flux:text variant="subtle" size="xs" class="mt-1">Windows</flux:text>
                         @endif
                     </div>
+
                 </div>
             </div>
 
-            @if ($machine->logged_in)
-                <flux:badge variant="solid" color="green" class="absolute top-2 left-2" size="sm">Online</flux:badge>
-            @endif
         </flux:card>
         @endforeach
     </div>
@@ -110,9 +109,9 @@
                 <flux:text variant="subtle">{{ data_get($selectedMachine, 'ip') }}</flux:text>
             </div>
 
-            <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4 overflow-auto">
+            <flux:card>
                 <pre class="text-sm">{{ json_encode($selectedMachine, JSON_PRETTY_PRINT) }}</pre>
-            </div>
+            </flux:card>
 
             <div class="flex justify-end">
                 <flux:modal.close>
