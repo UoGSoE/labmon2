@@ -75,7 +75,7 @@ class SSOController extends Controller
             abort(403, 'Authentication failed');
         }
 
-        Auth::login($user, true);
+        Auth::login($user, false);
         session()->regenerate();  // regenerate the session ID to prevent session fixation attacks
 
         return $this->getSuccessRedirect();
@@ -106,8 +106,8 @@ class SSOController extends Controller
         return [
             'email' => strtolower(trim($ssoUser->email)),
             'username' => strtolower(trim($ssoUser->nickname)),
-            'surname' => trim($ssoUser->user['family_name']),
-            'forenames' => trim($ssoUser->user['given_name']),
+            'surname' => trim(data_get($ssoUser->user, 'family_name', '')),
+            'forenames' => trim(data_get($ssoUser->user, 'given_name', '')),
             'is_staff' => $this->isStaff($ssoUser),
         ];
     }
@@ -137,6 +137,6 @@ class SSOController extends Controller
     private function looksLikeMatric(string $username): bool
     {
         // Matric numbers are 7 digits (for now), followed by a letter
-        return preg_match('/^[0-9]{7}[a-z]?$/', strtolower(trim($username))) === 1;
+        return preg_match('/^[0-9]{7}[a-z]$/i', strtolower(trim($username))) === 1;
     }
 }

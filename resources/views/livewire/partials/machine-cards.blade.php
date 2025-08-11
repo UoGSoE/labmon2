@@ -10,7 +10,7 @@
             </div>
             <div>
                 <flux:checkbox wire:model.live="includeMeta" label="Search metadata?" />
-                <flux:checkbox x-on:click="showFilters = !showFilters" label="Advanced Filters" />
+                <flux:checkbox x-on:click="showFilters = !showFilters" label="More Filters" />
             </div>
         </div>
 
