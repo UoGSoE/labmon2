@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+    $event->extendSocialite('keycloak', \SocialiteProviders\Keycloak\Provider::class);
+        });
         $this->app->bind('App\Process', function ($app, $args) {
             return new \Symfony\Component\Process\Process($args);
         });
