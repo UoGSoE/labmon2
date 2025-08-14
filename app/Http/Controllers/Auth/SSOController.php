@@ -22,7 +22,7 @@ class SSOController extends Controller
 
     public function loggedOut() : View
     {
-        return view('auth.logged-out');
+        return view('auth.logged_out');
     }
 
     public function localLogin(Request $request) : RedirectResponse|LivewireRedirector
