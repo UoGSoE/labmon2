@@ -2,14 +2,26 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/login', [\App\Http\Controllers\Auth\SSOController::class, 'login'])->name('login');
-Route::post('/login', [\App\Http\Controllers\Auth\SSOController::class, 'doLocalLogin'])->name('login.do');
-Route::get('/auth/callback', [\App\Http\Controllers\Auth\SSOController::class, 'handleProviderCallback'])->name('sso.callback');
+// Login routes - shows login page with both local and SSO options
+Route::middleware('guest')->group(function () {
+    // Redirects to our login page if not authenticated
+    Route::get('/', function () {
+        return redirect()->route('login');
+    });
 
-#Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('auth.login');
-#Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'doLogin'])->name('auth.do_login');
-Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
-Route::get('/logged_out', [\App\Http\Controllers\Auth\LoginController::class, 'loggedOut'])->name('logged_out');
+    // This is our own log in page - ideally with an option to log in locally for local/dev - and of course the "Login with SSO" button
+    Route::get('/login', [\App\Http\Controllers\Auth\SSOController::class, 'login'])->name('login');
+    // Or as a Livewire component if you prefer
+    // Route::get('/login', App\Livewire\Login::class)->name('login');
+});
+
+// SSO specific routes
+Route::post('/login', [\App\Http\Controllers\Auth\SSOController::class, 'localLogin'])->name('login.local');
+Route::get('/login/sso', [\App\Http\Controllers\Auth\SSOController::class, 'ssoLogin'])->name('login.sso');
+Route::get('/auth/callback', [\App\Http\Controllers\Auth\SSOController::class, 'handleProviderCallback'])->name('sso.callback');
+Route::post('/logout', [\App\Http\Controllers\Auth\SSOController::class, 'logout'])->name('auth.logout');
+Route::get('/logged-out', [\App\Http\Controllers\Auth\SSOController::class, 'loggedOut'])->name('logged_out');
+
 Route::get('unauthorised', [\App\Http\Controllers\UnauthorisedController::class, 'show'])->name('unauthorised');
 
 Route::middleware('auth', 'allowed')->group(function () {
@@ -19,13 +31,13 @@ Route::middleware('auth', 'allowed')->group(function () {
     Route::get('lab/{lab}', \App\Livewire\Pages\LabShow::class)->name('lab.show');
     Route::get('machines', \App\Livewire\Pages\MachineIndex::class)->name('machine.index');
     Route::get('options', \App\Livewire\Pages\Options::class)->name('options.edit');
-    
+
     // Options update route for backward compatibility with tests
     Route::post('options', function(\Illuminate\Http\Request $request) {
         // Handle traditional form submission for tests
         option(['remote-start-hour' => $request->input('remote-start-hour')]);
         option(['remote-end-hour' => $request->input('remote-end-hour')]);
-        
+
         // Handle date ranges
         if ($request->input('remote-summer')) {
             $parts = explode(' - ', $request->input('remote-summer'));
@@ -48,12 +60,12 @@ Route::middleware('auth', 'allowed')->group(function () {
                 option(['remote-end-easter' => $parts[1]]);
             }
         }
-        
+
         // Handle allowed users
         if ($request->input('allowed_guids')) {
             \App\Models\User::setAllowedUsers(auth()->user(), $request->input('allowed_guids'));
         }
-        
+
         return redirect('/');
     })->name('options.update');
 

@@ -35,7 +35,7 @@
                                 <flux:navmenu.item href="{{ route('home') }}" icon="building-office-2">Labs</flux:navmenu.item>
                                 <flux:navmenu.item href="{{ route('machine.index') }}" icon="computer-desktop">Machines</flux:navmenu.item>
                                 <flux:navmenu.item href="{{ route('options.edit') }}" icon="cog-6-tooth">Options</flux:navmenu.item>
-                                <flux:navmenu.item href="{{ route('logout') }}" icon="circle-stack">Log Out</flux:navmenu.item>
+                                <flux:navmenu.item href="{{ route('auth.logout') }}" icon="circle-stack">Log Out</flux:navmenu.item>
                             </flux:navmenu>
                         </flux:dropdown>
                     </div>
@@ -47,7 +47,7 @@
                     </nav>
 
                     <div class="hidden md:block">
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('auth.logout') }}">
                             @csrf
                             <flux:button size="xs" class="cursor-pointer" type="submit" inset>Log Out</flux:button>
                         </form>
