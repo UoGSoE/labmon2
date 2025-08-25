@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class LoginController extends Controller
 {
@@ -46,7 +46,6 @@ class LoginController extends Controller
         return 'username';
     }
 
-
     public function logout(): RedirectResponse
     {
         Auth::logout();
@@ -59,5 +58,4 @@ class LoginController extends Controller
     {
         return view('auth.logged_out');
     }
-
 }

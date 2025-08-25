@@ -5,7 +5,6 @@ namespace App\Livewire\Pages;
 use App\Models\Lab;
 use App\Models\Machine;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('components.layouts.app')]
@@ -15,18 +14,25 @@ class LabShow extends Component
 
     // Lab name editing properties
     public $labName;
+
     public $school;
+
     public $editing = false;
+
     public $deleteButtonText = 'Delete';
 
     // Machine list properties
     public $filter = '';
+
     public $statusFilter = '';
+
     public $osFilter = '';
+
     public $includeMeta = false;
 
     // Modal state and selected machine details
     public bool $showMachineModal = false;
+
     public ?array $selectedMachine = null;
 
     public function mount(Lab $lab)
@@ -38,7 +44,7 @@ class LabShow extends Component
 
     public function getTitle()
     {
-        return 'Lab: ' . $this->lab->name;
+        return 'Lab: '.$this->lab->name;
     }
 
     public function render()
@@ -62,10 +68,12 @@ class LabShow extends Component
     {
         if ($this->deleteButtonText === 'Delete') {
             $this->deleteButtonText = 'Confirm';
+
             return;
         }
 
         Lab::findOrFail($this->lab->id)->delete();
+
         return redirect('/');
     }
 
@@ -75,9 +83,9 @@ class LabShow extends Component
         $query = $this->lab->members();
 
         if ($this->filter) {
-            $query = $query->where(function($q) {
+            $query = $query->where(function ($q) {
                 $q->where('ip', 'like', "%{$this->filter}%")
-                  ->orWhere('name', 'like', "%{$this->filter}%");
+                    ->orWhere('name', 'like', "%{$this->filter}%");
             });
         }
 

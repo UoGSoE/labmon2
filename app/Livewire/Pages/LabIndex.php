@@ -14,7 +14,9 @@ class LabIndex extends Component
 {
     // New lab creation properties
     public $editing = false;
+
     public $labName = '';
+
     public $school = '';
 
     public function render()

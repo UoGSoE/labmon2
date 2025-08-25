@@ -33,7 +33,7 @@ Route::middleware('auth', 'allowed')->group(function () {
     Route::get('options', \App\Livewire\Pages\Options::class)->name('options.edit');
 
     // Options update route for backward compatibility with tests
-    Route::post('options', function(\Illuminate\Http\Request $request) {
+    Route::post('options', function (\Illuminate\Http\Request $request) {
         // Handle traditional form submission for tests
         option(['remote-start-hour' => $request->input('remote-start-hour')]);
         option(['remote-end-hour' => $request->input('remote-end-hour')]);
@@ -75,7 +75,7 @@ Route::middleware('auth', 'allowed')->group(function () {
 });
 
 // Metrics route (should be handled by prometheus package but adding for tests)
-Route::get('metrics', function() {
+Route::get('metrics', function () {
     $labs = \App\Models\Lab::all();
     $output = "# Metrics endpoint\n";
     foreach ($labs as $lab) {
@@ -83,5 +83,6 @@ Route::get('metrics', function() {
         $output .= "machines_not_in_use{{lab=\"{$lab->name}\"}} {$lab->members()->offline()->count()}\n";
         $output .= "machines_locked{{lab=\"{$lab->name}\"}} {$lab->members()->locked()->count()}\n";
     }
+
     return response($output, 200, ['Content-Type' => 'text/plain']);
 })->name('metrics');

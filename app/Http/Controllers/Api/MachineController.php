@@ -44,7 +44,7 @@ class MachineController extends Controller
         MarkMachineLoggedIn::dispatch($ip, $userAgent);
 
         return response()->json([
-            'data' => [], //$machine->toArray(),
+            'data' => [], // $machine->toArray(),
         ]);
     }
 
@@ -59,7 +59,7 @@ class MachineController extends Controller
         MarkMachineNotLoggedIn::dispatch($ip, $userAgent, $meta);
 
         return response()->json([
-            'data' => [], //$machine->fresh()->toArray(),
+            'data' => [], // $machine->fresh()->toArray(),
         ]);
     }
 
@@ -77,7 +77,7 @@ class MachineController extends Controller
         $machine->update(['logged_in' => false]);
 
         return response()->json([
-            'data' => [], //$machine->toArray(),
+            'data' => [], // $machine->toArray(),
         ]);
     }
 }
