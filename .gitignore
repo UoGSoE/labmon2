@@ -3,6 +3,7 @@
 /public/build
 /public/storage
 /storage/*.key
+/storage/pail
 /storage/debugbar
 /vendor
 .env
@@ -16,3 +17,4 @@ dump.rdb
 auth.json
 fluxui-docs*
 
+/.nova
