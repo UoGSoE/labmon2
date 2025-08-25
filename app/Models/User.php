@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -36,7 +37,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function scopeallowedAccess($query)
+    #[Scope]
+    protected function allowedAccess($query)
     {
         return $query->where('is_allowed', '=', true);
     }
