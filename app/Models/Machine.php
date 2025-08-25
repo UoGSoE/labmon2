@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Exception;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,22 +29,26 @@ class Machine extends Model
         return $this->belongsTo(Lab::class);
     }
 
-    public function scopeOnline($query)
+    #[Scope]
+    protected function online($query)
     {
         return $query->where('logged_in', '=', true);
     }
 
-    public function scopeOffline($query)
+    #[Scope]
+    protected function offline($query)
     {
         return $query->where('logged_in', '=', false);
     }
 
-    public function scopeUnlocked($query)
+    #[Scope]
+    protected function unlocked($query)
     {
         return $query->where('is_locked', '=', false);
     }
 
-    public function scopeLocked($query)
+    #[Scope]
+    protected function locked($query)
     {
         return $query->where('is_locked', '=', true);
     }

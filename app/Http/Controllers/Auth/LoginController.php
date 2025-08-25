@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
-class LoginController extends Controller
+class LoginController extends Controller implements HasMiddleware
 {
     /*
     |--------------------------------------------------------------------------
@@ -31,21 +33,17 @@ class LoginController extends Controller
      */
     protected $redirectTo = AppServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('guest')->except('logout');
+        return [
+            new Middleware('guest', except: ['logout']),
+        ];
     }
 
     public function username()
     {
         return 'username';
     }
-
 
     public function logout(): RedirectResponse
     {
@@ -59,5 +57,4 @@ class LoginController extends Controller
     {
         return view('auth.logged_out');
     }
-
 }

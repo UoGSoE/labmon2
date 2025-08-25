@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Jobs\LookupDns;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,23 +34,27 @@ class Lab extends Model
         return $this->hasMany(LabStat::class);
     }
 
-    public function scopeGraphable($query)
+    #[Scope]
+    protected function graphable($query)
     {
         return $query->where('is_on_graphs', '=', true);
     }
 
-    public function scopeAlwaysRemote($query)
+    #[Scope]
+    protected function alwaysRemote($query)
     {
         return $query->where('always_remote_access', '=', true);
     }
 
-    public function scopeAnyRemote($query)
+    #[Scope]
+    protected function anyRemote($query)
     {
         return $query->where('always_remote_access', '=', true)
             ->orWhere('limited_remote_access', '=', true);
     }
 
-    public function scopeAvailableForRdp($query)
+    #[Scope]
+    protected function availableForRdp($query)
     {
         if ($this->isntAHolidayPeriod() and $this->isInWorkHours()) {
             return $query->alwaysRemote();

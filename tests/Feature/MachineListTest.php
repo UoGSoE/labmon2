@@ -1,7 +1,6 @@
 <?php
 
 use App\Livewire\Pages\MachineIndex;
-use App\Livewire\Pages\LabShow;
 use App\Models\Lab;
 use App\Models\Machine;
 use App\Models\User;

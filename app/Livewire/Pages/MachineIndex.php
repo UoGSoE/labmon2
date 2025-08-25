@@ -13,12 +13,16 @@ class MachineIndex extends Component
 {
     // Machine list properties
     public $filter = '';
+
     public $statusFilter = '';
+
     public $osFilter = '';
+
     public $includeMeta = false;
 
     // Modal state and selected machine details
     public bool $showMachineModal = false;
+
     public ?array $selectedMachine = null;
 
     public function render()

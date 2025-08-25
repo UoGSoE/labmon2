@@ -44,13 +44,13 @@ class Options extends Component
         option(['remote-start-hour' => $this->remoteStartHour]);
         option(['remote-end-hour' => $this->remoteEndHour]);
 
-        if (!empty($this->remoteSummer)) {
+        if (! empty($this->remoteSummer)) {
             $this->extractDates($this->remoteSummer, 'summer');
         }
-        if (!empty($this->remoteXmas)) {
+        if (! empty($this->remoteXmas)) {
             $this->extractDates($this->remoteXmas, 'xmas');
         }
-        if (!empty($this->remoteEaster)) {
+        if (! empty($this->remoteEaster)) {
             $this->extractDates($this->remoteEaster, 'easter');
         }
 
