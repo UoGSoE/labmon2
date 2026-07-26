@@ -7,7 +7,7 @@
     },
     "devDependencies": {
         "@fullhuman/postcss-purgecss": "^2.1.0",
-        "axios": "^1.7.4",
+        "axios": "^1.18.0",
         "bootstrap": "^4.6.0",
         "cross-env": "^7.0.3",
         "jquery": "^3.5.1",
