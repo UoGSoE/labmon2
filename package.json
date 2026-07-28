@@ -6,7 +6,7 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@fullhuman/postcss-purgecss": "^2.1.0",
+        "@fullhuman/postcss-purgecss": "^8.0.0",
         "axios": "^1.7.4",
         "bootstrap": "^4.6.0",
         "cross-env": "^7.0.3",
